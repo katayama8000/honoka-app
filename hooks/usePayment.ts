@@ -4,7 +4,7 @@ import type { Couple, Payment } from "@/types/Row";
 import dayjs from "dayjs";
 import { useRouter } from "expo-router";
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { ToastAndroid } from "react-native";
 import { coupleIdAtom } from "../state/couple.state";
 import { activeInvoiceAtom } from "../state/invoice.state";
@@ -23,6 +23,7 @@ export const usePayment = () => {
   const [coupleId] = useAtom(coupleIdAtom);
   const { back } = useRouter();
   const [activeInvoice] = useAtom(activeInvoiceAtom);
+  const [, startTransition] = useTransition();
 
   useEffect(() => {
     (async () => {
@@ -42,7 +43,7 @@ export const usePayment = () => {
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  const addPayment = useCallback(async (): Promise<void> => {
+  const addPayment = useCallback((): void => {
     if (!item || !amount) {
       alert("Please enter both name and amount.");
       return;
@@ -52,44 +53,50 @@ export const usePayment = () => {
       alert("coupleId is not found");
       return;
     }
-    const monthly_invoice_id = await fetchMonthlyInvoiceIdByCoupleId(coupleId);
 
-    if (monthly_invoice_id === undefined) {
-      alert("monthly_invoice_id is not found");
-      return;
-    }
+    startTransition(() => {
+      (async () => {
+        const monthly_invoice_id = await fetchMonthlyInvoiceIdByCoupleId(coupleId);
 
-    const uid = (await supabase.auth.getSession())?.data.session?.user.id;
-    if (uid === undefined) {
-      alert("uid is not found");
-      return;
-    }
-    try {
-      const { error } = await supabase.from(payments_table).insert([
-        {
-          amount,
-          monthly_invoice_id,
-          item,
-          memo,
-          updated_at: dayjs().toISOString(),
-          created_at: dayjs().toISOString(),
-          owner_id: uid,
-        },
-      ]);
+        if (monthly_invoice_id === undefined) {
+          alert("monthly_invoice_id is not found");
+          return;
+        }
 
-      if (error) {
-        console.error(error);
-        alert("An error occurred. Please try again.");
-        return;
-      }
+        const uid = (await supabase.auth.getSession())?.data.session?.user.id;
+        if (uid === undefined) {
+          alert("uid is not found");
+          return;
+        }
 
-      ToastAndroid.show("投稿した", ToastAndroid.SHORT);
-      resetForm();
-      back();
-    } catch (error) {
-      console.error(error);
-      alert("An error occurred. Please try again.");
-    }
+        try {
+          const { error } = await supabase.from(payments_table).insert([
+            {
+              amount,
+              monthly_invoice_id,
+              item,
+              memo,
+              updated_at: dayjs().toISOString(),
+              created_at: dayjs().toISOString(),
+              owner_id: uid,
+            },
+          ]);
+
+          if (error) {
+            console.error(error);
+            alert("An error occurred. Please try again.");
+            return;
+          }
+
+          ToastAndroid.show("投稿した", ToastAndroid.SHORT);
+          resetForm();
+          back();
+        } catch (error) {
+          console.error(error);
+          alert("An error occurred. Please try again.");
+        }
+      })();
+    });
   }, [item, amount, memo, back, fetchMonthlyInvoiceIdByCoupleId, coupleId]);
 
   const fetchPaymentsAllByMonthlyInvoiceId = useCallback(
