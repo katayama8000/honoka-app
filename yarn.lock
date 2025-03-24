@@ -3903,24 +3903,24 @@ expo-constants@~17.0.0, expo-constants@~17.0.3, expo-constants@~17.0.4, expo-con
     "@expo/config" "~10.0.11"
     "@expo/env" "~0.4.2"
 
-expo-dev-client@~5.0.14:
-  version "5.0.14"
-  resolved "https://registry.yarnpkg.com/expo-dev-client/-/expo-dev-client-5.0.14.tgz#c687a41d9b2a22ab1cc87b3f8d2bd2dffbb2253d"
-  integrity sha512-L57x2CrMb2tYsOSWc4zAvaGZ1+H7pZlGVvuDC1KzEsVCC2KjW1YUSEX9H5Zg+61Y4YUlHZ3h5rM5Eu/aCZmkZA==
+expo-dev-client@~5.0.15:
+  version "5.0.15"
+  resolved "https://registry.yarnpkg.com/expo-dev-client/-/expo-dev-client-5.0.15.tgz#5a4123cc1aad3c8a1e2420389f53f5b59d66d3a6"
+  integrity sha512-G7DtHTYpbehafMnNEqWs4COsIS0TZe5qiO382q6JwOXH1Lpd8JoJ/PZGXUe9a4C/8KDg7iqLXnyiABzidDGecA==
   dependencies:
-    expo-dev-launcher "5.0.30"
+    expo-dev-launcher "5.0.31"
     expo-dev-menu "6.0.21"
     expo-dev-menu-interface "1.9.3"
     expo-manifests "~0.15.7"
     expo-updates-interface "~1.0.0"
 
-expo-dev-launcher@5.0.30:
-  version "5.0.30"
-  resolved "https://registry.yarnpkg.com/expo-dev-launcher/-/expo-dev-launcher-5.0.30.tgz#4ea885fb5905d229d7fa85349d097acc70595dce"
-  integrity sha512-II2qQkTelIzaB9nWQJJwbRLSsDYDz3gRuFJ/wZpzX8/5CzsimvhbMslb6Zx8jAiBEzs+fquTmZSOhpYPKtGCiQ==
+expo-dev-launcher@5.0.31:
+  version "5.0.31"
+  resolved "https://registry.yarnpkg.com/expo-dev-launcher/-/expo-dev-launcher-5.0.31.tgz#27f253437cfec82b03ca6cc1ff8b6c7e84c0e6ac"
+  integrity sha512-eCDayo5ZIf3hFm+phF8VpT67pgX32Tq05pkw65zlYue/hbzZjoHr7nehnXR3j3qPs5IZFkBaV0dmnN3U3bU73Q==
   dependencies:
     ajv "8.11.0"
-    expo-dev-menu "6.0.20"
+    expo-dev-menu "6.0.21"
     expo-manifests "~0.15.7"
     resolve-from "^5.0.0"
 
@@ -3928,13 +3928,6 @@ expo-dev-menu-interface@1.9.3:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/expo-dev-menu-interface/-/expo-dev-menu-interface-1.9.3.tgz#5dc618e498b286a50a9272a8bc71969b6db54e23"
   integrity sha512-KY/dWTBE1l47i9V366JN5rC6YIdOc9hz8yAmZzkl5DrPia5l3M2WIjtnpHC9zUkNjiSiG2urYoOAq4H/uLdmyg==
-
-expo-dev-menu@6.0.20:
-  version "6.0.20"
-  resolved "https://registry.yarnpkg.com/expo-dev-menu/-/expo-dev-menu-6.0.20.tgz#8f3e1a7578d2f8027fac7a4c259194fbae9dfc44"
-  integrity sha512-+ha876lpGAsRB9lqT7WRtcSvxZg2CjXKWkCSAghToyx4Wti1u3M/y3onJ4oOvddtKuFfFX4IRmnZYI3xi/TDCQ==
-  dependencies:
-    expo-dev-menu-interface "1.9.3"
 
 expo-dev-menu@6.0.21:
   version "6.0.21"
