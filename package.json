@@ -23,7 +23,7 @@
     "@react-native-async-storage/async-storage": "2.1.0",
     "@supabase/supabase-js": "^2.49.4",
     "dayjs": "^1.11.13",
-    "expo": "~52.0.27",
+    "expo": "~52.0.44",
     "expo-constants": "~17.0.3",
     "expo-dev-client": "~5.0.15",
     "expo-device": "~7.0.1",
