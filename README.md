@@ -17,3 +17,13 @@ HouseHold Account Book is a personal finance app designed to help manage and tra
         - https://github.com/katayama8000/expo-push-notification-api-rust
 - CI/CD
     - GitHub Actions
+
+## Setup and Run
+Copy the `.env.dist` file to `.env` and set the environment variables.
+```bash
+cp .env.example .env
+```
+Then, run the following command to start the app.
+```bash
+pnpm dev
+```
