@@ -6,14 +6,15 @@
     "icon": "./assets/images/moufu.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "version": "2.3.0",
+    "version": "2.4.0",
     "splash": {
       "image": "./assets/images/moufu.png",
       "resizeMode": "contain",
       "backgroundColor": "#336666"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.katayama9000.householdaccountbook.dev"
     },
     "android": {
       "adaptiveIcon": {
@@ -30,7 +31,15 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
