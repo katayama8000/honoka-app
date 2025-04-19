@@ -6,7 +6,7 @@
     "icon": "./assets/images/moufu.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "version": "2.3.0",
+    "version": "2.4.0",
     "splash": {
       "image": "./assets/images/moufu.png",
       "resizeMode": "contain",
