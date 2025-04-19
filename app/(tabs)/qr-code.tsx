@@ -1,10 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
-import { Camera, CameraType, CameraView, BarcodeScanningResult } from 'expo-camera';
-import { useState, useEffect } from 'react';
-import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../constants/Colors';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Linking } from "react-native";
+import { Camera, CameraType, CameraView, BarcodeScanningResult } from "expo-camera";
+import { useState, useEffect } from "react";
+import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "../../constants/Colors";
+import { openBrowserAsync } from "expo-web-browser";
 
 export default function QRSCodeScreen() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -14,54 +15,85 @@ export default function QRSCodeScreen() {
   useEffect(() => {
     const getCameraPermissions = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
+      setHasPermission(status === "granted");
     };
 
     getCameraPermissions();
   }, []);
 
+  // URLかどうかをチェックする関数
+  const isValidUrl = (text: string): boolean => {
+    try {
+      new URL(text);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  };
+
+  // URLを開く関数
+  const openUrl = async (url: string) => {
+    try {
+      await openBrowserAsync(url);
+    } catch (error) {
+      console.error("URLを開けませんでした:", error);
+      Alert.alert("エラー", "URLを開けませんでした");
+    }
+  };
+
   const handleBarCodeScanned = ({ type, data }: BarcodeScanningResult) => {
     if (scanned) return;
     setScanned(true);
 
-    Alert.alert(
-      "QRコード検出",
-      `タイプ: ${type}\nデータ: ${data}`,
-      [
-        {
-          text: "キャンセル",
-          style: "cancel",
-          onPress: () => setScanned(false)
+    // URLかどうかをチェック
+    const isUrl = isValidUrl(data);
+
+    Alert.alert("QRコード検出", `タイプ: ${type}\nデータ: ${data}${isUrl ? "\n\nこのURLを開きますか？" : ""}`, [
+      {
+        text: "キャンセル",
+        style: "cancel",
+        onPress: () => setScanned(false),
+      },
+      // URLの場合は「開く」ボタンを表示
+      ...(isUrl
+        ? [
+            {
+              text: "開く",
+              onPress: () => {
+                openUrl(data);
+                setScanned(false);
+              },
+            },
+          ]
+        : []),
+      {
+        text: "OK",
+        onPress: () => {
+          console.log("QR Code data:", data);
+          setScanned(false);
         },
-        {
-          text: "OK",
-          onPress: () => {
-            // ここでQRコードデータを処理する
-            console.log('QR Code data:', data);
-            // 必要に応じて、データを使用して別の画面に遷移する
-            // router.push({
-            //   pathname: '/(tabs)',
-            //   params: { scanData: data }
-            // });
-            setScanned(false);
-          }
-        }
-      ]
-    );
+      },
+    ]);
   };
 
   const toggleCameraType = () => {
-    setCameraType(current => (
-      current === "back" ? "front" : "back"
-    ));
+    setCameraType((current) => (current === "back" ? "front" : "back"));
   };
 
   if (hasPermission === null) {
-    return <View style={styles.container}><Text>カメラの権限を確認中...</Text></View>;
+    return (
+      <View style={styles.container}>
+        <Text>カメラの権限を確認中...</Text>
+      </View>
+    );
   }
 
   if (hasPermission === false) {
-    return <View style={styles.container}><Text>カメラへのアクセスが許可されていません。</Text></View>;
+    return (
+      <View style={styles.container}>
+        <Text>カメラへのアクセスが許可されていません。</Text>
+      </View>
+    );
   }
 
   return (
@@ -82,9 +114,7 @@ export default function QRSCodeScreen() {
             <View style={styles.cornerBL} />
             <View style={styles.cornerBR} />
           </View>
-          <Text style={styles.instructionText}>
-            QRコードをフレーム内に配置してください
-          </Text>
+          <Text style={styles.instructionText}>QRコードをフレーム内に配置してください</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
@@ -105,28 +135,28 @@ export default function QRSCodeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: "#000",
   },
   camera: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   overlay: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   scanArea: {
     width: 250,
     height: 250,
     borderWidth: 2,
-    borderColor: 'transparent',
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "transparent",
+    position: "relative",
+    justifyContent: "center",
+    alignItems: "center",
   },
   cornerTL: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     width: 30,
@@ -136,7 +166,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.tint,
   },
   cornerTR: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     right: 0,
     width: 30,
@@ -146,7 +176,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.tint,
   },
   cornerBL: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     width: 30,
@@ -156,7 +186,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.tint,
   },
   cornerBR: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     right: 0,
     width: 30,
@@ -166,48 +196,48 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.tint,
   },
   instructionText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
     marginTop: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     padding: 10,
     borderRadius: 5,
   },
   buttonContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 50,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   backButton: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   button: {
     width: 150,
     height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 10,
     backgroundColor: Colors.light.tint,
   },
   buttonText: {
     fontSize: 18,
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   flipButton: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
