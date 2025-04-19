@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
-import { Camera } from 'expo-camera';
-import { BarCodeScanner, BarCodeScannerResult } from 'expo-barcode-scanner';
+import { Camera, CameraType, CameraView, BarcodeScanningResult } from 'expo-camera';
 import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,7 +9,7 @@ import { Colors } from '../../constants/Colors';
 export default function QRSCodeScreen() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState<boolean>(false);
-  const [cameraType, setCameraType] = useState<'front' | 'back'>('back');
+  const [cameraType, setCameraType] = useState<CameraType>("back");
 
   useEffect(() => {
     const getCameraPermissions = async () => {
@@ -21,8 +20,10 @@ export default function QRSCodeScreen() {
     getCameraPermissions();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }: BarCodeScannerResult) => {
+  const handleBarCodeScanned = ({ type, data }: BarcodeScanningResult) => {
+    if (scanned) return;
     setScanned(true);
+
     Alert.alert(
       "QRコード検出",
       `タイプ: ${type}\nデータ: ${data}`,
@@ -42,6 +43,7 @@ export default function QRSCodeScreen() {
             //   pathname: '/(tabs)',
             //   params: { scanData: data }
             // });
+            setScanned(false);
           }
         }
       ]
@@ -50,7 +52,7 @@ export default function QRSCodeScreen() {
 
   const toggleCameraType = () => {
     setCameraType(current => (
-      current === 'back' ? 'front' : 'back'
+      current === "back" ? "front" : "back"
     ));
   };
 
@@ -64,11 +66,14 @@ export default function QRSCodeScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
-      <BarCodeScanner
+      <StatusBar style="dark" />
+      <CameraView
         style={styles.camera}
-        type={cameraType}
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        facing={cameraType}
+        barcodeScannerSettings={{
+          barcodeTypes: ["qr"],
+        }}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
       >
         <View style={styles.overlay}>
           <View style={styles.scanArea}>
@@ -92,7 +97,7 @@ export default function QRSCodeScreen() {
             <Ionicons name="camera-reverse" size={30} color="white" />
           </TouchableOpacity>
         </View>
-      </BarCodeScanner>
+      </CameraView>
     </View>
   );
 }
