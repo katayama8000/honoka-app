@@ -5,11 +5,11 @@ import { BarCodeScanner, BarCodeScannerResult } from 'expo-barcode-scanner';
 import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../constants/Colors';
+import { Colors } from '../../constants/Colors';
 
-export default function QRScannerScreen() {
+export default function QRSCodeScreen() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [scanned, setScanned] = useState(false);
+  const [scanned, setScanned] = useState<boolean>(false);
   const [cameraType, setCameraType] = useState<'front' | 'back'>('back');
 
   useEffect(() => {
