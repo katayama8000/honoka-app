@@ -3,6 +3,8 @@ import { Colors } from "@/constants/Colors";
 import { Tabs } from "expo-router";
 import { useAtom } from "jotai";
 import { activeInvoiceAtom } from "../../state/invoice.state";
+import { Pressable } from "react-native";
+import { router } from "expo-router";
 
 export default function TabLayout() {
   const [activeInvoice] = useAtom(activeInvoiceAtom);
@@ -42,6 +44,27 @@ export default function TabLayout() {
           },
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? "calendar-number" : "calendar-number-outline"} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="qr-code"
+        options={{
+          title: "QRコード",
+          headerTitleStyle: {
+            fontSize: 22,
+            color: Colors.white,
+          },
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? "qr-code" : "qr-code-outline"} color={color} />
+          ),
+          tabBarButton: (props) => (
+            <Pressable
+              {...props}
+              onPress={() => {
+                router.push('/qr-scanner');
+              }}
+            />
           ),
         }}
       />
