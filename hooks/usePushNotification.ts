@@ -14,7 +14,7 @@ import {
   NotificationResponse,
 } from "expo-notifications";
 import { useEffect, useRef } from "react";
-import { Platform } from "react-native";
+import { Platform, Linking } from "react-native";
 import { router } from "expo-router";
 
 const handleRegistrationError = (errorMessage: string) => {
@@ -54,6 +54,19 @@ export const usePushNotification = () => {
     };
   }, []);
 
+  const openWiFiSettings = async () => {
+    try {
+      if (Platform.OS === 'ios') {
+        await Linking.openURL('App-Prefs:root=WIFI');
+      } else if (Platform.OS === 'android') {
+        await Linking.openSettings();
+        // await Linking.openURL('android.settings.WIFI_SETTINGS');
+      }
+    } catch (error) {
+      console.error('WiFi設定を開けませんでした:', error);
+    }
+  };
+
   const handleNotificationResponse = (response: NotificationResponse) => {
     const data = response.notification.request.content.data;
     console.log('通知がタップされました:', data);
@@ -68,6 +81,8 @@ export const usePushNotification = () => {
         pathname: '/(modal)/payment-modal',
         params: { id: data.paymentId }
       });
+    } else if (data.type === 'wifi-settings') {
+      openWiFiSettings();
     } else {
       // default action
       router.push('/(tabs)');
@@ -115,6 +130,7 @@ export const usePushNotification = () => {
 
   return { 
     registerForPushNotificationsAsync,
-    handleNotificationResponse 
+    handleNotificationResponse,
+    openWiFiSettings
   };
 };
