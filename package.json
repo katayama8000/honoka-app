@@ -1,7 +1,7 @@
 {
   "name": "household-account-book",
   "main": "expo-router/entry",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "scripts": {
     "dev": "expo start",
     "go": "expo start --go",
@@ -30,12 +30,14 @@
     "expo-device": "~7.0.1",
     "expo-font": "~13.0.2",
     "expo-linking": "~7.0.3",
+    "expo-localization": "^16.0.1",
     "expo-notifications": "~0.29.14",
     "expo-router": "~4.0.15",
     "expo-splash-screen": "~0.29.24",
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.8",
     "expo-web-browser": "~14.0.2",
+    "i18n-js": "^4.5.1",
     "jotai": "^2.12.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
