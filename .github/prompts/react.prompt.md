@@ -1,0 +1,7 @@
+- Use FC
+- Do not use default export when it is not necessary
+- Use named export
+- Use functional components
+- Use arrow functions
+- Use React hooks
+- Define type for useState
