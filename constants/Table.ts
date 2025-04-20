@@ -1,13 +1,14 @@
-let couples_table: "dev_couples" | "couples" = "dev_couples";
-let monthly_invoices_table: "dev_monthly_invoices" | "monthly_invoices" = "dev_monthly_invoices";
-let payments_table: "dev_payments" | "payments" = "dev_payments";
-let users_table: "dev_users" | "users" = "dev_users";
+type TableEnvSuffix = 'dev_' | '';
+type TableName = 'couples' | 'monthly_invoices' | 'payments' | 'users';
+type TableFullName<T extends TableName> = `${TableEnvSuffix}${T}`;
 
-if (process.env.EXPO_PUBLIC_APP_ENV === "production") {
-  couples_table = "couples";
-  monthly_invoices_table = "monthly_invoices";
-  payments_table = "payments";
-  users_table = "users";
-}
+const isProduction = process.env.EXPO_PUBLIC_APP_ENV === "production";
+const getTableName = <T extends TableName>(baseName: T): TableFullName<T> => 
+  isProduction ? baseName as TableFullName<T> : `dev_${baseName}` as TableFullName<T>;
+
+const couples_table: TableFullName<'couples'> = getTableName('couples');
+const monthly_invoices_table: TableFullName<'monthly_invoices'> = getTableName('monthly_invoices');
+const payments_table: TableFullName<'payments'> = getTableName('payments');
+const users_table: TableFullName<'users'> = getTableName('users');
 
 export { couples_table, monthly_invoices_table, payments_table, users_table };
