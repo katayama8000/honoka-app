@@ -7,25 +7,11 @@ import "react-native-reanimated";
 import { usePushNotification } from "@/hooks/usePushNotification";
 import { useUser } from "@/hooks/useUser";
 import { userAtom } from "@/state/user.state";
-import {
-  type EventSubscription,
-  addNotificationResponseReceivedListener,
-  removeNotificationSubscription,
-  setNotificationHandler,
-} from "expo-notifications";
 import { useAtom } from "jotai";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 preventAutoHideAsync();
-
-setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
 
 export default function RootLayout() {
   const { fetchUser, updateExpoPushToken } = useUser();
@@ -63,9 +49,6 @@ export default function RootLayout() {
     })();
   }, [push]);
 
-  const notificationListener = useRef<EventSubscription>();
-  const responseListener = useRef<EventSubscription>();
-
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     (async () => {
@@ -85,19 +68,6 @@ export default function RootLayout() {
       setUser(user);
 
       if (token) updateExpoPushToken(uid, token);
-
-      // notificationListener.current = addNotificationReceivedListener((notification) => {
-      //   setNotification(notification);
-      // });
-
-      responseListener.current = addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
-
-      return () => {
-        notificationListener.current && removeNotificationSubscription(notificationListener.current);
-        responseListener.current && removeNotificationSubscription(responseListener.current);
-      };
     })();
   }, []);
 
@@ -110,6 +80,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="(modal)/payment-modal" options={{ presentation: "modal" }} />
           <Stack.Screen name="+not-found" />
+          <Stack.Screen name="past-invoice-details" options={{ title: "請求書詳細" }} />
         </Stack>
       </GestureHandlerRootView>
     </ThemeProvider>
