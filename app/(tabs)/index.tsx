@@ -90,9 +90,7 @@ const HomeScreen: FC = () => {
 
   return (
     <View style={styles.container}>
-      {process.env.EXPO_PUBLIC_APP_ENV === "development" && (
-        <LanguageSelector style={styles.languageSelector} />
-      )}
+      {process.env.EXPO_PUBLIC_APP_ENV === "development" && <LanguageSelector style={styles.languageSelector} />}
       <View style={styles.buttonWrapper}>
         <AddPaymentButton onPress={() => push({ pathname: "/payment-modal", params: { kind: "add" } })} />
         {showCloseMonthButton && (
@@ -183,7 +181,11 @@ const PaymentList: FC<PaymentListProps> = ({
       )}
       keyExtractor={(item) => item.id.toString()}
       ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
-      ListEmptyComponent={() => <Text style={styles.emptyListText}>{t("payments.payment")} {t("common.loading")}</Text>}
+      ListEmptyComponent={() => (
+        <Text style={styles.emptyListText}>
+          {t("payments.payment")} {t("common.loading")}
+        </Text>
+      )}
       contentContainerStyle={{ paddingBottom: 12 }}
       onRefresh={async () => {
         if (activeInvoiceId === null) return;

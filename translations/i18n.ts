@@ -1,11 +1,11 @@
-import * as Localization from 'expo-localization';
-import { I18n } from 'i18n-js';
-import { translations } from './languages';
+import * as Localization from "expo-localization";
+import { I18n } from "i18n-js";
+import { translations } from "./languages";
 
 // Helper function to get the device locale using non-deprecated method
 const getDeviceLocale = (): string => {
   const locales = Localization.getLocales();
-  return locales && locales.length > 0 ? locales[0].languageCode ?? 'en' : 'en';
+  return locales && locales.length > 0 ? (locales[0].languageCode ?? "en") : "en";
 };
 
 // Create the i18n instance
@@ -18,6 +18,6 @@ i18n.locale = getDeviceLocale();
 i18n.enableFallback = true;
 
 // Set the default locale as fallback
-i18n.defaultLocale = 'en';
+i18n.defaultLocale = "en";
 
 export default i18n;

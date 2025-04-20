@@ -1,8 +1,7 @@
-import { useCallback } from 'react';
-import * as Localization from 'expo-localization';
-import { atom, useAtom, createStore } from 'jotai';
-import i18n from '../translations/i18n';
-import type { TranslationKeys } from '../translations/languages';
+import { useCallback } from "react";
+import * as Localization from "expo-localization";
+import { atom, useAtom, createStore } from "jotai";
+import i18n from "../translations/i18n";
 
 // Create a store for accessing atom values outside of React components
 const jotaiStore = createStore();
@@ -10,7 +9,7 @@ const jotaiStore = createStore();
 // Get device locale using non-deprecated method
 const getDeviceLocale = (): string => {
   const locales = Localization.getLocales();
-  return locales && locales.length > 0 && locales[0].languageCode ? locales[0].languageCode : 'en';
+  return locales && locales.length > 0 && locales[0].languageCode ? locales[0].languageCode : "en";
 };
 
 // Create an atom to store the current locale
@@ -28,10 +27,13 @@ export const useTranslation = (): UseTranslationType => {
   const [locale, setLocale] = useAtom(localeAtom);
 
   // Update i18n instance when locale changes
-  const handleSetLocale = useCallback((newLocale: string) => {
-    i18n.locale = newLocale;
-    setLocale(newLocale);
-  }, [setLocale]);
+  const handleSetLocale = useCallback(
+    (newLocale: string) => {
+      i18n.locale = newLocale;
+      setLocale(newLocale);
+    },
+    [setLocale],
+  );
 
   // Translation function
   const t = useCallback((scope: string, options?: Record<string, any>) => {
@@ -57,4 +59,3 @@ export const getTranslation = (scope: string, options?: Record<string, any>): st
   i18n.locale = currentLocale;
   return i18n.t(scope, options);
 };
-

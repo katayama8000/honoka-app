@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { useTranslation } from '../hooks/useTranslation';
-import { Colors } from '@/constants/Colors';
+import React, { FC } from "react";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { useTranslation } from "../hooks/useTranslation";
+import { Colors } from "@/constants/Colors";
 
 type Language = {
   code: string;
@@ -9,8 +9,8 @@ type Language = {
 };
 
 const LANGUAGES: Language[] = [
-  { code: 'en', name: 'English' },
-  { code: 'ja', name: '日本語' },
+  { code: "en", name: "English" },
+  { code: "ja", name: "日本語" },
 ];
 
 type LanguageSelectorProps = {
@@ -29,18 +29,10 @@ export const LanguageSelector: FC<LanguageSelectorProps> = ({ style }) => {
       {LANGUAGES.map((language) => (
         <TouchableOpacity
           key={language.code}
-          style={[
-            styles.languageButton,
-            locale.startsWith(language.code) && styles.activeLanguage,
-          ]}
+          style={[styles.languageButton, locale.startsWith(language.code) && styles.activeLanguage]}
           onPress={() => onSelectLanguage(language.code)}
         >
-          <Text
-            style={[
-              styles.languageText,
-              locale.startsWith(language.code) && styles.activeLanguageText,
-            ]}
-          >
+          <Text style={[styles.languageText, locale.startsWith(language.code) && styles.activeLanguageText]}>
             {language.name}
           </Text>
         </TouchableOpacity>
@@ -51,8 +43,8 @@ export const LanguageSelector: FC<LanguageSelectorProps> = ({ style }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginVertical: 10,
   },
   languageButton: {
@@ -62,13 +54,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   activeLanguage: {
-    backgroundColor: Colors.primary
+    backgroundColor: Colors.primary,
   },
   languageText: {
     fontSize: 14,
-    color: '#333',
+    color: "#333",
   },
   activeLanguageText: {
-    color: '#fff',
+    color: "#fff",
   },
 });
