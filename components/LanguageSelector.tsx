@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useTranslation } from '../hooks/useTranslation';
+import { Colors } from '@/constants/Colors';
 
 type Language = {
   code: string;
@@ -59,10 +60,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginHorizontal: 4,
     borderRadius: 20,
-    backgroundColor: '#f0f0f0',
   },
   activeLanguage: {
-    backgroundColor: '#007AFF',
+    backgroundColor: Colors.primary
   },
   languageText: {
     fontSize: 14,

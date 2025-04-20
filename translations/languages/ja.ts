@@ -3,7 +3,7 @@ export const ja = {
     ok: "OK",
     cancel: "キャンセル",
     back: "戻る",
-    save: "保存",
+    save: "閉める",
     loading: "読み込み中...",
     error: "エラーが発生しました",
   },
@@ -19,7 +19,7 @@ export const ja = {
     pastInvoices: "過去の請求書",
   },
   payments: {
-    payment: "支払い",
+    payment: "追加",
     amount: "金額",
     date: "日付",
     description: "説明",

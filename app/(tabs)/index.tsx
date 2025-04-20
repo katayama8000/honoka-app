@@ -90,7 +90,9 @@ const HomeScreen: FC = () => {
 
   return (
     <View style={styles.container}>
-      <LanguageSelector style={styles.languageSelector} />
+      {process.env.EXPO_PUBLIC_APP_ENV === "development" && (
+        <LanguageSelector style={styles.languageSelector} />
+      )}
       <View style={styles.buttonWrapper}>
         <AddPaymentButton onPress={() => push({ pathname: "/payment-modal", params: { kind: "add" } })} />
         {showCloseMonthButton && (
