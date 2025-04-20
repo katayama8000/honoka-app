@@ -10,3 +10,5 @@
 - Use functional components
 - Use React hooks
 - Define type for useState
+
+- Use yarn for package manager
