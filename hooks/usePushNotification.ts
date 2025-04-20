@@ -6,15 +6,74 @@ import {
   getPermissionsAsync,
   requestPermissionsAsync,
   setNotificationChannelAsync,
+  setNotificationHandler,
+  addNotificationReceivedListener,
+  addNotificationResponseReceivedListener,
+  removeNotificationSubscription,
+  Notification,
+  NotificationResponse,
 } from "expo-notifications";
+import { useEffect, useRef } from "react";
 import { Platform } from "react-native";
+import { router } from "expo-router";
 
 const handleRegistrationError = (errorMessage: string) => {
   alert(errorMessage);
   throw new Error(errorMessage);
 };
 
+setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
 export const usePushNotification = () => {
+  const notificationListener = useRef<any>();
+  const responseListener = useRef<any>();
+
+  useEffect(() => {
+    // listen for incoming notifications
+    notificationListener.current = addNotificationReceivedListener((notification: Notification) => {
+      console.log('通知を受信しました:', notification);
+    });
+
+    // listen for notification response (when user taps on the notification)
+    responseListener.current = addNotificationResponseReceivedListener(handleNotificationResponse);
+
+    // cleanup function to remove listeners
+    return () => {
+      if (notificationListener.current) {
+        removeNotificationSubscription(notificationListener.current);
+      }
+      if (responseListener.current) {
+        removeNotificationSubscription(responseListener.current);
+      }
+    };
+  }, []);
+
+  const handleNotificationResponse = (response: NotificationResponse) => {
+    const data = response.notification.request.content.data;
+    console.log('通知がタップされました:', data);
+    
+    if (data.type === 'invoice') {
+      router.push({
+        pathname: '/past-invoice-details',
+        params: { id: data.invoiceId }
+      });
+    } else if (data.type === 'payment') {
+      router.push({
+        pathname: '/(modal)/payment-modal',
+        params: { id: data.paymentId }
+      });
+    } else {
+      // default action
+      router.push('/(tabs)');
+    }
+  };
+
   const registerForPushNotificationsAsync = async () => {
     if (Platform.OS === "android") {
       setNotificationChannelAsync("default", {
@@ -54,5 +113,8 @@ export const usePushNotification = () => {
     }
   };
 
-  return { registerForPushNotificationsAsync };
+  return { 
+    registerForPushNotificationsAsync,
+    handleNotificationResponse 
+  };
 };
