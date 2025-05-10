@@ -1,5 +1,4 @@
 #!/bin/bash
-source ./.env
 
 # Start generating TypeScript types for your Supabase schema
 echo "Generating TypeScript types for your Supabase schema..."

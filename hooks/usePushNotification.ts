@@ -9,12 +9,11 @@ import {
   setNotificationHandler,
   addNotificationReceivedListener,
   addNotificationResponseReceivedListener,
-  removeNotificationSubscription,
   Notification,
   NotificationResponse,
 } from "expo-notifications";
-import { useEffect, useRef } from "react";
-import { Platform, Linking } from "react-native";
+import { useEffect } from "react";
+import { Platform } from "react-native";
 import { router } from "expo-router";
 
 const handleRegistrationError = (errorMessage: string) => {
@@ -31,41 +30,20 @@ setNotificationHandler({
 });
 
 export const usePushNotification = () => {
-  const notificationListener = useRef<any>();
-  const responseListener = useRef<any>();
-
   useEffect(() => {
     // listen for incoming notifications
-    notificationListener.current = addNotificationReceivedListener((notification: Notification) => {
+    const notificationListener = addNotificationReceivedListener((notification: Notification) => {
       console.log("通知を受信しました:", notification);
     });
-
     // listen for notification response (when user taps on the notification)
-    responseListener.current = addNotificationResponseReceivedListener(handleNotificationResponse);
+    const  responseListener = addNotificationResponseReceivedListener(handleNotificationResponse);
 
     // cleanup function to remove listeners
     return () => {
-      if (notificationListener.current) {
-        removeNotificationSubscription(notificationListener.current);
-      }
-      if (responseListener.current) {
-        removeNotificationSubscription(responseListener.current);
-      }
+      notificationListener.remove();
+      responseListener.remove();
     };
   }, []);
-
-  const openWiFiSettings = async () => {
-    try {
-      if (Platform.OS === "ios") {
-        await Linking.openURL("App-Prefs:root=WIFI");
-      } else if (Platform.OS === "android") {
-        await Linking.openSettings();
-        // await Linking.openURL('android.settings.WIFI_SETTINGS');
-      }
-    } catch (error) {
-      console.error("WiFi設定を開けませんでした:", error);
-    }
-  };
 
   const handleNotificationResponse = (response: NotificationResponse) => {
     const data = response.notification.request.content.data;
@@ -81,12 +59,10 @@ export const usePushNotification = () => {
         pathname: "/(modal)/payment-modal",
         params: { id: data.paymentId },
       });
-    } else if (data.type === "wifi-settings") {
-      openWiFiSettings();
     } else {
       // default action
       router.push("/(tabs)");
-    }
+    }  
   };
 
   const registerForPushNotificationsAsync = async () => {
@@ -131,6 +107,5 @@ export const usePushNotification = () => {
   return {
     registerForPushNotificationsAsync,
     handleNotificationResponse,
-    openWiFiSettings,
   };
 };
