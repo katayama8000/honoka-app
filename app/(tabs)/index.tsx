@@ -1,11 +1,12 @@
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { SwiperView } from "@/components/SwiperbleView";
 import { Colors } from "@/constants/Colors";
+import { useAuth } from "@/context/auth";
 import { useTranslation } from "@/hooks/useTranslation";
 import { supabase } from "@/lib/supabase";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 import type { Couple, Invoice, Payment, Payment as PaymentRow } from "@/types/Row";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
@@ -37,20 +38,20 @@ const HomeScreen: FC = () => {
   const [coupleId, setCoupleId] = useAtom(coupleIdAtom);
   const [activeInvoce, setActiveInvoice] = useAtom(activeInvoiceAtom);
   const { push } = useRouter();
+  const { signOut, session } = useAuth();
   const showCloseMonthButton = process.env.EXPO_PUBLIC_APP_ENV === "development" ? true : dayjs().date() >= 20;
   const [userId, setUserId] = useState<string | null>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     (async () => {
-      const uid = (await supabase.auth.getSession())?.data.session?.user?.id;
-      if (!uid) {
+      if (!session || !session.user) {
         push({ pathname: "/sign-in" });
         return;
       }
-      setUserId(uid);
+      setUserId(session.user.user_id);
 
-      const coupleId = await fetchCoupleIdByUserId(uid);
+      const coupleId = await fetchCoupleIdByUserId(session.user.user_id);
       if (!coupleId) {
         throw new Error("coupleId is not found");
       }
@@ -59,7 +60,7 @@ const HomeScreen: FC = () => {
       const activeInvoiceData = await fetchActiveInvoiceByCoupleId(coupleId);
       setActiveInvoice(activeInvoiceData ?? null);
     })();
-  }, []);
+  }, [session]);
 
   const updateActiveInvoice = async () => {
     if (!coupleId) {
@@ -88,22 +89,39 @@ const HomeScreen: FC = () => {
     ]);
   };
 
+  const handleSignOut = async () => {
+    try {
+      const { success } = await signOut();
+      if (success) {
+        ToastAndroid.show("ログアウトしました", ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {process.env.EXPO_PUBLIC_APP_ENV === "development" && <LanguageSelector style={styles.languageSelector} />}
-      <View style={styles.buttonWrapper}>
-        <AddPaymentButton onPress={() => push({ pathname: "/payment-modal", params: { kind: "add" } })} />
-        {showCloseMonthButton && (
-          <CloseMonthButton
-            onPress={async () => {
-              if (!coupleId) {
-                alert(t("common.error"));
-                return;
-              }
-              handleCloseMonth(coupleId);
-            }}
-          />
-        )}
+      <View style={styles.headerButtons}>
+        <View style={styles.buttonWrapper}>
+          <AddPaymentButton onPress={() => push({ pathname: "/payment-modal", params: { kind: "add" } })} />
+          {showCloseMonthButton && (
+            <CloseMonthButton
+              onPress={async () => {
+                if (!coupleId) {
+                  alert(t("common.error"));
+                  return;
+                }
+                handleCloseMonth(coupleId);
+              }}
+            />
+          )}
+        </View>
+        <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+          <Ionicons name="log-out-outline" size={20} color="white" />
+          <Text style={styles.signOutText}>ログアウト</Text>
+        </TouchableOpacity>
       </View>
       {isLoading ? (
         <ActivityIndicator size="large" color={`${Colors.primary}`} />
@@ -270,13 +288,37 @@ const styles = StyleSheet.create({
   languageSelector: {
     marginBottom: 16,
   },
+  headerButtons: {
+    flexDirection: 'column',
+    marginBottom: 16,
+  },
   buttonWrapper: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  signOutButton: {
+    backgroundColor: "#ff6b6b",
+    borderRadius: 8,
+    padding: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 2,
+    shadowColor: defaultShadowColor,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    alignSelf: "flex-end",
+    paddingHorizontal: 12,
+  },
+  signOutText: {
+    color: "white",
+    marginLeft: 4,
+    fontWeight: "500",
   },
   addButton: {
     borderRadius: 50,
-    marginBottom: 16,
+    marginBottom: 8,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: Colors.primary,

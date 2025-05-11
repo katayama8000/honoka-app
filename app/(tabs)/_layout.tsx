@@ -1,11 +1,28 @@
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
-import { Tabs } from "expo-router";
+import { useAuth } from "@/context/auth";
+import { Redirect, Tabs } from "expo-router";
 import { useAtom } from "jotai";
+import { Text, View } from "react-native";
 import { activeInvoiceAtom } from "../../state/invoice.state";
 
 export default function TabLayout() {
   const [activeInvoice] = useAtom(activeInvoiceAtom);
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+  
+  // Redirect to sign-in if not authenticated
+  if (!isAuthenticated) {
+    return <Redirect href="/sign-in" />;
+  }
 
   return (
     <Tabs

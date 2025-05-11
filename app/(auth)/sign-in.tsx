@@ -1,12 +1,9 @@
 import { Colors } from "@/constants/Colors";
+import { useAuth } from "@/context/auth";
 import { usePushNotification } from "@/hooks/usePushNotification";
-import { useUser } from "@/hooks/useUser";
-import { supabase } from "@/lib/supabase";
-import { userAtom } from "@/state/user.state";
 import { defaultFontSize, defaultFontWeight } from "@/style/defaultStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRouter } from "expo-router";
-import { useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -28,8 +25,7 @@ const SignInScreen = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { setOptions } = useNavigation();
   const { push } = useRouter();
-  const [_, setUser] = useAtom(userAtom);
-  const { fetchUser, updateExpoPushToken } = useUser();
+  const { signIn, isAuthenticated } = useAuth();
   const { registerForPushNotificationsAsync } = usePushNotification();
 
   useEffect(() => {
@@ -38,32 +34,26 @@ const SignInScreen = () => {
     });
   }, [setOptions]);
 
-  const signInWithEmail = async () => {
+  // Redirect to home if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      push("/");
+    }
+  }, [isAuthenticated, push]);
+
+  const handleSignIn = async () => {
     try {
       setLoading(true);
+      const { success, error } = await signIn(email, password);
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error || !data?.user) {
-        throw new Error(error?.message || "ユーザーが見つかりませんでした");
+      if (!success) {
+        throw new Error(error?.message || "ログインに失敗しました");
       }
 
-      const user = await fetchUser(data.user.id);
-      if (!user) {
-        throw new Error("ユーザーが見つかりませんでした");
-      }
-
-      setUser(user);
-
+      // Register for push notifications
       const token = await registerForPushNotificationsAsync();
-      if (token) {
-        await updateExpoPushToken(user.user_id, token);
-      }
-
-      ToastAndroid.show("ログインした", ToastAndroid.SHORT);
+      
+      ToastAndroid.show("ログインしました", ToastAndroid.SHORT);
       push({ pathname: "/" });
     } catch (err) {
       if (err instanceof Error) {
@@ -106,7 +96,7 @@ const SignInScreen = () => {
         </View>
         <TouchableOpacity
           style={[styles.buttonContainer, styles.mt20]}
-          onPress={() => signInWithEmail()}
+          onPress={handleSignIn}
           disabled={loading}
         >
           {loading ? <ActivityIndicator color="white" /> : <Text style={styles.buttonText}>ログイン</Text>}
