@@ -1,7 +1,5 @@
-import { LanguageSelector } from "@/components/LanguageSelector";
 import { SwiperView } from "@/components/SwiperbleView";
 import { Colors } from "@/constants/Colors";
-import { useTranslation } from "@/hooks/useTranslation";
 import { supabase } from "@/lib/supabase";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 import type { Couple, Invoice, Payment, Payment as PaymentRow } from "@/types/Row";
@@ -29,7 +27,6 @@ import { coupleIdAtom } from "../../state/couple.state";
 import { activeInvoiceAtom } from "../../state/invoice.state";
 
 const HomeScreen: FC = () => {
-  const { t } = useTranslation();
   const { payments, isRefreshing, deletePayment, isLoading } = usePayment();
   const { initInvoice, unActiveInvoicesAll, turnInvoicePaid, fetchActiveInvoiceByCoupleId } = useInvoice();
   const { fetchCoupleIdByUserId } = useCouple();
@@ -63,7 +60,7 @@ const HomeScreen: FC = () => {
 
   const updateActiveInvoice = async () => {
     if (!coupleId) {
-      alert(t("common.error"));
+      alert("coupleId is not found");
       throw new Error("coupleId is not found");
     }
     const activeInvoiceData = await fetchActiveInvoiceByCoupleId(coupleId);
@@ -71,10 +68,10 @@ const HomeScreen: FC = () => {
   };
 
   const handleCloseMonth = async (coupleId: Couple["id"]) => {
-    Alert.alert(t("invoices.status"), t("common.ok") + "?", [
-      { text: t("common.cancel"), style: "cancel" },
+    Alert.alert("今月の精算を完了します", "よろしいですか？", [
+      { text: "いいえ", style: "cancel" },
       {
-        text: t("common.ok"),
+        text: "はい",
         onPress: async () => {
           await unActiveInvoicesAll(coupleId);
           await turnInvoicePaid(coupleId);
@@ -82,7 +79,7 @@ const HomeScreen: FC = () => {
           await setupRecurringPayments(coupleId);
           const activeInvoice = await fetchActiveInvoiceByCoupleId(coupleId);
           setActiveInvoice(activeInvoice ?? null);
-          Alert.alert(t("invoices.status"), t("common.ok"));
+          Alert.alert("精算が完了しました", "今月もパートナーを大事にね！");
         },
       },
     ]);
@@ -90,14 +87,13 @@ const HomeScreen: FC = () => {
 
   return (
     <View style={styles.container}>
-      {process.env.EXPO_PUBLIC_APP_ENV === "development" && <LanguageSelector style={styles.languageSelector} />}
       <View style={styles.buttonWrapper}>
         <AddPaymentButton onPress={() => push({ pathname: "/payment-modal", params: { kind: "add" } })} />
         {showCloseMonthButton && (
           <CloseMonthButton
             onPress={async () => {
               if (!coupleId) {
-                alert(t("common.error"));
+                alert("coupleId is not found");
                 return;
               }
               handleCloseMonth(coupleId);
@@ -127,26 +123,22 @@ type AddPaymentButtonProps = {
   onPress: () => void;
 };
 
-const AddPaymentButton: FC<AddPaymentButtonProps> = ({ onPress }) => {
-  const { t } = useTranslation();
-  return (
-    <TouchableOpacity style={styles.addButton} onPress={onPress}>
-      <AntDesign name="pluscircleo" size={24} color="white" />
-      <Text style={styles.addButtonText}>{t("payments.payment")}</Text>
-    </TouchableOpacity>
-  );
-};
+const AddPaymentButton: FC<AddPaymentButtonProps> = ({ onPress }) => (
+  <TouchableOpacity style={styles.addButton} onPress={onPress}>
+    <AntDesign name="pluscircleo" size={24} color="white" />
+    <Text style={styles.addButtonText}>追加</Text>
+  </TouchableOpacity>
+);
 
 type CloseMonthButtonProps = {
   onPress: () => void;
 };
 
 const CloseMonthButton: FC<CloseMonthButtonProps> = ({ onPress }) => {
-  const { t } = useTranslation();
   return (
     <TouchableOpacity style={styles.addButton} onPress={onPress}>
       <AntDesign name="checkcircleo" size={24} color="white" />
-      <Text style={styles.addButtonText}>{t("common.save")}</Text>
+      <Text style={styles.addButtonText}>締める</Text>
     </TouchableOpacity>
   );
 };
@@ -171,32 +163,25 @@ const PaymentList: FC<PaymentListProps> = ({
   routerPush,
   updateActiveInvoice,
   userId,
-}) => {
-  const { t } = useTranslation();
-  return (
-    <FlatList
-      data={payments.sort((a, b) => b.id - a.id)}
-      renderItem={({ item }) => (
-        <PaymentItem payment={item} routerPush={routerPush} deletePayment={deletePayment} userId={userId} />
-      )}
-      keyExtractor={(item) => item.id.toString()}
-      ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
-      ListEmptyComponent={() => (
-        <Text style={styles.emptyListText}>
-          {t("payments.payment")} {t("common.loading")}
-        </Text>
-      )}
-      contentContainerStyle={{ paddingBottom: 12 }}
-      onRefresh={async () => {
-        if (activeInvoiceId === null) return;
-        await updateActiveInvoice();
-        fetchAllPaymentsByMonthlyInvoiceId(activeInvoiceId);
-      }}
-      refreshing={isRefreshing}
-      ListFooterComponent={<GithubIssueLink />}
-    />
-  );
-};
+}) => (
+  <FlatList
+    data={payments.sort((a, b) => b.id - a.id)}
+    renderItem={({ item }) => (
+      <PaymentItem payment={item} routerPush={routerPush} deletePayment={deletePayment} userId={userId} />
+    )}
+    keyExtractor={(item) => item.id.toString()}
+    ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
+    ListEmptyComponent={() => <Text style={styles.emptyListText}>支払いがまだありません</Text>}
+    contentContainerStyle={{ paddingBottom: 12 }}
+    onRefresh={async () => {
+      if (activeInvoiceId === null) return;
+      await updateActiveInvoice();
+      fetchAllPaymentsByMonthlyInvoiceId(activeInvoiceId);
+    }}
+    refreshing={isRefreshing}
+    ListFooterComponent={<GithubIssueLink />}
+  />
+);
 
 const GithubIssueLink: FC = () => {
   return (
@@ -219,7 +204,6 @@ type PaymentItemProps = {
 };
 
 const PaymentItem: FC<PaymentItemProps> = ({ deletePayment, routerPush, payment, userId }) => {
-  const { t } = useTranslation();
   const { fetchPaymentsAllByMonthlyInvoiceId } = usePayment();
   const [activeInvoce] = useAtom(activeInvoiceAtom);
   const isOwner = payment.owner_id === userId;
@@ -227,7 +211,7 @@ const PaymentItem: FC<PaymentItemProps> = ({ deletePayment, routerPush, payment,
   const handleDeletePayment = async () => {
     await deletePayment(payment.id);
     if (activeInvoce === null) return;
-    ToastAndroid.show(t("common.ok"), ToastAndroid.SHORT);
+    ToastAndroid.show("削除した", ToastAndroid.SHORT);
     await fetchPaymentsAllByMonthlyInvoiceId(activeInvoce.id);
   };
 
@@ -249,7 +233,7 @@ const PaymentItem: FC<PaymentItemProps> = ({ deletePayment, routerPush, payment,
           onPress={() => routerPush({ pathname: "/payment-modal", params: { kind: "edit", id: payment.id } })}
           backView={
             <View style={styles.backView}>
-              <Text style={styles.backViewText}>{t("common.cancel")}</Text>
+              <Text style={styles.backViewText}>削除</Text>
             </View>
           }
         >
@@ -266,9 +250,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-  },
-  languageSelector: {
-    marginBottom: 16,
   },
   buttonWrapper: {
     flexDirection: "row",

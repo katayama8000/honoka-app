@@ -1,3 +1,4 @@
+import { RecurringPayments } from "@/constants/RecurringPayments";
 import { payments_table } from "@/constants/Table";
 import { supabase } from "@/lib/supabase";
 import type { Couple, Payment } from "@/types/Row";
@@ -10,7 +11,6 @@ import { coupleIdAtom } from "../state/couple.state";
 import { activeInvoiceAtom } from "../state/invoice.state";
 import { paymentsAtom } from "../state/payment.state";
 import { useInvoice } from "./useInvoice";
-import { RecurringPayments } from "@/constants/RecurringPayments";
 
 export const usePayment = () => {
   const [payments, setPayments] = useAtom(paymentsAtom);

@@ -2,19 +2,19 @@ import Constants from "expo-constants";
 import { isDevice } from "expo-device";
 import {
   AndroidImportance,
+  type Notification,
+  type NotificationResponse,
+  addNotificationReceivedListener,
+  addNotificationResponseReceivedListener,
   getExpoPushTokenAsync,
   getPermissionsAsync,
   requestPermissionsAsync,
   setNotificationChannelAsync,
   setNotificationHandler,
-  addNotificationReceivedListener,
-  addNotificationResponseReceivedListener,
-  Notification,
-  NotificationResponse,
 } from "expo-notifications";
+import { router } from "expo-router";
 import { useEffect } from "react";
 import { Platform } from "react-native";
-import { router } from "expo-router";
 
 const handleRegistrationError = (errorMessage: string) => {
   alert(errorMessage);
@@ -36,7 +36,7 @@ export const usePushNotification = () => {
       console.log("通知を受信しました:", notification);
     });
     // listen for notification response (when user taps on the notification)
-    const  responseListener = addNotificationResponseReceivedListener(handleNotificationResponse);
+    const responseListener = addNotificationResponseReceivedListener(handleNotificationResponse);
 
     // cleanup function to remove listeners
     return () => {
@@ -62,7 +62,7 @@ export const usePushNotification = () => {
     } else {
       // default action
       router.push("/(tabs)");
-    }  
+    }
   };
 
   const registerForPushNotificationsAsync = async () => {
