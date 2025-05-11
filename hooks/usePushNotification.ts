@@ -9,8 +9,8 @@ import {
   setNotificationHandler,
   addNotificationReceivedListener,
   addNotificationResponseReceivedListener,
-  Notification,
-  NotificationResponse,
+  type Notification,
+  type NotificationResponse,
 } from "expo-notifications";
 import { useEffect } from "react";
 import { Platform } from "react-native";
@@ -36,7 +36,7 @@ export const usePushNotification = () => {
       console.log("通知を受信しました:", notification);
     });
     // listen for notification response (when user taps on the notification)
-    const  responseListener = addNotificationResponseReceivedListener(handleNotificationResponse);
+    const responseListener = addNotificationResponseReceivedListener(handleNotificationResponse);
 
     // cleanup function to remove listeners
     return () => {
@@ -62,7 +62,7 @@ export const usePushNotification = () => {
     } else {
       // default action
       router.push("/(tabs)");
-    }  
+    }
   };
 
   const registerForPushNotificationsAsync = async () => {
