@@ -31,14 +31,11 @@ setNotificationHandler({
 
 export const usePushNotification = () => {
   useEffect(() => {
-    // listen for incoming notifications
     const notificationListener = addNotificationReceivedListener((notification: Notification) => {
       console.log("通知を受信しました:", notification);
     });
-    // listen for notification response (when user taps on the notification)
     const responseListener = addNotificationResponseReceivedListener(handleNotificationResponse);
 
-    // cleanup function to remove listeners
     return () => {
       notificationListener.remove();
       responseListener.remove();
@@ -47,7 +44,6 @@ export const usePushNotification = () => {
 
   const handleNotificationResponse = (response: NotificationResponse) => {
     const data = response.notification.request.content.data;
-    console.log("通知がタップされました:", data);
 
     if (data.type === "invoice") {
       router.push({
@@ -60,7 +56,6 @@ export const usePushNotification = () => {
         params: { id: data.paymentId },
       });
     } else {
-      // default action
       router.push("/(tabs)");
     }
   };
@@ -96,7 +91,7 @@ export const usePushNotification = () => {
             projectId,
           })
         ).data;
-      } catch (e: unknown) {
+      } catch (e) {
         handleRegistrationError(`${e}`);
       }
     } else {
