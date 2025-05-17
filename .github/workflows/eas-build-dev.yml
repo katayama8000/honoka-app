@@ -1,10 +1,25 @@
 name: EAS Build for development
 on:
   workflow_dispatch:
+    inputs:
+      eas-profile:
+        required: true
+        type: string
+        default: development
+        description: 'EAS profile to use for building'
+      platform:
+        required: true
+        type: choice
+        description: 'Platform to build for (android or ios)'
+        options:
+          - android
+          - ios
+        default: android
 
 jobs:
   build:
     uses: ./.github/workflows/_eas-build.yml
     with:
-      eas-profile: development
+      eas-profile: ${{ inputs.eas-profile }}
+      platform: ${{ github.event.inputs.platform }}
     secrets: inherit

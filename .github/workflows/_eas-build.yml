@@ -26,7 +26,7 @@ jobs:
       with:
         node-version: 22
         cache: 'yarn'
-        cache-dependency-path: ${{  github.workspace }}/yarn.lock
+        cache-dependency-path: ${{ github.workspace }}/yarn.lock
 
 
     - name: 🏗 Install dependencies
