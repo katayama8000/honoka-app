@@ -1,13 +1,23 @@
-name: Expo Build
+name: EAS Build
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       eas-profile:
         required: true
-        type: string
+        type: choice
+        description: 'EAS profile to use for building'
+        options:
+          - production
+          - development
+          - local
+        default: development
       platform:
-        required: false
-        type: string
+        required: true
+        type: choice
+        description: 'Platform to build for'
+        options:
+          - android
+          - ios
         default: android
 
 jobs:
@@ -26,8 +36,7 @@ jobs:
       with:
         node-version: 22
         cache: 'yarn'
-        cache-dependency-path: ${{  github.workspace }}/yarn.lock
-
+        cache-dependency-path: ${{ github.workspace }}/yarn.lock
 
     - name: 🏗 Install dependencies
       run: yarn install --frozen-lockfile
