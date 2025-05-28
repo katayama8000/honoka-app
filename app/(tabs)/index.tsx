@@ -74,7 +74,9 @@ const HomeScreen: FC = () => {
         text: "はい",
         onPress: async () => {
           await unActiveInvoicesAll(coupleId);
-          await turnInvoicePaid(coupleId);
+          if (activeInvoce?.id) {
+            await turnInvoicePaid(activeInvoce.id);
+          }
           await initInvoice(coupleId);
           await setupRecurringPayments(coupleId);
           const activeInvoice = await fetchActiveInvoiceByCoupleId(coupleId);
