@@ -94,21 +94,34 @@ export const useInvoice = () => {
           payments: { amount: number; owner_id: string }[];
         };
 
-        const isInvoiceForProd = (invoice: InvoiceForDev | InvoiceForProd): invoice is InvoiceForProd =>
-          "payments" in invoice;
-
         const calculateBalance = (payments: { amount: number; owner_id: string }[]) =>
           payments.reduce((acc, cur) => acc + (cur.owner_id === uid ? cur.amount : -cur.amount), 0);
 
         const invoicesWithTotals: InvoiceWithBalance[] = data.map((invoice) => {
-          if (isInvoiceForProd(invoice)) {
-            const { payments, ...rest } = invoice;
+          // Use a type predicate to check the structure
+          const hasPayments = 'payments' in invoice;
+          
+          if (hasPayments) {
+            // Production environment
+            const invoice_prod = invoice as { 
+              payments: { amount: number; owner_id: string }[];
+              id: number; month: number; year: number; is_paid: boolean; 
+              created_at: string; updated_at: string; active: boolean; couple_id: number;
+            };
+            const { payments, ...rest } = invoice_prod;
             const balance = calculateBalance(payments);
             return { ...rest, balance };
+          } else {
+            // Development environment
+            const invoice_dev = invoice as {
+              dev_payments: { amount: number; owner_id: string }[];
+              id: number; month: number; year: number; is_paid: boolean;
+              created_at: string; updated_at: string; active: boolean; couple_id: number;
+            };
+            const { dev_payments, ...rest } = invoice_dev;
+            const balance = calculateBalance(dev_payments);
+            return { ...rest, balance };
           }
-          const { dev_payments, ...rest } = invoice;
-          const balance = calculateBalance(dev_payments);
-          return { ...rest, balance };
         });
         setInvoices(invoicesWithTotals);
         return invoicesWithTotals;
