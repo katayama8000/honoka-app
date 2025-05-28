@@ -5,13 +5,6 @@ create table couples (
   created_at timestamp default now() not null
 );
 
-create table dev_couples (
-  id bigint not null primary key,
-  user1_id text not null,
-  user2_id text not null,
-  created_at timestamp default now() not null
-);
-
 create table monthly_invoices (
   id bigint not null primary key,
   created_at timestamp default now() not null,
@@ -34,6 +27,21 @@ create table payments (
   memo text
 );
 
+create table users (
+  id bigint not null primary key,
+  created_at timestamp default now() not null,
+  user_id text not null,
+  expo_push_token text not null,
+  name text not null
+);
+
+create table dev_couples (
+  id bigint not null primary key,
+  user1_id text not null,
+  user2_id text not null,
+  created_at timestamp default now() not null
+);
+
 create table dev_monthly_invoices (
   id bigint not null primary key,
   created_at timestamp default now() not null,
@@ -43,14 +51,6 @@ create table dev_monthly_invoices (
   active boolean not null,
   year smallint not null,
   month smallint not null
-);
-
-create table users (
-  id bigint not null primary key,
-  created_at timestamp default now() not null,
-  user_id text not null,
-  expo_push_token text not null,
-  name text not null
 );
 
 create table dev_payments (
