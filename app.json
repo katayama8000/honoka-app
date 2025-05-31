@@ -30,7 +30,19 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/moufu.png",
+          "color": "#ba55d3",
+          "defaultChannel": "default",
+          "sounds": [
+            "./assets/cat.wav"
+          ],
+          "enableBackgroundRemoteNotifications": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
