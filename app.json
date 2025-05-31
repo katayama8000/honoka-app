@@ -38,7 +38,7 @@
           "color": "#336666",
           "defaultChannel": "default",
           "sounds": [
-            "./assets/cat.wav"
+            "./assets/sounds/cat.wav"
           ],
           "enableBackgroundRemoteNotifications": false
         }
