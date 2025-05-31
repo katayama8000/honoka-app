@@ -10,6 +10,12 @@
 
 ## Expo
 
+## Login
+- login to expo
+```bash
+npx expo login
+```
+
 ### Config
 - verify which configuration will be embedded
 ```bash
