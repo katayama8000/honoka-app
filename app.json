@@ -3,7 +3,7 @@
     "name": "household-account-book",
     "slug": "household-account-book",
     "orientation": "portrait",
-    "icon": "./assets/images/moufu_n_ikura.jpg",
+    "icon": "./assets/images/moufu_n_ikura.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "version": "2.3.0",
