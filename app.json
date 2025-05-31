@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/moufu_n_ikura.png.png",
+        "foregroundImage": "./assets/images/moufu_n_ikura.png",
         "backgroundColor": "#336666"
       },
       "package": "com.katayama9000.householdaccountbook",
