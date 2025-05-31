@@ -34,7 +34,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/moufu.png",
+          "icon": "./assets/images/ikura.png",
           "color": "#336666",
           "defaultChannel": "default",
           "sounds": [
