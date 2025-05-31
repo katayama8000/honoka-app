@@ -35,7 +35,7 @@
         "expo-notifications",
         {
           "icon": "./assets/images/moufu.png",
-          "color": "#ba55d3",
+          "color": "#336666",
           "defaultChannel": "default",
           "sounds": [
             "./assets/cat.wav"
