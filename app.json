@@ -34,7 +34,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/ikura.png",
+          "icon": "./assets/images/ikura.jpg",
           "color": "#336666",
           "defaultChannel": "default",
           "sounds": [
