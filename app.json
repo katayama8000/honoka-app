@@ -30,7 +30,19 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/ikura.png",
+          "color": "#336666",
+          "defaultChannel": "default",
+          "sounds": [
+            "./assets/cat.wav"
+          ],
+          "enableBackgroundRemoteNotifications": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
