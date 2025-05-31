@@ -3,7 +3,7 @@
     "name": "household-account-book",
     "slug": "household-account-book",
     "orientation": "portrait",
-    "icon": "./assets/images/moufu.png",
+    "icon": "./assets/images/moufu_n_ikura.jpg",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "version": "2.3.0",
@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/moufu.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#336666"
       },
       "package": "com.katayama9000.householdaccountbook",
       "versionCode": 23
