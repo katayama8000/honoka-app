@@ -8,7 +8,7 @@
     "userInterfaceStyle": "automatic",
     "version": "2.3.2",
     "splash": {
-      "image": "./assets/images/moufu.png",
+      "image": "./assets/images/moufu_n_ikura.png",
       "resizeMode": "contain",
       "backgroundColor": "#336666"
     },
@@ -31,6 +31,7 @@
     "plugins": [
       "expo-router",
       "expo-font",
+      "expo-web-browser",
       [
         "expo-notifications",
         {
@@ -45,7 +46,8 @@
       ]
     ],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": true,
+      "tsconfigPaths": true
     },
     "extra": {
       "router": {
