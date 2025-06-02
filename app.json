@@ -6,7 +6,7 @@
     "icon": "./assets/images/moufu_n_ikura.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "version": "2.3.2",
+    "version": "2.3.3",
     "splash": {
       "image": "./assets/images/moufu_n_ikura.png",
       "resizeMode": "contain",
