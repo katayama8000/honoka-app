@@ -1,12 +1,49 @@
-name: Send updates
+name: Send Expo Update
 
 on:
-  push:
-    branches: ['main']
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        type: choice
+        description: 'Select the target environment for the update'
+        options:
+          - production
+          - development
+        default: development
 
 jobs:
-  send_updates:
-    name: Send updates
-    type: update
-    params:
-      channel: production
+  deploy_update:
+    name: Deploy Expo Update
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+    - name: 📦 Checkout repository
+      uses: actions/checkout@v4
+
+    - name: 🟢 Set up Node.js 24
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24
+        cache: 'yarn'
+        cache-dependency-path: 'yarn.lock'
+
+    - name: 📥 Install project dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: ⚙️ Configure Expo and EAS CLI
+      uses: expo/expo-github-action@v8
+      with:
+        eas-version: latest
+        token: ${{ secrets.EXPO_TOKEN }}
+
+    - name: 🚀 Send OTA update to ${{ inputs.environment }}
+      run: |
+        echo "Initiating OTA update to channel: ${{ inputs.environment }}"
+        eas update --channel ${{ inputs.environment }}
+      env:
+        APP_ENV: ${{ inputs.environment }}
+        EXPO_PUBLIC_APP_ENV: ${{ inputs.environment }}
