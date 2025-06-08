@@ -20,8 +20,9 @@
         "foregroundImage": "./assets/images/moufu_n_ikura.png",
         "backgroundColor": "#336666"
       },
-      "package": "com.katayama9000.householdaccountbook",
-      "versionCode": 23
+      "package": "com.katayama9000.householdaccountbook.dev",
+      "versionCode": 23,
+      "googleServicesFile": "./google-services-dev.json"
     },
     "web": {
       "bundler": "metro",
@@ -55,6 +56,12 @@
         "projectId": "018a6711-ac8c-41b8-830c-279089162afa"
       }
     },
-    "owner": "katayama9000"
+    "owner": "katayama9000",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/018a6711-ac8c-41b8-830c-279089162afa"
+    }
   }
 }
