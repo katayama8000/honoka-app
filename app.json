@@ -55,6 +55,12 @@
         "projectId": "018a6711-ac8c-41b8-830c-279089162afa"
       }
     },
-    "owner": "katayama9000"
+    "owner": "katayama9000",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/018a6711-ac8c-41b8-830c-279089162afa"
+    }
   }
 }
