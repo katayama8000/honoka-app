@@ -1,4 +1,4 @@
-import type { ConfigContext, ExpoConfig } from "expo/config";
+import type { ExpoConfig } from "expo/config";
 import { version } from "./package.json";
 
 const allAppEnvs = ["production", "development", "local"] as const;
@@ -31,7 +31,7 @@ const appEnv = (process.env.APP_ENV ?? "local") as AppEnv;
 
 if (!isAppEnv(appEnv)) throw new Error(`unsupported APP_ENV: ${appEnv}`);
 
-export default ({ config }: ConfigContext): ExpoConfig => {
+export default (): ExpoConfig => {
   const { bundleId, googleServicesJson, package: packageName, name: appName } = envConfigs[appEnv];
 
   return {
