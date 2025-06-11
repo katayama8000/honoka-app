@@ -99,14 +99,20 @@ export const useInvoice = () => {
 
         const invoicesWithTotals: InvoiceWithBalance[] = data.map((invoice) => {
           // Use a type predicate to check the structure
-          const hasPayments = 'payments' in invoice;
-          
+          const hasPayments = "payments" in invoice;
+
           if (hasPayments) {
             // Production environment
-            const invoice_prod = invoice as { 
+            const invoice_prod = invoice as {
               payments: { amount: number; owner_id: string }[];
-              id: number; month: number; year: number; is_paid: boolean; 
-              created_at: string; updated_at: string; active: boolean; couple_id: number;
+              id: number;
+              month: number;
+              year: number;
+              is_paid: boolean;
+              created_at: string;
+              updated_at: string;
+              active: boolean;
+              couple_id: number;
             };
             const { payments, ...rest } = invoice_prod;
             const balance = calculateBalance(payments);
@@ -115,8 +121,14 @@ export const useInvoice = () => {
             // Development environment
             const invoice_dev = invoice as {
               dev_payments: { amount: number; owner_id: string }[];
-              id: number; month: number; year: number; is_paid: boolean;
-              created_at: string; updated_at: string; active: boolean; couple_id: number;
+              id: number;
+              month: number;
+              year: number;
+              is_paid: boolean;
+              created_at: string;
+              updated_at: string;
+              active: boolean;
+              couple_id: number;
             };
             const { dev_payments, ...rest } = invoice_dev;
             const balance = calculateBalance(dev_payments);
