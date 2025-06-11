@@ -57,7 +57,6 @@ export default (): ExpoConfig => {
         backgroundColor: "#336666",
       },
       package: packageName,
-      versionCode: 23,
       googleServicesFile: googleServicesJson,
     },
     web: {
