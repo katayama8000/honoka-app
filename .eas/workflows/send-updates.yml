@@ -1,19 +1,11 @@
 name: Send updates
 
 on:
-  workflow_dispatch:
-    inputs:
-      channel:
-        description: 'Channel to send updates to'
-        required: true
-        options:
-          - production
-          - development
-        default: development
+  workflow_dispatch
 
 jobs:
   send_updates:
-    name: Send updates to ${{ inputs.channel }}
+    name: Send updates
     type: update
     params:
-      channel: ${{ inputs.channel }}
+      channel: development
