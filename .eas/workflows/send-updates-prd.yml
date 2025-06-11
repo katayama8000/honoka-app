@@ -1,8 +1,8 @@
-name: Send updates production
+name: Send updates for production
 
 jobs:
   send_updates:
-    name: Send updates production
+    name: Send updates for production
     type: update
     params:
       channel: productions
