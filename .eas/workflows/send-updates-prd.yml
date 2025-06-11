@@ -1,0 +1,8 @@
+name: Send updates development
+
+jobs:
+  send_updates:
+    name: Send updates development
+    type: update
+    params:
+      channel: development
