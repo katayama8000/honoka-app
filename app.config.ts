@@ -31,8 +31,8 @@ const appEnv = (process.env.APP_ENV ?? "local") as AppEnv;
 if (!isAppEnv(appEnv)) throw new Error(`unsupported APP_ENV: ${appEnv}`);
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const { bundleId, googleServicesJson, package: packageName,name:appName } = envConfigs[appEnv];
-  
+  const { bundleId, googleServicesJson, package: packageName, name: appName } = envConfigs[appEnv];
+
   return {
     name: appName,
     slug: "household-account-book",
@@ -44,7 +44,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     splash: {
       image: "./assets/images/moufu.png",
       resizeMode: "contain",
-      backgroundColor: "#336666"
+      backgroundColor: "#336666",
     },
     ios: {
       supportsTablet: true,
@@ -53,7 +53,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/moufu_n_ikura.png",
-        backgroundColor: "#336666"
+        backgroundColor: "#336666",
       },
       package: packageName,
       versionCode: 23,
@@ -62,7 +62,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     web: {
       bundler: "metro",
       output: "static",
-      favicon: "./assets/images/moufu.png"
+      favicon: "./assets/images/moufu.png",
     },
     plugins: [
       "expo-router",
@@ -73,24 +73,22 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           icon: "./assets/images/ikura.jpg",
           color: "#336666",
           defaultChannel: "default",
-          sounds: [
-            "./assets/sounds/cat.wav"
-          ],
-          enableBackgroundRemoteNotifications: false
-        }
-      ]
+          sounds: ["./assets/sounds/cat.wav"],
+          enableBackgroundRemoteNotifications: false,
+        },
+      ],
     ],
     experiments: {
-      typedRoutes: true
+      typedRoutes: true,
     },
     extra: {
       router: {
-        origin: false
+        origin: false,
       },
       eas: {
-        projectId: "018a6711-ac8c-41b8-830c-279089162afa"
-      }
+        projectId: "018a6711-ac8c-41b8-830c-279089162afa",
+      },
     },
-    owner: "katayama9000"
+    owner: "katayama9000",
   };
 };
