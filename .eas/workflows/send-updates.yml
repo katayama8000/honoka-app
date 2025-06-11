@@ -1,8 +1,5 @@
 name: Send updates
 
-on:
-  workflow_dispatch
-
 jobs:
   send_updates:
     name: Send updates
