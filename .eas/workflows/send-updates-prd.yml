@@ -5,4 +5,4 @@ jobs:
     name: Send updates for production
     type: update
     params:
-      channel: productions
+      channel: production
