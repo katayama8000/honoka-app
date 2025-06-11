@@ -13,7 +13,8 @@
     "format:check": "yarn biome format .",
     "lint": "yarn biome check --write .",
     "lint:check": "yarn biome check .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "doctor": "npx expo-doctor"
   },
   "jest": {
     "preset": "jest-expo"
