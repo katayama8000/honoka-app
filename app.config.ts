@@ -1,4 +1,5 @@
 import type { ConfigContext, ExpoConfig } from "expo/config";
+import { version } from "./package.json";
 
 const allAppEnvs = ["production", "development", "local"] as const;
 type AppEnv = (typeof allAppEnvs)[number];
@@ -40,7 +41,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     icon: "./assets/images/moufu_n_ikura.png",
     scheme: "myapp",
     userInterfaceStyle: "automatic",
-    version: "2.3.2",
+    version: version,
     splash: {
       image: "./assets/images/moufu.png",
       resizeMode: "contain",
@@ -79,10 +80,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ],
     ],
     updates: {
-      url: "https://u.expo.dev/018a6711-ac8c-41b8-830c-279089162afa"
+      url: "https://u.expo.dev/018a6711-ac8c-41b8-830c-279089162afa",
     },
     runtimeVersion: {
-      policy: "appVersion"
+      policy: "appVersion",
     },
     experiments: {
       typedRoutes: true,
