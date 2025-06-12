@@ -1,0 +1,9 @@
+name: Deploy to Development
+
+jobs:
+  deploy:
+    type: deploy
+    name: Deploy
+    environment: development
+    params:
+      prod: false

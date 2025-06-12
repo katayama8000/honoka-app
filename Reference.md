@@ -45,6 +45,9 @@ eas update --channel production
 - deploy the app to EAS Hosting
 https://docs.expo.dev/eas/hosting/get-started/
 ```bash
+npx expo export --platform web
 eas deploy 
 eas deploy --production
+eas workflow:run .eas/workflows/deploy-dev.yml
+eas workflow:run .eas/workflows/deploy-prd.yml
 ```
