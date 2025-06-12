@@ -33,3 +33,9 @@ https://docs.expo.dev/build-reference/variables/
 ```bash
 eas secret:list
 ```
+
+### Over the air update
+- update the app without building
+```bash
+eas update --channel production
+```
