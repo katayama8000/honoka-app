@@ -14,7 +14,7 @@
         "EXPO_PUBLIC_APP_ENV": "production",
         "APP_ENV": "production"
       },
-      "autoIncrement": "true",
+      "autoIncrement": true,
       "channel": "production"
     },
     "development": {
