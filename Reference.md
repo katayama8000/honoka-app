@@ -33,3 +33,21 @@ https://docs.expo.dev/build-reference/variables/
 ```bash
 eas secret:list
 ```
+
+### Over the air update
+- update the app without building
+https://docs.expo.dev/deploy/send-over-the-air-updates/
+```bash
+eas update --channel production
+```
+
+### Deploy to EAS Hosting
+- deploy the app to EAS Hosting
+https://docs.expo.dev/eas/hosting/get-started/
+```bash
+npx expo export --platform web
+eas deploy 
+eas deploy --production
+eas workflow:run .eas/workflows/deploy-dev.yml
+eas workflow:run .eas/workflows/deploy-prd.yml
+```

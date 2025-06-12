@@ -188,9 +188,7 @@ const PaymentList: FC<PaymentListProps> = ({
 const GithubIssueLink: FC = () => {
   return (
     <View style={styles.linkContainer}>
-      <TouchableOpacity
-        onPress={() => Linking.openURL("https://github.com/katayama8000/honoka-app/issues")}
-      >
+      <TouchableOpacity onPress={() => Linking.openURL("https://github.com/katayama8000/honoka-app/issues")}>
         <Text style={styles.link}>バグ修正や改善要望はこちらから</Text>
       </TouchableOpacity>
       <Text style={styles.version}>v{version}</Text>

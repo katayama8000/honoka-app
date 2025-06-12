@@ -1,0 +1,9 @@
+name: Deploy to Production
+
+jobs:
+  deploy:
+    type: deploy
+    name: Deploy
+    environment: production
+    params:
+      prod: true
