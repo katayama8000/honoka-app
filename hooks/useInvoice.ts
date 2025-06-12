@@ -117,23 +117,22 @@ export const useInvoice = () => {
             const { payments, ...rest } = invoice_prod;
             const balance = calculateBalance(payments);
             return { ...rest, balance };
-          } else {
-            // Development environment
-            const invoice_dev = invoice as {
-              dev_payments: { amount: number; owner_id: string }[];
-              id: number;
-              month: number;
-              year: number;
-              is_paid: boolean;
-              created_at: string;
-              updated_at: string;
-              active: boolean;
-              couple_id: number;
-            };
-            const { dev_payments, ...rest } = invoice_dev;
-            const balance = calculateBalance(dev_payments);
-            return { ...rest, balance };
           }
+          // Development environment
+          const invoice_dev = invoice as {
+            dev_payments: { amount: number; owner_id: string }[];
+            id: number;
+            month: number;
+            year: number;
+            is_paid: boolean;
+            created_at: string;
+            updated_at: string;
+            active: boolean;
+            couple_id: number;
+          };
+          const { dev_payments, ...rest } = invoice_dev;
+          const balance = calculateBalance(dev_payments);
+          return { ...rest, balance };
         });
         setInvoices(invoicesWithTotals);
         return invoicesWithTotals;
