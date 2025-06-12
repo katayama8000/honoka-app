@@ -36,6 +36,15 @@ eas secret:list
 
 ### Over the air update
 - update the app without building
+https://docs.expo.dev/deploy/send-over-the-air-updates/
 ```bash
 eas update --channel production
+```
+
+### Deploy to EAS Hosting
+- deploy the app to EAS Hosting
+https://docs.expo.dev/eas/hosting/get-started/
+```bash
+eas deploy 
+eas deploy --production
 ```
