@@ -61,7 +61,7 @@ export default (): ExpoConfig => {
     },
     web: {
       bundler: "metro",
-      output: "static",
+      output: "server",
       favicon: "./assets/images/moufu.png",
     },
     plugins: [
