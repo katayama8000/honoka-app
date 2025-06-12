@@ -34,7 +34,6 @@ create table payment_projections (
   item text not null,
   memo text,
   owner_id uuid not null,
-  status text not null default 'active', -- active, deleted
   created_at timestamp with time zone not null,
   updated_at timestamp with time zone not null,
   last_event_version bigint not null
@@ -70,7 +69,6 @@ create table dev_payment_projections (
   item text not null,
   memo text,
   owner_id uuid not null,
-  status text not null default 'active',
   created_at timestamp with time zone not null,
   updated_at timestamp with time zone not null,
   last_event_version bigint not null
