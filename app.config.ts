@@ -43,7 +43,7 @@ export default (): ExpoConfig => {
     userInterfaceStyle: "automatic",
     version: version,
     splash: {
-      image: "./assets/images/moufu.png",
+      image: "./assets/images/moufu_n_ikura.png",
       resizeMode: "contain",
       backgroundColor: "#336666",
     },
