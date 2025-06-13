@@ -77,6 +77,12 @@ export default (): ExpoConfig => {
           enableBackgroundRemoteNotifications: false,
         },
       ],
+      [
+        "expo-audio",
+        {
+          microphonePermission: "Allow $(PRODUCT_NAME) to access your microphone.",
+        },
+      ],
     ],
     updates: {
       url: "https://u.expo.dev/018a6711-ac8c-41b8-830c-279089162afa",

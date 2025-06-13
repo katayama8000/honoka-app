@@ -25,6 +25,7 @@
     "@supabase/supabase-js": "^2.49.4",
     "dayjs": "^1.11.13",
     "expo": "~52.0.46",
+    "expo-audio": "~0.3.5",
     "expo-constants": "~17.0.3",
     "expo-dev-client": "~5.0.15",
     "expo-device": "~7.0.1",
