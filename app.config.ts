@@ -43,7 +43,7 @@ export default (): ExpoConfig => {
     userInterfaceStyle: "automatic",
     version: version,
     splash: {
-      image: "./assets/images/moufu_n_ikura.png",
+      image: "./assets/images/splash_cat.png",
       resizeMode: "contain",
       backgroundColor: "#336666",
     },
@@ -53,7 +53,7 @@ export default (): ExpoConfig => {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/images/moufu_n_ikura.png",
+        foregroundImage: "./assets/images/splash_cat.png",
         backgroundColor: "#336666",
       },
       package: packageName,
