@@ -17,8 +17,11 @@ import { useEffect } from "react";
 import { Platform } from "react-native";
 
 const handleRegistrationError = (errorMessage: string) => {
+  console.error(errorMessage);
   alert(errorMessage);
-  throw new Error(errorMessage);
+  if (Platform.OS !== "web") {
+    throw new Error(errorMessage);
+  }
 };
 
 setNotificationHandler({
@@ -77,7 +80,7 @@ export const usePushNotification = () => {
         const { status } = await requestPermissionsAsync();
         finalStatus = status;
       }
-      if (finalStatus !== "granted") {
+      if (finalStatus !== "granted" && Platform.OS !== "web") {
         handleRegistrationError("Permission not granted to get push token for push notification!");
         return;
       }
