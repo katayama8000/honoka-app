@@ -1,23 +1,27 @@
-import type { ConfigContext, ExpoConfig } from "expo/config";
+import type { ExpoConfig } from "expo/config";
+import { version } from "./package.json";
 
 const allAppEnvs = ["production", "development", "local"] as const;
 type AppEnv = (typeof allAppEnvs)[number];
 
-const envConfigs: Record<AppEnv, { bundleId: string; googleServicesJson: string; name: string }> = {
+const envConfigs: Record<AppEnv, { bundleId: string; googleServicesJson: string; name: string; package: string }> = {
   production: {
     bundleId: "com.katayama9000.householdaccountbook",
     googleServicesJson: "./google-services-prd.json",
     name: "もうふといくら",
+    package: "com.katayama9000.householdaccountbook",
   },
   development: {
     bundleId: "com.katayama9000.householdaccountbook.dev",
     googleServicesJson: "./google-services-dev.json",
     name: "(dev)もうふといくら",
+    package: "com.katayama9000.householdaccountbook.dev",
   },
   local: {
     bundleId: "com.katayama9000.householdaccountbook.dev",
     googleServicesJson: "./google-services-dev.json",
     name: "(local)もうふといくら",
+    package: "com.katayama9000.householdaccountbook.dev",
   },
 };
 
@@ -27,20 +31,70 @@ const appEnv = (process.env.APP_ENV ?? "local") as AppEnv;
 
 if (!isAppEnv(appEnv)) throw new Error(`unsupported APP_ENV: ${appEnv}`);
 
-export default ({ config }: ConfigContext): ExpoConfig => {
-  const { bundleId, googleServicesJson, name } = envConfigs[appEnv];
+export default (): ExpoConfig => {
+  const { bundleId, googleServicesJson, package: packageName, name: appName } = envConfigs[appEnv];
+
   return {
-    ...config,
+    name: appName,
     slug: "household-account-book",
-    name,
-    extra: {
-      ...config.extra,
+    orientation: "portrait",
+    icon: "./assets/images/moufu_n_ikura.png",
+    scheme: "myapp",
+    userInterfaceStyle: "automatic",
+    version: version,
+    splash: {
+      image: "./assets/images/splash_cat.png",
+      resizeMode: "contain",
+      backgroundColor: "#336666",
+    },
+    ios: {
+      supportsTablet: true,
+      bundleIdentifier: bundleId,
     },
     android: {
-      ...config.android,
-      package: bundleId,
-      // FIXME: get GOOGLE_SERVICES_JSON from expo secrets
+      adaptiveIcon: {
+        foregroundImage: "./assets/images/splash_cat.png",
+        backgroundColor: "#336666",
+      },
+      package: packageName,
       googleServicesFile: googleServicesJson,
     },
+    web: {
+      bundler: "metro",
+      output: "server",
+      favicon: "./assets/images/moufu.png",
+    },
+    plugins: [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          icon: "./assets/images/ikura.jpg",
+          color: "#336666",
+          defaultChannel: "default",
+          sounds: ["./assets/sounds/cat.wav"],
+          enableBackgroundRemoteNotifications: false,
+        },
+      ],
+    ],
+    updates: {
+      url: "https://u.expo.dev/018a6711-ac8c-41b8-830c-279089162afa",
+    },
+    runtimeVersion: {
+      policy: "appVersion",
+    },
+    experiments: {
+      typedRoutes: true,
+    },
+    extra: {
+      router: {
+        origin: false,
+      },
+      eas: {
+        projectId: "018a6711-ac8c-41b8-830c-279089162afa",
+      },
+    },
+    owner: "katayama9000",
   };
 };

@@ -1,0 +1,29 @@
+name: Run expo doctor
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  expo-doctor:
+    name: Run expo doctor
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: ./yarn.lock
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+        working-directory: ./
+        env:
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install expo-doctor
+        run: yarn global add expo-doctor
+      - name: expo doctor
+        run: expo-doctor
+        working-directory: ./
