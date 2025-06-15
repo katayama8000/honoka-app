@@ -25,3 +25,6 @@ expo-env.d.ts
 
 # credentials
 # google-services.json
+
+*.ipa
+*.apk
