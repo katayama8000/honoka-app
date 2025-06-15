@@ -45,7 +45,7 @@ export default (): ExpoConfig => {
     splash: {
       image: "./assets/images/splash_cat.png",
       resizeMode: "contain",
-      backgroundColor: "#336666",
+      backgroundColor: "#4682b4",
     },
     ios: {
       supportsTablet: true,
@@ -54,7 +54,7 @@ export default (): ExpoConfig => {
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/splash_cat.png",
-        backgroundColor: "#336666",
+        backgroundColor: "#4682b4",
       },
       package: packageName,
       googleServicesFile: googleServicesJson,
@@ -71,7 +71,7 @@ export default (): ExpoConfig => {
         "expo-notifications",
         {
           icon: "./assets/images/ikura.jpg",
-          color: "#336666",
+          color: "#4682b4",
           defaultChannel: "default",
           sounds: ["./assets/sounds/cat.wav"],
           enableBackgroundRemoteNotifications: false,
