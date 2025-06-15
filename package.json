@@ -4,8 +4,6 @@
   "version": "2.3.4",
   "scripts": {
     "dev": "APP_ENV=local expo start",
-    "go": "expo start --go",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -22,7 +20,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.4",
     "@react-native-async-storage/async-storage": "2.1.2",
-    "@supabase/supabase-js": "^2.50.0",
+    "@supabase/pa-js": "^2.50.0",
     "dayjs": "^1.11.13",
     "expo": "^53.0.11",
     "expo-constants": "~17.1.6",
