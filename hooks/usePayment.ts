@@ -74,6 +74,7 @@ export const usePayment = () => {
           updated_at: dayjs().toISOString(),
           created_at: dayjs().toISOString(),
           owner_id: uid,
+          deleted_at: null,
         },
       ]);
 
@@ -99,7 +100,8 @@ export const usePayment = () => {
         const { data, error } = await supabase
           .from(payments_table)
           .select("*")
-          .eq("monthly_invoice_id", monthlyInvoiceId);
+          .eq("monthly_invoice_id", monthlyInvoiceId)
+          .is("deleted_at", null);
         if (error) {
           console.error(error);
           alert("An error occurred. Please try again.");
@@ -142,7 +144,7 @@ export const usePayment = () => {
 
   const deletePayment = useCallback(async (id: Payment["id"]): Promise<void> => {
     try {
-      const { error } = await supabase.from(payments_table).delete().match({ id });
+      const { error } = await supabase.from(payments_table).update({ deleted_at: dayjs().toISOString() }).match({ id });
       if (error) {
         console.error(error);
         alert("An error occurred. Please try again.");
@@ -161,7 +163,8 @@ export const usePayment = () => {
       const { data: invoices, error } = await supabase
         .from(payments_table)
         .select("amount, owner_id")
-        .eq("monthly_invoice_id", monthlyInvoiceId);
+        .eq("monthly_invoice_id", monthlyInvoiceId)
+        .is("deleted_at", null);
 
       if (error) {
         throw error;
@@ -199,6 +202,7 @@ export const usePayment = () => {
         owner_id: uid,
         updated_at: startOfNextMonth.toISOString(),
         created_at: startOfNextMonth.toISOString(),
+        deleted_at: null,
       }));
 
       try {

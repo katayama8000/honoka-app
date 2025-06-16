@@ -96,6 +96,7 @@ export type Database = {
         Row: {
           amount: number
           created_at: string
+          deleted_at: string | null
           id: number
           item: string
           memo: string | null
@@ -106,6 +107,7 @@ export type Database = {
         Insert: {
           amount: number
           created_at?: string
+          deleted_at?: string | null
           id?: number
           item: string
           memo?: string | null
@@ -116,6 +118,7 @@ export type Database = {
         Update: {
           amount?: number
           created_at?: string
+          deleted_at?: string | null
           id?: number
           item?: string
           memo?: string | null
@@ -202,6 +205,7 @@ export type Database = {
         Row: {
           amount: number
           created_at: string
+          deleted_at: string | null
           id: number
           item: string
           memo: string | null
@@ -212,6 +216,7 @@ export type Database = {
         Insert: {
           amount: number
           created_at?: string
+          deleted_at?: string | null
           id?: number
           item: string
           memo?: string | null
@@ -222,6 +227,7 @@ export type Database = {
         Update: {
           amount?: number
           created_at?: string
+          deleted_at?: string | null
           id?: number
           item?: string
           memo?: string | null
