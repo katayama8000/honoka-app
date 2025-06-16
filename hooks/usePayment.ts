@@ -144,33 +144,12 @@ export const usePayment = () => {
 
   const deletePayment = useCallback(async (id: Payment["id"]): Promise<void> => {
     try {
-      const { error } = await supabase
-        .from(payments_table)
-        .update({ deleted_at: dayjs().toISOString() })
-        .match({ id });
+      const { error } = await supabase.from(payments_table).update({ deleted_at: dayjs().toISOString() }).match({ id });
       if (error) {
         console.error(error);
         alert("An error occurred. Please try again.");
         return;
       }
-    } catch (error) {
-      console.error(error);
-      alert("An error occurred. Please try again.");
-    }
-  }, []);
-
-  const restorePayment = useCallback(async (id: Payment["id"]): Promise<void> => {
-    try {
-      const { error } = await supabase
-        .from(payments_table)
-        .update({ deleted_at: null })
-        .match({ id });
-      if (error) {
-        console.error(error);
-        alert("An error occurred. Please try again.");
-        return;
-      }
-      ToastAndroid.show("復元した", ToastAndroid.SHORT);
     } catch (error) {
       console.error(error);
       alert("An error occurred. Please try again.");
@@ -257,6 +236,5 @@ export const usePayment = () => {
     setMemo,
     setupRecurringPayments,
     updatePayment,
-    restorePayment,
   };
 };
