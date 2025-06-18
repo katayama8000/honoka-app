@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
 import type React from "react";
-import { type FC, memo, useCallback, useEffect, useMemo } from "react";
+import { type FC, memo, useCallback, useMemo } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -18,12 +18,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { userAtom } from "@/state/user.state";
 
 const SubscriptionsScreen: FC = () => {
-  const { subscriptions, isLoading, isRefreshing, refreshSubscriptions, deleteSubscription, getTotalMonthlyAmount } =
-    useSubscription();
+  const {
+    subscriptions,
+    isLoading,
+    isRefreshing,
+    refreshSubscriptions,
+    deleteSubscription,
+    getMonthlyAmountBreakdown,
+  } = useSubscription();
   const { push } = useRouter();
   const [coupleId] = useAtom(coupleIdAtom);
+  const [currentUser] = useAtom(userAtom);
 
   const renderSubscription = useCallback(
     ({ item }: { item: Subscription }) => (
@@ -33,9 +41,10 @@ const SubscriptionsScreen: FC = () => {
         onEdit={() => {
           push(`/(modal)/subscription-form?mode=edit&id=${item.id}` as Href);
         }}
+        currentUserId={currentUser?.id}
       />
     ),
-    [deleteSubscription, push],
+    [deleteSubscription, push, currentUser?.id],
   );
 
   const keyExtractor = useCallback((item: Subscription) => item.id.toString(), []);
@@ -45,7 +54,7 @@ const SubscriptionsScreen: FC = () => {
     [subscriptions],
   );
 
-  const totalMonthlyAmount = useMemo(() => getTotalMonthlyAmount(), [getTotalMonthlyAmount]);
+  const monthlyBreakdown = useMemo(() => getMonthlyAmountBreakdown(), [getMonthlyAmountBreakdown]);
 
   if (!coupleId) {
     return (
@@ -70,8 +79,24 @@ const SubscriptionsScreen: FC = () => {
       </View>
 
       <View style={styles.summaryContainer}>
-        <Text style={styles.summaryLabel}>月額合計</Text>
-        <Text style={styles.summaryAmount}>¥{totalMonthlyAmount.toLocaleString()}</Text>
+        <Text style={styles.summaryMainLabel}>月額サブスクリプション料金</Text>
+
+        <View style={styles.breakdownContainer}>
+          <View style={styles.breakdownRow}>
+            <Text style={styles.breakdownLabel}>あなた</Text>
+            <Text style={styles.breakdownAmount}>¥{monthlyBreakdown.myAmount.toLocaleString()}</Text>
+          </View>
+
+          <View style={styles.breakdownRow}>
+            <Text style={styles.breakdownLabel}>パートナー</Text>
+            <Text style={styles.breakdownAmount}>¥{monthlyBreakdown.partnerAmount.toLocaleString()}</Text>
+          </View>
+
+          <View style={[styles.breakdownRow, styles.totalRow]}>
+            <Text style={styles.totalLabel}>合計</Text>
+            <Text style={styles.totalAmount}>¥{monthlyBreakdown.total.toLocaleString()}</Text>
+          </View>
+        </View>
       </View>
 
       {isLoading && subscriptions.length === 0 ? (
@@ -106,9 +131,10 @@ type SubscriptionItemProps = {
   subscription: Subscription;
   onDelete: (id: number) => Promise<void>;
   onEdit: () => void;
+  currentUserId?: number;
 };
 
-const SubscriptionItem: FC<SubscriptionItemProps> = memo(({ subscription, onDelete, onEdit }) => {
+const SubscriptionItem: FC<SubscriptionItemProps> = memo(({ subscription, onDelete, onEdit, currentUserId }) => {
   const handleDelete = useCallback(() => {
     Alert.alert("削除確認", `${subscription.service_name}を削除しますか？`, [
       { text: "キャンセル", style: "cancel" },
@@ -128,6 +154,13 @@ const SubscriptionItem: FC<SubscriptionItemProps> = memo(({ subscription, onDele
   const getBillingCycleText = useCallback((cycle: string) => {
     return cycle === "monthly" ? "月額" : "年額";
   }, []);
+
+  const getCreatorText = useCallback(() => {
+    if (subscription.user_id) {
+      return subscription.user_id === currentUserId ? "あなた" : "パートナー";
+    }
+    return "あなた"; // user_idが設定されていない場合のデフォルト
+  }, [subscription.user_id, currentUserId]);
 
   return (
     <View style={styles.itemContainer}>
@@ -149,9 +182,16 @@ const SubscriptionItem: FC<SubscriptionItemProps> = memo(({ subscription, onDele
           <Text style={styles.billingCycle}>({getBillingCycleText(subscription.billing_cycle)})</Text>
         </View>
 
-        <View style={styles.nextBillingContainer}>
-          <Ionicons name="calendar" size={16} color={Colors.light.icon} />
-          <Text style={styles.nextBillingDate}>次回: {formatDate(subscription.next_billing_date)}</Text>
+        <View style={styles.metaInfoContainer}>
+          <View style={styles.nextBillingContainer}>
+            <Ionicons name="calendar" size={16} color={Colors.light.icon} />
+            <Text style={styles.nextBillingDate}>次回: {formatDate(subscription.next_billing_date)}</Text>
+          </View>
+
+          <View style={styles.creatorContainer}>
+            <Ionicons name="person" size={16} color={Colors.light.icon} />
+            <Text style={styles.creatorText}>作成者: {getCreatorText()}</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -209,6 +249,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  summaryMainLabel: {
+    fontSize: defaultFontSize,
+    color: Colors.light.icon,
+    marginBottom: 12,
+    textAlign: "center",
+  },
   summaryLabel: {
     fontSize: defaultFontSize,
     color: Colors.light.icon,
@@ -216,6 +262,40 @@ const styles = StyleSheet.create({
   },
   summaryAmount: {
     fontSize: 24,
+    fontWeight: defaultFontWeight,
+    color: Colors.primary,
+  },
+  breakdownContainer: {
+    gap: 8,
+  },
+  breakdownRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 4,
+  },
+  breakdownLabel: {
+    fontSize: defaultFontSize,
+    color: Colors.light.text,
+  },
+  breakdownAmount: {
+    fontSize: 16,
+    fontWeight: defaultFontWeight,
+    color: Colors.light.text,
+  },
+  totalRow: {
+    borderTopWidth: 1,
+    borderTopColor: Colors.gray,
+    paddingTop: 8,
+    marginTop: 4,
+  },
+  totalLabel: {
+    fontSize: 16,
+    fontWeight: defaultFontWeight,
+    color: Colors.light.text,
+  },
+  totalAmount: {
+    fontSize: 20,
     fontWeight: defaultFontWeight,
     color: Colors.primary,
   },
@@ -299,12 +379,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.light.icon,
   },
+  metaInfoContainer: {
+    gap: 8,
+  },
   nextBillingContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },
   nextBillingDate: {
+    fontSize: 14,
+    color: Colors.light.icon,
+  },
+  creatorContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  creatorText: {
     fontSize: 14,
     color: Colors.light.icon,
   },

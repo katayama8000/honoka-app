@@ -1,4 +1,4 @@
-import { couple_subscriptions_table } from "@/constants/Table";
+import { couple_subscriptions_table, users_table } from "@/constants/Table";
 import { supabase } from "@/lib/supabase";
 import type { Subscription, BillingCycle } from "@/types/Row";
 import { useAtom } from "jotai";
@@ -6,12 +6,14 @@ import { useCallback, useEffect, useState } from "react";
 import { ToastAndroid } from "react-native";
 import { coupleIdAtom } from "../state/couple.state";
 import { subscriptionsAtom } from "../state/subscription.state";
+import { userAtom } from "../state/user.state";
 
 export const useSubscription = () => {
   const [subscriptions, setSubscriptions] = useAtom(subscriptionsAtom);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [coupleId] = useAtom(coupleIdAtom);
+  const [user] = useAtom(userAtom);
 
   // フォーム用の状態
   const [serviceName, setServiceName] = useState<string | null>(null);
@@ -69,6 +71,11 @@ export const useSubscription = () => {
       return;
     }
 
+    if (!user?.id) {
+      ToastAndroid.show("ユーザー情報が見つかりません", ToastAndroid.SHORT);
+      return;
+    }
+
     if (!serviceName || !monthlyAmount || !nextBillingDate) {
       ToastAndroid.show("すべての項目を入力してください", ToastAndroid.SHORT);
       return;
@@ -85,6 +92,7 @@ export const useSubscription = () => {
           billing_cycle: billingCycle,
           next_billing_date: nextBillingDate,
           is_active: true,
+          user_id: user.id,
         })
         .select()
         .single();
@@ -104,7 +112,7 @@ export const useSubscription = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [coupleId, serviceName, monthlyAmount, billingCycle, nextBillingDate, resetForm, setSubscriptions]);
+  }, [coupleId, user?.id, serviceName, monthlyAmount, billingCycle, nextBillingDate, resetForm, setSubscriptions]);
 
   // パラメータを受け取るサブスクリプション追加関数
   const addSubscriptionWithData = useCallback(
@@ -119,6 +127,11 @@ export const useSubscription = () => {
         return;
       }
 
+      if (!user?.id) {
+        ToastAndroid.show("ユーザー情報が見つかりません", ToastAndroid.SHORT);
+        return;
+      }
+
       try {
         setIsLoading(true);
         const { data, error } = await supabase
@@ -130,6 +143,7 @@ export const useSubscription = () => {
             billing_cycle: subscriptionData.billing_cycle,
             next_billing_date: subscriptionData.next_billing_date,
             is_active: true,
+            user_id: user.id,
           })
           .select()
           .single();
@@ -149,7 +163,7 @@ export const useSubscription = () => {
         setIsLoading(false);
       }
     },
-    [coupleId, setSubscriptions],
+    [coupleId, user?.id, setSubscriptions],
   );
 
   // サブスクリプションを更新
@@ -226,6 +240,39 @@ export const useSubscription = () => {
     }, 0);
   }, [subscriptions]);
 
+  // 自分の月額合計を計算
+  const getMyMonthlyAmount = useCallback((): number => {
+    return subscriptions
+      .filter((sub) => sub.user_id === user?.id)
+      .reduce((total, sub) => {
+        const monthlyAmount = sub.billing_cycle === "yearly" ? Math.round(sub.monthly_amount / 12) : sub.monthly_amount;
+        return total + monthlyAmount;
+      }, 0);
+  }, [subscriptions, user?.id]);
+
+  // パートナーの月額合計を計算
+  const getPartnerMonthlyAmount = useCallback((): number => {
+    return subscriptions
+      .filter((sub) => sub.user_id !== user?.id)
+      .reduce((total, sub) => {
+        const monthlyAmount = sub.billing_cycle === "yearly" ? Math.round(sub.monthly_amount / 12) : sub.monthly_amount;
+        return total + monthlyAmount;
+      }, 0);
+  }, [subscriptions, user?.id]);
+
+  // 月額の詳細情報を取得
+  const getMonthlyAmountBreakdown = useCallback(() => {
+    const myAmount = getMyMonthlyAmount();
+    const partnerAmount = getPartnerMonthlyAmount();
+    const total = myAmount + partnerAmount;
+
+    return {
+      myAmount,
+      partnerAmount,
+      total,
+    };
+  }, [getMyMonthlyAmount, getPartnerMonthlyAmount]);
+
   return {
     // 状態
     subscriptions,
@@ -253,5 +300,8 @@ export const useSubscription = () => {
 
     // 計算
     getTotalMonthlyAmount,
+    getMyMonthlyAmount,
+    getPartnerMonthlyAmount,
+    getMonthlyAmountBreakdown,
   };
 };

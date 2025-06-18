@@ -19,6 +19,7 @@ export type Database = {
           monthly_amount: number
           next_billing_date: string
           service_name: string
+          user_id: number
         }
         Insert: {
           billing_cycle: Database["public"]["Enums"]["billing_cycle_type"]
@@ -29,6 +30,7 @@ export type Database = {
           monthly_amount: number
           next_billing_date: string
           service_name: string
+          user_id: number
         }
         Update: {
           billing_cycle?: Database["public"]["Enums"]["billing_cycle_type"]
@@ -39,6 +41,7 @@ export type Database = {
           monthly_amount?: number
           next_billing_date?: string
           service_name?: string
+          user_id?: number
         }
         Relationships: [
           {
@@ -81,6 +84,7 @@ export type Database = {
           monthly_amount: number
           next_billing_date: string
           service_name: string
+          user_id: number
         }
         Insert: {
           billing_cycle: Database["public"]["Enums"]["billing_cycle_type"]
@@ -91,6 +95,7 @@ export type Database = {
           monthly_amount: number
           next_billing_date: string
           service_name: string
+          user_id: number
         }
         Update: {
           billing_cycle?: Database["public"]["Enums"]["billing_cycle_type"]
@@ -101,6 +106,7 @@ export type Database = {
           monthly_amount?: number
           next_billing_date?: string
           service_name?: string
+          user_id?: number
         }
         Relationships: [
           {
