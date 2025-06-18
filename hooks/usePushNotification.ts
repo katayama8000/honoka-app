@@ -29,6 +29,8 @@ setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
@@ -45,22 +47,8 @@ export const usePushNotification = () => {
     };
   }, []);
 
-  const handleNotificationResponse = (response: NotificationResponse) => {
-    const data = response.notification.request.content.data;
-
-    if (data.type === "invoice") {
-      router.push({
-        pathname: "/past-invoice-details",
-        params: { id: data.invoiceId },
-      });
-    } else if (data.type === "payment") {
-      router.push({
-        pathname: "/(modal)/payment-modal",
-        params: { id: data.paymentId },
-      });
-    } else {
-      router.push("/(tabs)");
-    }
+  const handleNotificationResponse = (_: NotificationResponse) => {
+    router.push("/(tabs)");
   };
 
   const registerForPushNotificationsAsync = async () => {
