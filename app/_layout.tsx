@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Slot, Stack, useRouter } from "expo-router";
+import { Redirect, Slot, Stack, useRouter } from "expo-router";
 import { hideAsync, preventAutoHideAsync } from "expo-splash-screen";
 import "react-native-reanimated";
 import { usePushNotification } from "@/hooks/usePushNotification";
@@ -32,7 +32,7 @@ export default function RootLayout() {
     (async () => {
       const { data, error } = await supabase.auth.getUser();
       if (error || !data || !data.user) {
-        push({ pathname: "/sign-in" });
+        <Redirect href="/sign-in" />;
         setIsLoggedIn(false);
         return;
       }
@@ -41,15 +41,15 @@ export default function RootLayout() {
       supabase.auth.onAuthStateChange((event, _session) => {
         switch (event) {
           case "SIGNED_IN":
-            push({ pathname: "/" });
+            <Redirect href="/(tabs)" />;
             break;
           case "SIGNED_OUT":
-            push({ pathname: "/sign-in" });
+            <Redirect href="/sign-in" />;
             break;
         }
       });
     })();
-  }, [push]);
+  }, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -58,12 +58,12 @@ export default function RootLayout() {
 
       const uid = (await supabase.auth.getSession())?.data.session?.user?.id;
       if (!uid) {
-        push({ pathname: "/sign-in" });
+        <Redirect href="/sign-in" />;
         return;
       }
       const user = await fetchUser(uid);
       if (!user) {
-        push({ pathname: "/sign-in" });
+        <Redirect href="/sign-in" />;
         return;
       }
 
