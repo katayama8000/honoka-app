@@ -79,6 +79,13 @@ export default function RootLayout() {
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="(modal)/payment-modal" options={{ presentation: "modal" }} />
+          <Stack.Screen
+            name="(modal)/subscription-form"
+            options={{
+              presentation: "modal",
+              headerShown: false,
+            }}
+          />
           <Stack.Screen name="+not-found" />
           <Stack.Screen name="past-invoice-details" options={{ title: "請求書詳細" }} />
         </Stack>

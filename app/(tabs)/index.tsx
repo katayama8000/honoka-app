@@ -89,22 +89,11 @@ const HomeScreen: FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.buttonWrapper}>
-        <AddPaymentButton onPress={() => push({ pathname: "/payment-modal", params: { kind: "add" } })} />
-        {showCloseMonthButton && (
-          <CloseMonthButton
-            onPress={async () => {
-              if (!coupleId) {
-                alert("coupleId is not found");
-                return;
-              }
-              handleCloseMonth(coupleId);
-            }}
-          />
-        )}
-      </View>
       {isLoading ? (
-        <ActivityIndicator size="large" color={`${Colors.primary}`} />
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color={`${Colors.primary}`} />
+          <Text style={styles.loadingText}>読み込み中...</Text>
+        </View>
       ) : (
         <PaymentList
           activeInvoiceId={activeInvoce?.id ?? null}
@@ -117,31 +106,33 @@ const HomeScreen: FC = () => {
           userId={userId}
         />
       )}
+
+      {/* フローティング追加ボタン */}
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => push({ pathname: "/payment-modal", params: { kind: "add" } })}
+        activeOpacity={0.8}
+      >
+        <AntDesign name="plus" size={24} color="white" />
+      </TouchableOpacity>
+
+      {/* フローティング締めるボタン */}
+      {showCloseMonthButton && (
+        <TouchableOpacity
+          style={styles.floatingCloseButton}
+          onPress={async () => {
+            if (!coupleId) {
+              alert("coupleId is not found");
+              return;
+            }
+            handleCloseMonth(coupleId);
+          }}
+          activeOpacity={0.8}
+        >
+          <AntDesign name="checkcircleo" size={24} color="white" />
+        </TouchableOpacity>
+      )}
     </View>
-  );
-};
-
-type AddPaymentButtonProps = {
-  onPress: () => void;
-};
-
-const AddPaymentButton: FC<AddPaymentButtonProps> = ({ onPress }) => (
-  <TouchableOpacity style={styles.addButton} onPress={onPress}>
-    <AntDesign name="pluscircleo" size={24} color="white" />
-    <Text style={styles.addButtonText}>追加</Text>
-  </TouchableOpacity>
-);
-
-type CloseMonthButtonProps = {
-  onPress: () => void;
-};
-
-const CloseMonthButton: FC<CloseMonthButtonProps> = ({ onPress }) => {
-  return (
-    <TouchableOpacity style={styles.addButton} onPress={onPress}>
-      <AntDesign name="checkcircleo" size={24} color="white" />
-      <Text style={styles.addButtonText}>締める</Text>
-    </TouchableOpacity>
   );
 };
 
@@ -172,15 +163,22 @@ const PaymentList: FC<PaymentListProps> = ({
       <PaymentItem payment={item} routerPush={routerPush} deletePayment={deletePayment} userId={userId} />
     )}
     keyExtractor={(item) => item.id.toString()}
-    ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
-    ListEmptyComponent={() => <Text style={styles.emptyListText}>支払いがまだありません</Text>}
-    contentContainerStyle={{ paddingBottom: 12 }}
+    ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
+    ListEmptyComponent={() => (
+      <View style={styles.emptyContainer}>
+        <AntDesign name="inbox" size={64} color={Colors.light.icon} />
+        <Text style={styles.emptyText}>支払いがまだありません</Text>
+        <Text style={styles.emptySubText}>右下の + ボタンから追加してください</Text>
+      </View>
+    )}
+    contentContainerStyle={styles.listContainer}
     onRefresh={async () => {
       if (activeInvoiceId === null) return;
       await updateActiveInvoice();
       fetchAllPaymentsByMonthlyInvoiceId(activeInvoiceId);
     }}
     refreshing={isRefreshing}
+    showsVerticalScrollIndicator={false}
     ListFooterComponent={<GithubIssueLink />}
   />
 );
@@ -237,10 +235,20 @@ const PaymentItem: FC<PaymentItemProps> = ({ deletePayment, routerPush, payment,
             </View>
           }
         >
-          <View style={[styles.card, styles.ownerCard]}>{CardContent}</View>
+          <View style={styles.card}>
+            {CardContent}
+            <View style={styles.ownerIndicator}>
+              <Text style={styles.ownerText}>あなた</Text>
+            </View>
+          </View>
         </SwiperView>
       ) : (
-        <View style={[styles.card, styles.nonOwnerCard]}>{CardContent}</View>
+        <View style={styles.card}>
+          {CardContent}
+          <View style={styles.partnerIndicator}>
+            <Text style={styles.partnerText}>パートナー</Text>
+          </View>
+        </View>
       )}
     </View>
   );
@@ -249,11 +257,160 @@ const PaymentItem: FC<PaymentItemProps> = ({ deletePayment, routerPush, payment,
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    backgroundColor: Colors.light.background,
   },
-  buttonWrapper: {
+  centerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  loadingText: {
+    fontSize: defaultFontSize,
+    color: Colors.light.icon,
+    marginTop: 12,
+  },
+  listContainer: {
+    padding: 20,
+    paddingBottom: 100, // フローティングボタンの領域を確保
+  },
+  emptyContainer: {
+    alignItems: "center",
+    paddingVertical: 40,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: defaultFontWeight,
+    color: Colors.light.text,
+    marginTop: 16,
+  },
+  emptySubText: {
+    fontSize: defaultFontSize,
+    color: Colors.light.icon,
+    marginTop: 8,
+    textAlign: "center",
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: Colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  floatingCloseButton: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: Colors.secondary,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  linkContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingVertical: 20,
+  },
+  link: {
+    color: Colors.primary,
+  },
+  version: {
+    color: Colors.black,
+    paddingLeft: 8,
+  },
+  cardContainer: {
+    marginBottom: 8,
+  },
+  card: {
+    borderRadius: 12,
+    padding: 16,
+    backgroundColor: Colors.white,
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    position: "relative",
+  },
+  cardContent: {
+    flex: 1,
+  },
+  itemTitle: {
+    fontSize: 18,
+    fontWeight: defaultFontWeight,
+    marginBottom: 8,
+    color: Colors.light.text,
+  },
+  row: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 4,
+  },
+  value: {
+    fontSize: 16,
+    fontWeight: defaultFontWeight,
+    color: Colors.primary,
+  },
+  memo: {
+    fontSize: 14,
+    color: Colors.light.icon,
+    marginTop: 4,
+  },
+  ownerIndicator: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+  },
+  ownerText: {
+    color: Colors.white,
+    fontSize: 12,
+    fontWeight: defaultFontWeight,
+  },
+  partnerIndicator: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    backgroundColor: Colors.light.icon,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+  },
+  partnerText: {
+    color: Colors.white,
+    fontSize: 12,
+    fontWeight: defaultFontWeight,
+  },
+  backView: {
+    flex: 1,
+    backgroundColor: Colors.secondary,
+    justifyContent: "center",
+    alignItems: "flex-end",
+    paddingRight: 16,
+    borderRadius: 12,
+  },
+  backViewText: {
+    color: Colors.white,
+    fontWeight: "bold",
   },
   addButton: {
     borderRadius: 50,
@@ -278,71 +435,6 @@ const styles = StyleSheet.create({
     color: "#888",
     fontSize: defaultFontSize,
     textAlign: "center",
-  },
-  linkContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  link: {
-    color: Colors.primary,
-  },
-  version: {
-    color: Colors.black,
-    paddingLeft: 8,
-  },
-  cardContainer: {
-    marginBottom: 12,
-  },
-  card: {
-    borderRadius: 8,
-    padding: 16,
-    elevation: 4,
-    shadowColor: defaultShadowColor,
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 4 },
-  },
-  ownerCard: {
-    backgroundColor: Colors.white,
-  },
-  nonOwnerCard: {
-    backgroundColor: Colors.gray,
-  },
-  cardContent: {
-    flex: 1,
-  },
-  itemTitle: {
-    fontSize: 18,
-    fontWeight: defaultFontWeight,
-    marginBottom: 8,
-    color: "#333",
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 4,
-  },
-  value: {
-    fontSize: 14,
-    fontWeight: defaultFontWeight,
-    color: "#333",
-  },
-  memo: {
-    fontSize: 12,
-    color: "#666",
-    marginTop: 4,
-  },
-  backView: {
-    flex: 1,
-    backgroundColor: "red",
-    justifyContent: "center",
-    alignItems: "flex-end",
-    paddingRight: 16,
-    borderRadius: 8,
-  },
-  backViewText: {
-    color: "white",
-    fontWeight: "bold",
   },
   horizontal: {
     flexDirection: "row",

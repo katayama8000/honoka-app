@@ -9,6 +9,50 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      couple_subscriptions: {
+        Row: {
+          billing_cycle: Database["public"]["Enums"]["billing_cycle_type"]
+          couple_id: number
+          created_at: string
+          id: number
+          is_active: boolean
+          monthly_amount: number
+          next_billing_date: string
+          service_name: string
+          user_id: number
+        }
+        Insert: {
+          billing_cycle: Database["public"]["Enums"]["billing_cycle_type"]
+          couple_id: number
+          created_at?: string
+          id: number
+          is_active?: boolean
+          monthly_amount: number
+          next_billing_date: string
+          service_name: string
+          user_id: number
+        }
+        Update: {
+          billing_cycle?: Database["public"]["Enums"]["billing_cycle_type"]
+          couple_id?: number
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          monthly_amount?: number
+          next_billing_date?: string
+          service_name?: string
+          user_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "couple_subscriptions_couple_id_fkey"
+            columns: ["couple_id"]
+            isOneToOne: false
+            referencedRelation: "couples"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       couples: {
         Row: {
           created_at: string
@@ -29,6 +73,50 @@ export type Database = {
           user2_id?: string
         }
         Relationships: []
+      }
+      dev_couple_subscriptions: {
+        Row: {
+          billing_cycle: Database["public"]["Enums"]["billing_cycle_type"]
+          couple_id: number
+          created_at: string
+          id: number
+          is_active: boolean
+          monthly_amount: number
+          next_billing_date: string
+          service_name: string
+          user_id: number
+        }
+        Insert: {
+          billing_cycle: Database["public"]["Enums"]["billing_cycle_type"]
+          couple_id: number
+          created_at?: string
+          id?: never
+          is_active?: boolean
+          monthly_amount: number
+          next_billing_date: string
+          service_name: string
+          user_id: number
+        }
+        Update: {
+          billing_cycle?: Database["public"]["Enums"]["billing_cycle_type"]
+          couple_id?: number
+          created_at?: string
+          id?: never
+          is_active?: boolean
+          monthly_amount?: number
+          next_billing_date?: string
+          service_name?: string
+          user_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dev_couple_subscriptions_couple_id_fkey"
+            columns: ["couple_id"]
+            isOneToOne: false
+            referencedRelation: "dev_couples"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dev_couples: {
         Row: {
@@ -277,7 +365,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      billing_cycle_type: "monthly" | "yearly"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -392,6 +480,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      billing_cycle_type: ["monthly", "yearly"],
+    },
   },
 } as const
