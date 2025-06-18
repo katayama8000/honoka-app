@@ -21,7 +21,7 @@ import {
 type FormMode = "add" | "edit";
 
 const SubscriptionFormScreen: FC = () => {
-  const router = useRouter();
+  const { back } = useRouter();
   const params = useLocalSearchParams<{
     mode?: string;
     id?: string;
@@ -108,15 +108,15 @@ const SubscriptionFormScreen: FC = () => {
           next_billing_date: formData.nextBillingDate,
         });
       }
-      router.back();
+      back();
     } catch (error) {
       console.error("Error submitting form:", error);
     }
-  }, [formData, mode, subscriptionId, updateSubscription, addSubscriptionWithData, router]);
+  }, [formData, mode, subscriptionId, updateSubscription, addSubscriptionWithData, back]);
 
   const handleCancel = useCallback(() => {
-    router.back();
-  }, [router]);
+    back();
+  }, [back]);
 
   const handleDateChange = useCallback((text: string) => {
     setFormData((prev) => ({ ...prev, nextBillingDate: text }));

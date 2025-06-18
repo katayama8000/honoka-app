@@ -8,7 +8,7 @@ import { usePushNotification } from "@/hooks/usePushNotification";
 import { useUser } from "@/hooks/useUser";
 import { userAtom } from "@/state/user.state";
 import { useAtom } from "jotai";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 preventAutoHideAsync();
@@ -17,6 +17,7 @@ export default function RootLayout() {
   const { fetchUser, updateExpoPushToken } = useUser();
   const [_, setUser] = useAtom(userAtom);
   const { registerForPushNotificationsAsync } = usePushNotification();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -30,11 +31,12 @@ export default function RootLayout() {
   useEffect(() => {
     (async () => {
       const { data, error } = await supabase.auth.getUser();
-      console.log("user", data);
       if (error || !data || !data.user) {
         push({ pathname: "/sign-in" });
+        setIsLoggedIn(false);
         return;
       }
+      setIsLoggedIn(true);
 
       supabase.auth.onAuthStateChange((event, _session) => {
         switch (event) {
@@ -77,17 +79,15 @@ export default function RootLayout() {
     <ThemeProvider value={DefaultTheme}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(modal)/payment-modal" options={{ presentation: "modal" }} />
-          <Stack.Screen
-            name="(modal)/subscription-form"
-            options={{
-              presentation: "modal",
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen name="+not-found" />
-          <Stack.Screen name="past-invoice-details" options={{ title: "請求書詳細" }} />
+          <Stack.Protected guard={isLoggedIn}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="(modal)" options={{ presentation: "modal" }} />
+            <Stack.Screen name="past-invoice-details" options={{ title: "請求書詳細" }} />
+          </Stack.Protected>
+          <Stack.Protected guard={!isLoggedIn}>
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack.Protected>
         </Stack>
       </GestureHandlerRootView>
     </ThemeProvider>
