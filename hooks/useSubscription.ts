@@ -27,13 +27,6 @@ export const useSubscription = () => {
     setNextBillingDate(null);
   }, []);
 
-  // カップルIDが変更されたらサブスクリプション一覧を取得
-  useEffect(() => {
-    if (coupleId) {
-      fetchSubscriptions();
-    }
-  }, [coupleId]);
-
   // サブスクリプション一覧を取得
   const fetchSubscriptions = useCallback(async (): Promise<void> => {
     if (!coupleId) return;
@@ -61,6 +54,13 @@ export const useSubscription = () => {
       setIsLoading(false);
     }
   }, [coupleId, setSubscriptions]);
+
+  // カップルIDが変更されたらサブスクリプション一覧を取得
+  useEffect(() => {
+    if (coupleId) {
+      fetchSubscriptions();
+    }
+  }, [coupleId, fetchSubscriptions]);
 
   // サブスクリプションを追加
   const addSubscription = useCallback(async (): Promise<void> => {
@@ -105,6 +105,52 @@ export const useSubscription = () => {
       setIsLoading(false);
     }
   }, [coupleId, serviceName, monthlyAmount, billingCycle, nextBillingDate, resetForm, setSubscriptions]);
+
+  // パラメータを受け取るサブスクリプション追加関数
+  const addSubscriptionWithData = useCallback(
+    async (subscriptionData: {
+      service_name: string;
+      monthly_amount: number;
+      billing_cycle: BillingCycle;
+      next_billing_date: string;
+    }): Promise<void> => {
+      if (!coupleId) {
+        ToastAndroid.show("カップルIDが見つかりません", ToastAndroid.SHORT);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from(couple_subscriptions_table)
+          .insert({
+            couple_id: coupleId,
+            service_name: subscriptionData.service_name,
+            monthly_amount: subscriptionData.monthly_amount,
+            billing_cycle: subscriptionData.billing_cycle,
+            next_billing_date: subscriptionData.next_billing_date,
+            is_active: true,
+          })
+          .select()
+          .single();
+
+        if (error) {
+          console.error("Error adding subscription:", error);
+          ToastAndroid.show("サブスクリプションの追加に失敗しました", ToastAndroid.SHORT);
+          return;
+        }
+
+        setSubscriptions((prev) => [data, ...prev]);
+        ToastAndroid.show("サブスクリプションを追加しました", ToastAndroid.SHORT);
+      } catch (error) {
+        console.error("Error adding subscription:", error);
+        ToastAndroid.show("サブスクリプションの追加に失敗しました", ToastAndroid.SHORT);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [coupleId, setSubscriptions],
+  );
 
   // サブスクリプションを更新
   const updateSubscription = useCallback(
@@ -199,6 +245,7 @@ export const useSubscription = () => {
     // 操作
     fetchSubscriptions,
     addSubscription,
+    addSubscriptionWithData,
     updateSubscription,
     deleteSubscription,
     refreshSubscriptions,

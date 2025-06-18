@@ -45,6 +45,17 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="subscriptions"
+        options={{
+          title: "サブスク",
+          headerTitleStyle: {
+            fontSize: 22,
+            color: Colors.white,
+          },
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "card" : "card-outline"} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
