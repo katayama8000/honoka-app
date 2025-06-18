@@ -1,7 +1,17 @@
 # サブスクリプション管理機能 テーブル設計
 
 ## 概要
-Honokaアプリにサブスクリプション管理機能を追加するためのテーブル設計です。シンプルで使いやすい構造を重視しています。
+Honokaアプリにサブスクリプション管理機能を追加するためのテーブル設計です。PostgreSQLのENUM型を活用したシンプルで型安全な構造です。
+
+## PostgreSQL ENUM型
+
+### billing_cycle_type
+```sql
+CREATE TYPE billing_cycle_type AS ENUM ('monthly', 'yearly');
+```
+- 型安全性の向上
+- 無効な値の挿入を防止
+- ストレージ効率の最適化
 
 ## テーブル構成
 
@@ -9,24 +19,26 @@ Honokaアプリにサブスクリプション管理機能を追加するため�
 カップルが利用しているサブスクリプション
 
 **カラム:**
-- `id`: 主キー (UUID)
-- `couple_id`: カップルID (couplesテーブルへの外部キー、CASCADE削除)
+- `id`: 主キー (bigint)
+- `created_at`: 作成日時 (timestamp)
+- `couple_id`: カップルID (couplesテーブルへの外部キー)
 - `service_name`: サービス名（自由入力）
-- `monthly_amount`: 月額料金 (decimal(10,2))
-- `billing_cycle`: 請求サイクル (monthly, yearly, weekly)
+- `monthly_amount`: 月額料金 (bigint、円単位)
+- `billing_cycle`: 請求サイクル (billing_cycle_type ENUM)
 - `next_billing_date`: 次回請求日
 - `is_active`: アクティブ状態
-- `created_at`: 作成日時
 
 ## データ型の特徴
 
-### UUID使用
-- PostgreSQLの `gen_random_uuid()` を使用
-- 一意性とセキュリティを重視
+### ENUM型の採用
+- `billing_cycle_type` でサイクルを型安全に管理
+- 'monthly' と 'yearly' の2値のみ許可
+- CHECK制約より効率的で安全
 
-### decimal型の採用
-- `monthly_amount` は `decimal(10,2)` 型
-- 正確な金額計算が可能
+### bigint型の採用
+- `monthly_amount` は `bigint` 型（円単位）
+- 整数演算で精度の問題を回避
+- 大きな金額にも対応
 
 ### CASCADE削除
 - カップルが削除されたらサブスクも自動削除
