@@ -2,7 +2,7 @@ import { SwiperView } from "@/components/SwiperbleView";
 import { Colors } from "@/constants/Colors";
 import { supabase } from "@/lib/supabase";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
-import type { Couple, Invoice, Payment, Payment as PaymentRow } from "@/types/Row";
+import type { Couple, Invoice, Payment, Payment as PaymentRow, User } from "@/types/Row";
 import { AntDesign } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import { type Href, useRouter } from "expo-router";
@@ -22,20 +22,25 @@ import {
 import { useCouple } from "../../hooks/useCouple";
 import { useInvoice } from "../../hooks/useInvoice";
 import { usePayment } from "../../hooks/usePayment";
+import { useUser } from "../../hooks/useUser";
 import { version } from "../../package.json";
 import { coupleIdAtom } from "../../state/couple.state";
 import { activeInvoiceAtom } from "../../state/invoice.state";
+import { userAtom } from "../../state/user.state";
 
 const HomeScreen: FC = () => {
   const { payments, isRefreshing, deletePayment, isLoading } = usePayment();
   const { initInvoice, unActiveInvoicesAll, turnInvoicePaid, fetchActiveInvoiceByCoupleId } = useInvoice();
   const { fetchCoupleIdByUserId } = useCouple();
   const { fetchPaymentsAllByMonthlyInvoiceId, setupRecurringPayments } = usePayment();
+  const { fetchPartner } = useUser();
   const [coupleId, setCoupleId] = useAtom(coupleIdAtom);
   const [activeInvoce, setActiveInvoice] = useAtom(activeInvoiceAtom);
+  const [currentUser] = useAtom(userAtom);
   const { push } = useRouter();
   const showCloseMonthButton = process.env.EXPO_PUBLIC_APP_ENV === "development" ? true : dayjs().date() >= 20;
   const [userId, setUserId] = useState<string | null>(null);
+  const [partner, setPartner] = useState<User | null>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -53,10 +58,18 @@ const HomeScreen: FC = () => {
       }
       setCoupleId(coupleId);
 
+      // パートナー情報を取得
+      if (currentUser?.user_id) {
+        const partnerData = await fetchPartner(coupleId, currentUser.user_id);
+        if (partnerData) {
+          setPartner(partnerData);
+        }
+      }
+
       const activeInvoiceData = await fetchActiveInvoiceByCoupleId(coupleId);
       setActiveInvoice(activeInvoiceData ?? null);
     })();
-  }, []);
+  }, [currentUser?.user_id]);
 
   const updateActiveInvoice = async () => {
     if (!coupleId) {
@@ -104,6 +117,8 @@ const HomeScreen: FC = () => {
           routerPush={push}
           updateActiveInvoice={updateActiveInvoice}
           userId={userId}
+          currentUserName={currentUser?.name}
+          partnerName={partner?.name}
         />
       )}
 
@@ -145,6 +160,8 @@ type PaymentListProps = {
   routerPush: (href: Href) => void;
   updateActiveInvoice: () => Promise<void>;
   userId: string | null;
+  currentUserName?: string;
+  partnerName?: string;
 };
 
 const PaymentList: FC<PaymentListProps> = ({
@@ -156,11 +173,20 @@ const PaymentList: FC<PaymentListProps> = ({
   routerPush,
   updateActiveInvoice,
   userId,
+  currentUserName,
+  partnerName,
 }) => (
   <FlatList
     data={payments.sort((a, b) => b.id - a.id)}
     renderItem={({ item }) => (
-      <PaymentItem payment={item} routerPush={routerPush} deletePayment={deletePayment} userId={userId} />
+      <PaymentItem
+        payment={item}
+        routerPush={routerPush}
+        deletePayment={deletePayment}
+        userId={userId}
+        currentUserName={currentUserName}
+        partnerName={partnerName}
+      />
     )}
     keyExtractor={(item) => item.id.toString()}
     ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
@@ -199,9 +225,18 @@ type PaymentItemProps = {
   routerPush: (href: Href) => void;
   payment: PaymentRow;
   userId: string | null;
+  currentUserName?: string;
+  partnerName?: string;
 };
 
-const PaymentItem: FC<PaymentItemProps> = ({ deletePayment, routerPush, payment, userId }) => {
+const PaymentItem: FC<PaymentItemProps> = ({
+  deletePayment,
+  routerPush,
+  payment,
+  userId,
+  currentUserName,
+  partnerName,
+}) => {
   const { fetchPaymentsAllByMonthlyInvoiceId } = usePayment();
   const [activeInvoce] = useAtom(activeInvoiceAtom);
   const isOwner = payment.owner_id === userId;
@@ -238,7 +273,7 @@ const PaymentItem: FC<PaymentItemProps> = ({ deletePayment, routerPush, payment,
           <View style={styles.card}>
             {CardContent}
             <View style={styles.ownerIndicator}>
-              <Text style={styles.ownerText}>あなた</Text>
+              <Text style={styles.ownerText}>{currentUserName || "あなた"}</Text>
             </View>
           </View>
         </SwiperView>
@@ -246,7 +281,7 @@ const PaymentItem: FC<PaymentItemProps> = ({ deletePayment, routerPush, payment,
         <View style={styles.card}>
           {CardContent}
           <View style={styles.partnerIndicator}>
-            <Text style={styles.partnerText}>パートナー</Text>
+            <Text style={styles.partnerText}>{partnerName || "パートナー"}</Text>
           </View>
         </View>
       )}
