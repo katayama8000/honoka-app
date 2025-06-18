@@ -92,7 +92,7 @@ export const useSubscription = () => {
           billing_cycle: billingCycle,
           next_billing_date: nextBillingDate,
           is_active: true,
-          user_id: user.id,
+          user_id: user.user_id,
         })
         .select()
         .single();
@@ -112,7 +112,17 @@ export const useSubscription = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [coupleId, user?.id, serviceName, monthlyAmount, billingCycle, nextBillingDate, resetForm, setSubscriptions]);
+  }, [
+    coupleId,
+    user?.id,
+    user?.user_id,
+    serviceName,
+    monthlyAmount,
+    billingCycle,
+    nextBillingDate,
+    resetForm,
+    setSubscriptions,
+  ]);
 
   // パラメータを受け取るサブスクリプション追加関数
   const addSubscriptionWithData = useCallback(
@@ -143,7 +153,7 @@ export const useSubscription = () => {
             billing_cycle: subscriptionData.billing_cycle,
             next_billing_date: subscriptionData.next_billing_date,
             is_active: true,
-            user_id: user.id,
+            user_id: user.user_id,
           })
           .select()
           .single();
@@ -163,7 +173,7 @@ export const useSubscription = () => {
         setIsLoading(false);
       }
     },
-    [coupleId, user?.id, setSubscriptions],
+    [coupleId, user?.id, user?.user_id, setSubscriptions],
   );
 
   // サブスクリプションを更新
@@ -243,22 +253,22 @@ export const useSubscription = () => {
   // 自分の月額合計を計算
   const getMyMonthlyAmount = useCallback((): number => {
     return subscriptions
-      .filter((sub) => sub.user_id === user?.id)
+      .filter((sub) => sub.user_id === user?.user_id)
       .reduce((total, sub) => {
         const monthlyAmount = sub.billing_cycle === "yearly" ? Math.round(sub.monthly_amount / 12) : sub.monthly_amount;
         return total + monthlyAmount;
       }, 0);
-  }, [subscriptions, user?.id]);
+  }, [subscriptions, user?.user_id]);
 
   // パートナーの月額合計を計算
   const getPartnerMonthlyAmount = useCallback((): number => {
     return subscriptions
-      .filter((sub) => sub.user_id !== user?.id)
+      .filter((sub) => sub.user_id !== user?.user_id)
       .reduce((total, sub) => {
         const monthlyAmount = sub.billing_cycle === "yearly" ? Math.round(sub.monthly_amount / 12) : sub.monthly_amount;
         return total + monthlyAmount;
       }, 0);
-  }, [subscriptions, user?.id]);
+  }, [subscriptions, user?.user_id]);
 
   // 月額の詳細情報を取得
   const getMonthlyAmountBreakdown = useCallback(() => {
