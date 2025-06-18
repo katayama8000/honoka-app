@@ -1,13 +1,14 @@
 import { Colors } from "@/constants/Colors";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useUser } from "@/hooks/useUser";
 import { coupleIdAtom } from "@/state/couple.state";
-import type { Subscription } from "@/types/Row";
+import type { Subscription, User } from "@/types/Row";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
 import type React from "react";
-import { type FC, memo, useCallback, useMemo } from "react";
+import { type FC, memo, useCallback, useMemo, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -29,9 +30,25 @@ const SubscriptionsScreen: FC = () => {
     deleteSubscription,
     getMonthlyAmountBreakdown,
   } = useSubscription();
+  const { fetchPartner } = useUser();
   const { push } = useRouter();
   const [coupleId] = useAtom(coupleIdAtom);
   const [currentUser] = useAtom(userAtom);
+  const [partner, setPartner] = useState<User | null>(null);
+
+  // パートナー情報を取得
+  useEffect(() => {
+    const fetchPartnerInfo = async () => {
+      if (coupleId && currentUser?.user_id) {
+        const partnerData = await fetchPartner(coupleId, currentUser.user_id);
+        if (partnerData) {
+          setPartner(partnerData);
+        }
+      }
+    };
+
+    fetchPartnerInfo();
+  }, [coupleId, currentUser?.user_id, fetchPartner]);
 
   const renderSubscription = useCallback(
     ({ item }: { item: Subscription }) => (
@@ -41,10 +58,12 @@ const SubscriptionsScreen: FC = () => {
         onEdit={() => {
           push(`/(modal)/subscription-form?mode=edit&id=${item.id}` as Href);
         }}
-        currentUserId={currentUser?.id}
+        currentUserId={currentUser?.user_id}
+        currentUserName={currentUser?.name}
+        partnerName={partner?.name}
       />
     ),
-    [deleteSubscription, push, currentUser?.id],
+    [deleteSubscription, push, currentUser?.user_id, currentUser?.name, partner?.name],
   );
 
   const keyExtractor = useCallback((item: Subscription) => item.id.toString(), []);
@@ -71,12 +90,12 @@ const SubscriptionsScreen: FC = () => {
 
         <View style={styles.breakdownContainer}>
           <View style={styles.breakdownRow}>
-            <Text style={styles.breakdownLabel}>あなた</Text>
+            <Text style={styles.breakdownLabel}>{currentUser?.name || "あなた"}</Text>
             <Text style={styles.breakdownAmount}>¥{monthlyBreakdown.myAmount.toLocaleString()}</Text>
           </View>
 
           <View style={styles.breakdownRow}>
-            <Text style={styles.breakdownLabel}>パートナー</Text>
+            <Text style={styles.breakdownLabel}>{partner?.name || "パートナー"}</Text>
             <Text style={styles.breakdownAmount}>¥{monthlyBreakdown.partnerAmount.toLocaleString()}</Text>
           </View>
 
@@ -130,72 +149,79 @@ type SubscriptionItemProps = {
   subscription: Subscription;
   onDelete: (id: number) => Promise<void>;
   onEdit: () => void;
-  currentUserId?: number;
+  currentUserId?: string;
+  currentUserName?: string;
+  partnerName?: string;
 };
 
-const SubscriptionItem: FC<SubscriptionItemProps> = memo(({ subscription, onDelete, onEdit, currentUserId }) => {
-  const handleDelete = useCallback(() => {
-    Alert.alert("削除確認", `${subscription.service_name}を削除しますか？`, [
-      { text: "キャンセル", style: "cancel" },
-      {
-        text: "削除",
-        style: "destructive",
-        onPress: () => onDelete(subscription.id),
-      },
-    ]);
-  }, [subscription.id, subscription.service_name, onDelete]);
+const SubscriptionItem: FC<SubscriptionItemProps> = memo(
+  ({ subscription, onDelete, onEdit, currentUserId, currentUserName, partnerName }) => {
+    const handleDelete = useCallback(() => {
+      Alert.alert("削除確認", `${subscription.service_name}を削除しますか？`, [
+        { text: "キャンセル", style: "cancel" },
+        {
+          text: "削除",
+          style: "destructive",
+          onPress: () => onDelete(subscription.id),
+        },
+      ]);
+    }, [subscription.id, subscription.service_name, onDelete]);
 
-  const formatDate = useCallback((dateString: string) => {
-    const date = new Date(dateString);
-    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`;
-  }, []);
+    const formatDate = useCallback((dateString: string) => {
+      const date = new Date(dateString);
+      return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`;
+    }, []);
 
-  const getBillingCycleText = useCallback((cycle: string) => {
-    return cycle === "monthly" ? "月額" : "年額";
-  }, []);
+    const getBillingCycleText = useCallback((cycle: string) => {
+      return cycle === "monthly" ? "月額" : "年額";
+    }, []);
 
-  const getCreatorText = useCallback(() => {
-    if (subscription.user_id) {
-      return subscription.user_id === currentUserId ? "あなた" : "パートナー";
-    }
-    return "あなた"; // user_idが設定されていない場合のデフォルト
-  }, [subscription.user_id, currentUserId]);
+    const getCreatorText = useCallback(() => {
+      if (subscription.user_id) {
+        if (subscription.user_id === currentUserId) {
+          return currentUserName || "あなた";
+        }
+        return partnerName || "パートナー";
+      }
+      return currentUserName || "あなた"; // user_idが設定されていない場合のデフォルト
+    }, [subscription.user_id, currentUserId, currentUserName, partnerName]);
 
-  return (
-    <View style={styles.itemContainer}>
-      <View style={styles.itemHeader}>
-        <Text style={styles.serviceName}>{subscription.service_name}</Text>
-        <View style={styles.actionButtons}>
-          <TouchableOpacity onPress={onEdit} style={styles.editButton}>
-            <Ionicons name="create" size={20} color={Colors.primary} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
-            <Ionicons name="trash" size={20} color={Colors.secondary} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.itemDetails}>
-        <View style={styles.amountContainer}>
-          <Text style={styles.amount}>¥{subscription.monthly_amount.toLocaleString()}</Text>
-          <Text style={styles.billingCycle}>({getBillingCycleText(subscription.billing_cycle)})</Text>
-        </View>
-
-        <View style={styles.metaInfoContainer}>
-          <View style={styles.nextBillingContainer}>
-            <Ionicons name="calendar" size={16} color={Colors.light.icon} />
-            <Text style={styles.nextBillingDate}>次回: {formatDate(subscription.next_billing_date)}</Text>
-          </View>
-
-          <View style={styles.creatorContainer}>
-            <Ionicons name="person" size={16} color={Colors.light.icon} />
-            <Text style={styles.creatorText}>作成者: {getCreatorText()}</Text>
+    return (
+      <View style={styles.itemContainer}>
+        <View style={styles.itemHeader}>
+          <Text style={styles.serviceName}>{subscription.service_name}</Text>
+          <View style={styles.actionButtons}>
+            <TouchableOpacity onPress={onEdit} style={styles.editButton}>
+              <Ionicons name="create" size={20} color={Colors.primary} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
+              <Ionicons name="trash" size={20} color={Colors.secondary} />
+            </TouchableOpacity>
           </View>
         </View>
+
+        <View style={styles.itemDetails}>
+          <View style={styles.amountContainer}>
+            <Text style={styles.amount}>¥{subscription.monthly_amount.toLocaleString()}</Text>
+            <Text style={styles.billingCycle}>({getBillingCycleText(subscription.billing_cycle)})</Text>
+          </View>
+
+          <View style={styles.metaInfoContainer}>
+            <View style={styles.nextBillingContainer}>
+              <Ionicons name="calendar" size={16} color={Colors.light.icon} />
+              <Text style={styles.nextBillingDate}>次回: {formatDate(subscription.next_billing_date)}</Text>
+            </View>
+
+            <View style={styles.creatorContainer}>
+              <Ionicons name="person" size={16} color={Colors.light.icon} />
+              <Text style={styles.creatorText}>作成者: {getCreatorText()}</Text>
+            </View>
+          </View>
+        </View>
       </View>
-    </View>
-  );
-});
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

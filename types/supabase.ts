@@ -19,18 +19,18 @@ export type Database = {
           monthly_amount: number
           next_billing_date: string
           service_name: string
-          user_id: number
+          user_id: string
         }
         Insert: {
           billing_cycle: Database["public"]["Enums"]["billing_cycle_type"]
           couple_id: number
           created_at?: string
-          id: number
+          id?: number
           is_active?: boolean
           monthly_amount: number
           next_billing_date: string
           service_name: string
-          user_id: number
+          user_id: string
         }
         Update: {
           billing_cycle?: Database["public"]["Enums"]["billing_cycle_type"]
@@ -41,7 +41,7 @@ export type Database = {
           monthly_amount?: number
           next_billing_date?: string
           service_name?: string
-          user_id?: number
+          user_id?: string
         }
         Relationships: [
           {
@@ -62,7 +62,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          id: number
+          id?: number
           user1_id: string
           user2_id: string
         }
@@ -84,29 +84,29 @@ export type Database = {
           monthly_amount: number
           next_billing_date: string
           service_name: string
-          user_id: number
+          user_id: string
         }
         Insert: {
           billing_cycle: Database["public"]["Enums"]["billing_cycle_type"]
           couple_id: number
           created_at?: string
-          id?: never
+          id?: number
           is_active?: boolean
           monthly_amount: number
           next_billing_date: string
           service_name: string
-          user_id: number
+          user_id: string
         }
         Update: {
           billing_cycle?: Database["public"]["Enums"]["billing_cycle_type"]
           couple_id?: number
           created_at?: string
-          id?: never
+          id?: number
           is_active?: boolean
           monthly_amount?: number
           next_billing_date?: string
           service_name?: string
-          user_id?: number
+          user_id?: string
         }
         Relationships: [
           {
