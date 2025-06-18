@@ -39,7 +39,7 @@ const SubscriptionsScreen: FC = () => {
         subscription={item}
         onDelete={deleteSubscription}
         onEdit={() => {
-          push(`/(modal)/subscription-form?mode=edit&id=${item.id}` as Href);
+          push(`/(modal)/subscription-modal?mode=edit&id=${item.id}` as Href);
         }}
         currentUserId={currentUser?.id}
       />
@@ -116,7 +116,7 @@ const SubscriptionsScreen: FC = () => {
       <TouchableOpacity
         style={styles.floatingButton}
         onPress={() => {
-          push("/(modal)/subscription-form?mode=add" as Href);
+          push("/(modal)/subscription-modal?mode=add" as Href);
         }}
         activeOpacity={0.8}
       >

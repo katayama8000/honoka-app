@@ -81,7 +81,8 @@ export default function RootLayout() {
         <Stack>
           <Stack.Protected guard={isLoggedIn}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="(modal)" options={{ presentation: "modal" }} />
+            <Stack.Screen name="(modal)/payment-modal" options={{ presentation: "modal" }} />
+            <Stack.Screen name="(modal)/subscription-modal" options={{ presentation: "modal" }} />
             <Stack.Screen name="past-invoice-details" options={{ title: "請求書詳細" }} />
           </Stack.Protected>
           <Stack.Protected guard={!isLoggedIn}>
