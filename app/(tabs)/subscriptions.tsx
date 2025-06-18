@@ -41,10 +41,10 @@ const SubscriptionsScreen: FC = () => {
         onEdit={() => {
           push(`/(modal)/subscription-form?mode=edit&id=${item.id}` as Href);
         }}
-        currentUserId={currentUser?.id}
+        currentUserId={currentUser?.user_id}
       />
     ),
-    [deleteSubscription, push, currentUser?.id],
+    [deleteSubscription, push, currentUser?.user_id],
   );
 
   const keyExtractor = useCallback((item: Subscription) => item.id.toString(), []);
@@ -130,7 +130,7 @@ type SubscriptionItemProps = {
   subscription: Subscription;
   onDelete: (id: number) => Promise<void>;
   onEdit: () => void;
-  currentUserId?: number;
+  currentUserId?: string;
 };
 
 const SubscriptionItem: FC<SubscriptionItemProps> = memo(({ subscription, onDelete, onEdit, currentUserId }) => {
