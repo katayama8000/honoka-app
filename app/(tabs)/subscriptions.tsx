@@ -66,18 +66,6 @@ const SubscriptionsScreen: FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>サブスクリプション</Text>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => {
-            push("/(modal)/subscription-form?mode=add" as Href);
-          }}
-        >
-          <Ionicons name="add" size={24} color={Colors.white} />
-        </TouchableOpacity>
-      </View>
-
       <View style={styles.summaryContainer}>
         <Text style={styles.summaryMainLabel}>月額サブスクリプション料金</Text>
 
@@ -118,11 +106,22 @@ const SubscriptionsScreen: FC = () => {
             <View style={styles.emptyContainer}>
               <Ionicons name="card" size={64} color={Colors.light.icon} />
               <Text style={styles.emptyText}>サブスクリプションがありません</Text>
-              <Text style={styles.emptySubText}>右上の + ボタンから追加してください</Text>
+              <Text style={styles.emptySubText}>右下の + ボタンから追加してください</Text>
             </View>
           }
         />
       )}
+
+      {/* フローティング追加ボタン */}
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => {
+          push("/(modal)/subscription-form?mode=add" as Href);
+        }}
+        activeOpacity={0.8}
+      >
+        <Ionicons name="add" size={24} color={Colors.white} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -209,39 +208,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray,
-    shadowColor: defaultShadowColor,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
+
   title: {
     fontSize: 20,
     fontWeight: defaultFontWeight,
     color: Colors.light.text,
   },
-  addButton: {
-    backgroundColor: Colors.primary,
-    borderRadius: 20,
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   summaryContainer: {
     backgroundColor: Colors.white,
     marginHorizontal: 20,
-    marginTop: 16,
-    padding: 16,
+    marginTop: 12,
+    padding: 12,
     borderRadius: 8,
     shadowColor: defaultShadowColor,
     shadowOffset: { width: 0, height: 2 },
@@ -250,9 +227,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   summaryMainLabel: {
-    fontSize: defaultFontSize,
+    fontSize: 14,
     color: Colors.light.icon,
-    marginBottom: 12,
+    marginBottom: 8,
     textAlign: "center",
   },
   summaryLabel: {
@@ -266,28 +243,28 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
   breakdownContainer: {
-    gap: 8,
+    gap: 6,
   },
   breakdownRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 4,
+    paddingVertical: 2,
   },
   breakdownLabel: {
-    fontSize: defaultFontSize,
+    fontSize: 14,
     color: Colors.light.text,
   },
   breakdownAmount: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: defaultFontWeight,
     color: Colors.light.text,
   },
   totalRow: {
     borderTopWidth: 1,
     borderTopColor: Colors.gray,
-    paddingTop: 8,
-    marginTop: 4,
+    paddingTop: 6,
+    marginTop: 6,
   },
   totalLabel: {
     fontSize: 16,
@@ -295,17 +272,18 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
   },
   totalAmount: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: defaultFontWeight,
     color: Colors.primary,
   },
   listContainer: {
     padding: 20,
-    paddingTop: 16,
+    paddingTop: 12,
+    paddingBottom: 100, // フローティングボタンの領域を確保
   },
   emptyContainer: {
     alignItems: "center",
-    paddingVertical: 60,
+    paddingVertical: 40,
   },
   emptyText: {
     fontSize: 18,
@@ -399,6 +377,22 @@ const styles = StyleSheet.create({
   creatorText: {
     fontSize: 14,
     color: Colors.light.icon,
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: Colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
 });
 

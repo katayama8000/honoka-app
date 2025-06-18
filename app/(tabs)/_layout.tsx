@@ -48,7 +48,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="subscriptions"
         options={{
-          title: "サブスク",
+          title: "サブスクリプション(beta)",
           headerTitleStyle: {
             fontSize: 22,
             color: Colors.white,
