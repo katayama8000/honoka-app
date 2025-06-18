@@ -42,7 +42,6 @@ const HomeScreen: FC = () => {
     (async () => {
       const uid = (await supabase.auth.getSession())?.data.session?.user?.id;
       if (!uid) {
-        push({ pathname: "/sign-in" });
         return;
       }
       setUserId(uid);
