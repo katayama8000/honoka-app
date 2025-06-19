@@ -1,4 +1,4 @@
-import { couple_subscriptions_table, users_table } from "@/constants/Table";
+import { couple_subscriptions_table } from "@/constants/Table";
 import { supabase } from "@/lib/supabase";
 import type { Subscription } from "@/types/Row";
 import { useAtom } from "jotai";

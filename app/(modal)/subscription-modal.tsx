@@ -1,7 +1,7 @@
 import { Colors } from "@/constants/Colors";
 import { useSubscription } from "@/hooks/useSubscription";
-import type { BillingCycle } from "@/types/Row";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
+import type { Subscription } from "@/types/Row";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import type React from "react";
@@ -37,10 +37,15 @@ const SubscriptionFormScreen: FC = () => {
   const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
 
   // フォーム専用のローカル状態
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    serviceName: string;
+    monthlyAmount: number | null;
+    billingCycle: Subscription["billing_cycle"];
+    nextBillingDate: string;
+  }>({
     serviceName: "",
-    monthlyAmount: null as number | null,
-    billingCycle: "monthly" as BillingCycle,
+    monthlyAmount: null,
+    billingCycle: "monthly",
     nextBillingDate: "",
   });
 
