@@ -186,17 +186,23 @@ const SubscriptionItem: FC<SubscriptionItemProps> = memo(
       return currentUserName || "あなた"; // user_idが設定されていない場合のデフォルト
     }, [subscription.user_id, currentUserId, currentUserName, partnerName]);
 
+    const isOwner = subscription.user_id === currentUserId;
+
     return (
       <View style={styles.itemContainer}>
         <View style={styles.itemHeader}>
           <Text style={styles.serviceName}>{subscription.service_name}</Text>
           <View style={styles.actionButtons}>
-            <TouchableOpacity onPress={onEdit} style={styles.editButton}>
-              <Ionicons name="create" size={20} color={Colors.primary} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
-              <Ionicons name="trash" size={20} color={Colors.secondary} />
-            </TouchableOpacity>
+            {isOwner && (
+              <TouchableOpacity onPress={onEdit} style={styles.editButton}>
+                <Ionicons name="create" size={20} color={Colors.primary} />
+              </TouchableOpacity>
+            )}
+            {isOwner && (
+              <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
+                <Ionicons name="trash" size={20} color={Colors.secondary} />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
