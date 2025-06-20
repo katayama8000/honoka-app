@@ -110,28 +110,80 @@ await pushNotificationClient.sendPaymentNotification(
 
 ### subscription-modal.tsx での使用例
 ```typescript
-// サブスクリプション保存後の通知
-try {
-  if (mode === "edit" && subscriptionId) {
-    await updateSubscription(subscriptionId, subscriptionData);
-    await pushNotificationClient.sendSubscriptionNotification(
-      partnerToken,
-      userName,
-      formData.serviceName,
-      "更新"
-    );
-  } else {
-    await addSubscriptionWithData(subscriptionData);
-    await pushNotificationClient.sendSubscriptionNotification(
-      partnerToken,
-      userName,
-      formData.serviceName,
-      "追加"
-    );
+// ユーザー関連のhooksとatomsを追加
+const { fetchPartner } = useUser();
+const [couple_id] = useAtom(coupleIdAtom);
+const [user] = useAtom(userAtom);
+
+// handleSubmit関数内での通知送信
+const handleSubmit = useCallback(async () => {
+  // ...バリデーション処理...
+
+  if (couple_id === null || user === null) return;
+
+  try {
+    const partner = await fetchPartner(couple_id, user.user_id);
+    if (partner === undefined) return;
+
+    if (mode === "edit" && subscriptionId) {
+      await updateSubscription(subscriptionId, subscriptionData);
+      
+      // 更新通知を送信
+      await pushNotificationClient.sendSubscriptionNotification(
+        partner.expo_push_token,
+        user.name,
+        formData.serviceName,
+        "更新"
+      );
+    } else {
+      await addSubscriptionWithData(subscriptionData);
+      
+      // 追加通知を送信
+      await pushNotificationClient.sendSubscriptionNotification(
+        partner.expo_push_token,
+        user.name,
+        formData.serviceName,
+        "追加"
+      );
+    }
+    
+    back();
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    Alert.alert("エラー", "処理中にエラーが発生しました。もう一度お試しください。");
   }
-} catch (error) {
-  console.error("Error:", error);
-}
+}, [formData, mode, subscriptionId, updateSubscription, addSubscriptionWithData, back, couple_id, user, fetchPartner]);
+```
+
+### subscriptions.tsx での削除通知例
+```typescript
+// 削除通知付きハンドラーを作成
+const handleDeleteWithNotification = useCallback(
+  async (subscriptionId: number) => {
+    try {
+      // 削除前にサブスクリプション情報を取得
+      const subscription = subscriptions.find(sub => sub.id === subscriptionId);
+      if (!subscription) return;
+
+      // サブスクリプションを削除
+      await deleteSubscription(subscriptionId);
+
+      // パートナーに通知を送信
+      if (partner?.expo_push_token && currentUser?.name) {
+        await pushNotificationClient.sendSubscriptionNotification(
+          partner.expo_push_token,
+          currentUser.name,
+          subscription.service_name,
+          "削除"
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting subscription:", error);
+      Alert.alert("エラー", "削除中にエラーが発生しました。");
+    }
+  },
+  [deleteSubscription, subscriptions, partner?.expo_push_token, currentUser?.name],
+);
 ```
 
 ## エラーハンドリング

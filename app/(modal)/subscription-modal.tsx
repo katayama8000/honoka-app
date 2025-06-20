@@ -1,8 +1,13 @@
 import { Colors } from "@/constants/Colors";
+import { useUser } from "@/hooks/useUser";
 import { useSubscription } from "@/hooks/useSubscription";
+import { coupleIdAtom } from "@/state/couple.state";
+import { userAtom } from "@/state/user.state";
 import type { Subscription } from "@/types/Row";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
+import { pushNotificationClient } from "@/utils/pushNotificationClient";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { useAtom } from "jotai";
 import dayjs from "dayjs";
 import type React from "react";
 import { type FC, useCallback, useEffect, useState } from "react";
@@ -35,6 +40,9 @@ const SubscriptionFormScreen: FC = () => {
   }>();
 
   const { addSubscriptionWithData, updateSubscription, isLoading, subscriptions } = useSubscription();
+  const { fetchPartner } = useUser();
+  const [couple_id] = useAtom(coupleIdAtom);
+  const [user] = useAtom(userAtom);
 
   const [mode, setMode] = useState<FormMode>("add");
   const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
@@ -113,7 +121,12 @@ const SubscriptionFormScreen: FC = () => {
       return;
     }
 
+    if (couple_id === null || user === null) return;
+
     try {
+      const partner = await fetchPartner(couple_id, user.user_id);
+      if (partner === undefined) return;
+
       if (mode === "edit" && subscriptionId) {
         await updateSubscription(subscriptionId, {
           service_name: formData.serviceName,
@@ -121,6 +134,13 @@ const SubscriptionFormScreen: FC = () => {
           billing_cycle: formData.billingCycle,
           next_billing_date: formData.nextBillingDate,
         });
+
+        await pushNotificationClient.sendSubscriptionNotification(
+          partner.expo_push_token,
+          user.name,
+          formData.serviceName,
+          "更新"
+        );
       } else {
         await addSubscriptionWithData({
           service_name: formData.serviceName,
@@ -128,12 +148,20 @@ const SubscriptionFormScreen: FC = () => {
           billing_cycle: formData.billingCycle,
           next_billing_date: formData.nextBillingDate,
         });
+
+        await pushNotificationClient.sendSubscriptionNotification(
+          partner.expo_push_token,
+          user.name,
+          formData.serviceName,
+          "追加"
+        );
       }
       back();
     } catch (error) {
       console.error("Error submitting form:", error);
+      Alert.alert("エラー", "処理中にエラーが発生しました。もう一度お試しください。");
     }
-  }, [formData, mode, subscriptionId, updateSubscription, addSubscriptionWithData, back]);
+  }, [formData, mode, subscriptionId, updateSubscription, addSubscriptionWithData, back, couple_id, user, fetchPartner]);
 
   const handleCancel = useCallback(() => {
     back();

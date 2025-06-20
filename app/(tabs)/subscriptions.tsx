@@ -4,6 +4,7 @@ import { useUser } from "@/hooks/useUser";
 import { coupleIdAtom } from "@/state/couple.state";
 import type { Subscription, User } from "@/types/Row";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
+import { pushNotificationClient } from "@/utils/pushNotificationClient";
 import { Ionicons } from "@expo/vector-icons";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
@@ -50,11 +51,38 @@ const SubscriptionsScreen: FC = () => {
     fetchPartnerInfo();
   }, [coupleId, currentUser?.user_id, fetchPartner]);
 
+  const handleDeleteWithNotification = useCallback(
+    async (subscriptionId: number) => {
+      try {
+        // 削除前にサブスクリプション情報を取得
+        const subscription = subscriptions.find(sub => sub.id === subscriptionId);
+        if (!subscription) return;
+
+        // サブスクリプションを削除
+        await deleteSubscription(subscriptionId);
+
+        // パートナーに通知を送信
+        if (partner?.expo_push_token && currentUser?.name) {
+          await pushNotificationClient.sendSubscriptionNotification(
+            partner.expo_push_token,
+            currentUser.name,
+            subscription.service_name,
+            "削除"
+          );
+        }
+      } catch (error) {
+        console.error("Error deleting subscription:", error);
+        Alert.alert("エラー", "削除中にエラーが発生しました。");
+      }
+    },
+    [deleteSubscription, subscriptions, partner?.expo_push_token, currentUser?.name],
+  );
+
   const renderSubscription = useCallback(
     ({ item }: { item: Subscription }) => (
       <SubscriptionItem
         subscription={item}
-        onDelete={deleteSubscription}
+        onDelete={handleDeleteWithNotification}
         onEdit={() => {
           push(`/(modal)/subscription-modal?mode=edit&id=${item.id}` as Href);
         }}
@@ -63,7 +91,7 @@ const SubscriptionsScreen: FC = () => {
         partnerName={partner?.name}
       />
     ),
-    [deleteSubscription, push, currentUser?.user_id, currentUser?.name, partner?.name],
+    [handleDeleteWithNotification, push, currentUser?.user_id, currentUser?.name, partner?.name],
   );
 
   const keyExtractor = useCallback((item: Subscription) => item.id.toString(), []);
