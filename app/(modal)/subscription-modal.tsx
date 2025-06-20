@@ -2,7 +2,6 @@ import { Colors } from "@/constants/Colors";
 import { useSubscription } from "@/hooks/useSubscription";
 import type { Subscription } from "@/types/Row";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
-import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import dayjs from "dayjs";
 import type React from "react";
