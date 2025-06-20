@@ -67,6 +67,7 @@ export default (): ExpoConfig => {
     plugins: [
       "expo-router",
       "expo-font",
+      "expo-web-browser",
       [
         "expo-notifications",
         {
