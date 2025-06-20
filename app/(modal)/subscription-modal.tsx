@@ -137,8 +137,19 @@ const SubscriptionFormScreen: FC = () => {
   const isFormValid = formData.serviceName && formData.monthlyAmount && formData.nextBillingDate;
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+    >
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+        keyboardShouldPersistTaps="handled"
+        contentInsetAdjustmentBehavior="automatic"
+        automaticallyAdjustContentInsets={false}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
           <TouchableOpacity onPress={handleCancel} style={styles.cancelButton}>
             <Ionicons name="close" size={24} color={Colors.light.text} />
@@ -255,6 +266,10 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingBottom: 100, // キーボード用の追加スペース
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -297,9 +312,10 @@ const styles = StyleSheet.create({
   },
   form: {
     padding: 20,
+    paddingBottom: 40, // キーボード用の余分なスペース
   },
   formGroup: {
-    marginBottom: 24,
+    marginBottom: 28, // 少し間隔を広げる
   },
   label: {
     fontSize: 16,
