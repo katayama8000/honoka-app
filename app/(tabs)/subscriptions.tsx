@@ -223,12 +223,12 @@ const SubscriptionItem: FC<SubscriptionItemProps> = memo(
           <View style={styles.actionButtons}>
             {isOwner && (
               <TouchableOpacity onPress={onEdit} style={styles.editButton}>
-                <Ionicons name="create" size={20} color={Colors.primary} />
+                <Ionicons name="create" size={18} color={Colors.primary} />
               </TouchableOpacity>
             )}
             {isOwner && (
               <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
-                <Ionicons name="trash" size={20} color={Colors.secondary} />
+                <Ionicons name="trash" size={18} color={Colors.secondary} />
               </TouchableOpacity>
             )}
           </View>
@@ -395,10 +395,34 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   editButton: {
-    padding: 4,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.primary,
   },
   deleteButton: {
-    padding: 4,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.secondary,
   },
   itemDetails: {
     gap: 8,
