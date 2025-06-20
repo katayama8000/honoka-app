@@ -4,6 +4,7 @@ import type { Subscription } from "@/types/Row";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import dayjs from "dayjs";
 import type React from "react";
 import { type FC, useCallback, useEffect, useState } from "react";
 import {
@@ -19,6 +20,11 @@ import {
 } from "react-native";
 
 type FormMode = "add" | "edit";
+
+// 1ヶ月先の日付を取得するヘルパー関数
+const getNextMonthDate = (): string => {
+  return dayjs().add(1, "month").format("YYYY-MM-DD");
+};
 
 const SubscriptionFormScreen: FC = () => {
   const { back } = useRouter();
@@ -46,7 +52,7 @@ const SubscriptionFormScreen: FC = () => {
     serviceName: "",
     monthlyAmount: null,
     billingCycle: "monthly",
-    nextBillingDate: "",
+    nextBillingDate: getNextMonthDate(),
   });
 
   // パラメータから初期値を設定（初回のみ）
@@ -74,7 +80,7 @@ const SubscriptionFormScreen: FC = () => {
         serviceName: "",
         monthlyAmount: null,
         billingCycle: "monthly",
-        nextBillingDate: "",
+        nextBillingDate: getNextMonthDate(),
       });
     }
   }, [params.mode, params.id, subscriptions]);

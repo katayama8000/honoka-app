@@ -168,3 +168,14 @@ This document outlines the coding standards and best practices for the Honoka Ap
   # Adding a dev dependency
   yarn add -D package-name
   ```
+
+## 2025/06/20
+- Use Day.js insatead of new Date()
+  ```typescript
+  // ❌ Avoid
+  const now = new Date();
+
+  // ✅ Instead use Day.js
+  import dayjs from 'dayjs';
+  const now = dayjs();
+  ```
