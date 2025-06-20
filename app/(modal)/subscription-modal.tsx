@@ -3,7 +3,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import type { Subscription } from "@/types/Row";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import dayjs from "dayjs";
 import type React from "react";
 import { type FC, useCallback, useEffect, useState } from "react";
@@ -22,14 +22,12 @@ import {
 type FormMode = "add" | "edit";
 
 // 1ヶ月先の日付を取得するヘルパー関数
-const getNextMonthDate = (): string => {
-  return dayjs().add(1, "month").format("YYYY-MM-DD");
-};
+const getNextMonthDate = (): string => dayjs().add(1, "month").format("YYYY-MM-DD");
 
 const SubscriptionFormScreen: FC = () => {
   const { back } = useRouter();
   const params = useLocalSearchParams<{
-    mode?: string;
+    mode?: FormMode;
     id?: string;
     serviceName?: string;
     monthlyAmount?: string;
@@ -41,6 +39,7 @@ const SubscriptionFormScreen: FC = () => {
 
   const [mode, setMode] = useState<FormMode>("add");
   const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
+  const { setOptions } = useNavigation();
 
   // フォーム専用のローカル状態
   const [formData, setFormData] = useState<{
@@ -57,6 +56,11 @@ const SubscriptionFormScreen: FC = () => {
 
   // パラメータから初期値を設定（初回のみ）
   useEffect(() => {
+    setOptions({
+      headerTitle: mode === "edit" ? "サブスク編集" : "サブスク追加",
+      headerTitleStyle: { fontSize: 22, color: Colors.white },
+      headerStyle: { backgroundColor: Colors.primary },
+    });
     if (params.mode === "edit" && params.id) {
       setMode("edit");
       setSubscriptionId(Number(params.id));
@@ -83,7 +87,7 @@ const SubscriptionFormScreen: FC = () => {
         nextBillingDate: getNextMonthDate(),
       });
     }
-  }, [params.mode, params.id, subscriptions]);
+  }, [params.mode, params.id, subscriptions, mode, setOptions]);
 
   // 初期データ設定済みフラグ
   const [initialDataLoaded, setInitialDataLoaded] = useState<boolean>(false);
