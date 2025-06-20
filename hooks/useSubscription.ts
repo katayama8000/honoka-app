@@ -1,6 +1,6 @@
-import { couple_subscriptions_table, users_table } from "@/constants/Table";
+import { couple_subscriptions_table } from "@/constants/Table";
 import { supabase } from "@/lib/supabase";
-import type { Subscription, BillingCycle } from "@/types/Row";
+import type { Subscription } from "@/types/Row";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 import { ToastAndroid } from "react-native";
@@ -18,7 +18,7 @@ export const useSubscription = () => {
   // フォーム用の状態
   const [serviceName, setServiceName] = useState<string | null>(null);
   const [monthlyAmount, setMonthlyAmount] = useState<number | null>(null);
-  const [billingCycle, setBillingCycle] = useState<BillingCycle>("monthly");
+  const [billingCycle, setBillingCycle] = useState<Subscription["billing_cycle"]>("monthly");
   const [nextBillingDate, setNextBillingDate] = useState<string | null>(null);
 
   // フォームをリセット
@@ -129,7 +129,7 @@ export const useSubscription = () => {
     async (subscriptionData: {
       service_name: string;
       monthly_amount: number;
-      billing_cycle: BillingCycle;
+      billing_cycle: Subscription["billing_cycle"];
       next_billing_date: string;
     }): Promise<void> => {
       if (!coupleId) {
