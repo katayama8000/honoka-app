@@ -1,9 +1,14 @@
 import { Colors } from "@/constants/Colors";
 import { useSubscription } from "@/hooks/useSubscription";
-import type { BillingCycle } from "@/types/Row";
+import { useUser } from "@/hooks/useUser";
+import { coupleIdAtom } from "@/state/couple.state";
+import { userAtom } from "@/state/user.state";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
-import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import type { Subscription } from "@/types/Row";
+import { pushNotificationClient } from "@/utils/pushNotificationClient";
+import dayjs from "dayjs";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { useAtom } from "jotai";
 import type React from "react";
 import { type FC, useCallback, useEffect, useState } from "react";
 import {
@@ -20,10 +25,13 @@ import {
 
 type FormMode = "add" | "edit";
 
+// 1ヶ月先の日付を取得するヘルパー関数
+const getNextMonthDate = (): string => dayjs().add(1, "month").format("YYYY-MM-DD");
+
 const SubscriptionFormScreen: FC = () => {
   const { back } = useRouter();
   const params = useLocalSearchParams<{
-    mode?: string;
+    mode?: FormMode;
     id?: string;
     serviceName?: string;
     monthlyAmount?: string;
@@ -32,26 +40,41 @@ const SubscriptionFormScreen: FC = () => {
   }>();
 
   const { addSubscriptionWithData, updateSubscription, isLoading, subscriptions } = useSubscription();
+  const { fetchPartner } = useUser();
+  const [couple_id] = useAtom(coupleIdAtom);
+  const [user] = useAtom(userAtom);
 
   const [mode, setMode] = useState<FormMode>("add");
   const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
+  const { setOptions } = useNavigation();
 
   // フォーム専用のローカル状態
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    serviceName: Subscription["service_name"];
+    monthlyAmount: Subscription["monthly_amount"] | null;
+    billingCycle: Subscription["billing_cycle"];
+    nextBillingDate: Subscription["next_billing_date"];
+  }>({
     serviceName: "",
-    monthlyAmount: null as number | null,
-    billingCycle: "monthly" as BillingCycle,
-    nextBillingDate: "",
+    monthlyAmount: null,
+    billingCycle: "monthly",
+    nextBillingDate: getNextMonthDate(),
   });
 
   // パラメータから初期値を設定（初回のみ）
   useEffect(() => {
+    setOptions({
+      headerTitle: mode === "edit" ? "サブスク編集" : "サブスク追加",
+      headerTitleStyle: { fontSize: 22, color: Colors.white },
+      headerStyle: { backgroundColor: Colors.primary },
+    });
     if (params.mode === "edit" && params.id) {
       setMode("edit");
       setSubscriptionId(Number(params.id));
+      setInitialDataLoaded(false); // 編集モードでリセット
 
       // 既存のサブスクリプションデータから初期値を設定
-      const subscription = subscriptions.find((sub) => sub.id === Number(params.id));
+      const subscription = subscriptions.find(({ id }) => id === Number(params.id));
       if (subscription) {
         setFormData({
           serviceName: subscription.service_name,
@@ -59,32 +82,38 @@ const SubscriptionFormScreen: FC = () => {
           billingCycle: subscription.billing_cycle,
           nextBillingDate: subscription.next_billing_date,
         });
+        setInitialDataLoaded(true);
       }
     } else {
       setMode("add");
+      setInitialDataLoaded(false); // 追加モードでリセット
       setFormData({
         serviceName: "",
         monthlyAmount: null,
         billingCycle: "monthly",
-        nextBillingDate: "",
+        nextBillingDate: getNextMonthDate(),
       });
     }
-  }, [params.mode, params.id, subscriptions]); // subscriptionsを依存配列に追加
+  }, [params.mode, params.id, subscriptions, mode, setOptions]);
 
-  // サブスクリプションデータが読み込まれた後に編集データを設定
+  // 初期データ設定済みフラグ
+  const [initialDataLoaded, setInitialDataLoaded] = useState<boolean>(false);
+
+  // サブスクリプションデータが読み込まれた後に編集データを設定（初回のみ）
   useEffect(() => {
-    if (mode === "edit" && subscriptionId && subscriptions.length > 0) {
-      const subscription = subscriptions.find((sub) => sub.id === subscriptionId);
-      if (subscription && formData.serviceName === "") {
+    if (mode === "edit" && subscriptionId && subscriptions.length > 0 && !initialDataLoaded) {
+      const subscription = subscriptions.find(({ id }) => id === subscriptionId);
+      if (subscription) {
         setFormData({
           serviceName: subscription.service_name,
           monthlyAmount: subscription.monthly_amount,
           billingCycle: subscription.billing_cycle,
           nextBillingDate: subscription.next_billing_date,
         });
+        setInitialDataLoaded(true);
       }
     }
-  }, [subscriptions, mode, subscriptionId, formData.serviceName]);
+  }, [subscriptions, mode, subscriptionId, initialDataLoaded]);
 
   const handleSubmit = useCallback(async () => {
     if (!formData.serviceName || !formData.monthlyAmount || !formData.nextBillingDate) {
@@ -92,7 +121,12 @@ const SubscriptionFormScreen: FC = () => {
       return;
     }
 
+    if (couple_id === null || user === null) return;
+
     try {
+      const partner = await fetchPartner(couple_id, user.user_id);
+      if (partner === undefined) return;
+
       if (mode === "edit" && subscriptionId) {
         await updateSubscription(subscriptionId, {
           service_name: formData.serviceName,
@@ -100,6 +134,13 @@ const SubscriptionFormScreen: FC = () => {
           billing_cycle: formData.billingCycle,
           next_billing_date: formData.nextBillingDate,
         });
+
+        await pushNotificationClient.sendSubscriptionNotification(
+          partner.expo_push_token,
+          user.name,
+          formData.serviceName,
+          "更新",
+        );
       } else {
         await addSubscriptionWithData({
           service_name: formData.serviceName,
@@ -107,12 +148,30 @@ const SubscriptionFormScreen: FC = () => {
           billing_cycle: formData.billingCycle,
           next_billing_date: formData.nextBillingDate,
         });
+
+        await pushNotificationClient.sendSubscriptionNotification(
+          partner.expo_push_token,
+          user.name,
+          formData.serviceName,
+          "追加",
+        );
       }
       back();
     } catch (error) {
       console.error("Error submitting form:", error);
+      Alert.alert("エラー", "処理中にエラーが発生しました。もう一度お試しください。");
     }
-  }, [formData, mode, subscriptionId, updateSubscription, addSubscriptionWithData, back]);
+  }, [
+    formData,
+    mode,
+    subscriptionId,
+    updateSubscription,
+    addSubscriptionWithData,
+    back,
+    couple_id,
+    user,
+    fetchPartner,
+  ]);
 
   const handleCancel = useCallback(() => {
     back();
@@ -125,22 +184,19 @@ const SubscriptionFormScreen: FC = () => {
   const isFormValid = formData.serviceName && formData.monthlyAmount && formData.nextBillingDate;
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleCancel} style={styles.cancelButton}>
-            <Ionicons name="close" size={24} color={Colors.light.text} />
-          </TouchableOpacity>
-          <Text style={styles.title}>{mode === "edit" ? "サブスク編集" : "サブスク追加"}</Text>
-          <TouchableOpacity
-            onPress={handleSubmit}
-            style={[styles.saveButton, !isFormValid && styles.saveButtonDisabled]}
-            disabled={!isFormValid || isLoading}
-          >
-            <Text style={[styles.saveButtonText, !isFormValid && styles.saveButtonTextDisabled]}>保存</Text>
-          </TouchableOpacity>
-        </View>
-
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+    >
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+        keyboardShouldPersistTaps="handled"
+        contentInsetAdjustmentBehavior="automatic"
+        automaticallyAdjustContentInsets={false}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.form}>
           <View style={styles.formGroup}>
             <Text style={styles.label}>
@@ -229,6 +285,17 @@ const SubscriptionFormScreen: FC = () => {
             />
             <Text style={styles.helpText}>形式: YYYY-MM-DD</Text>
           </View>
+
+          {/* 保存ボタン */}
+          <TouchableOpacity
+            onPress={handleSubmit}
+            style={[styles.saveButton, !isFormValid && styles.saveButtonDisabled]}
+            disabled={!isFormValid || isLoading}
+          >
+            <Text style={[styles.saveButtonText, !isFormValid && styles.saveButtonTextDisabled]}>
+              {isLoading ? "保存中..." : "保存"}
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -243,51 +310,42 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray,
-    shadowColor: defaultShadowColor,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  cancelButton: {
-    padding: 4,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: defaultFontWeight,
-    color: Colors.light.text,
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingBottom: 150, // キーボード用の追加スペースを増加
   },
   saveButton: {
     backgroundColor: Colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginTop: 40, // マージンを増加
+    marginBottom: 20, // 下部マージンを追加
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   saveButtonDisabled: {
     backgroundColor: Colors.light.icon,
   },
   saveButtonText: {
     color: Colors.white,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: defaultFontWeight,
+    textAlign: "center",
   },
   saveButtonTextDisabled: {
     color: Colors.white,
   },
   form: {
     padding: 20,
+    paddingTop: 10, // 上部パディングを削減
+    paddingBottom: 60, // キーボード用の余分なスペース増加
   },
   formGroup: {
-    marginBottom: 24,
+    marginBottom: 32, // 間隔をさらに広げる
   },
   label: {
     fontSize: 16,
@@ -303,10 +361,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray,
     borderRadius: 8,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 14, // パディングを増加してタップしやすく
     fontSize: defaultFontSize,
     backgroundColor: Colors.white,
     color: Colors.light.text,
+    minHeight: 48, // 最小高さを指定してタップターゲットを大きく
   },
   helpText: {
     fontSize: 12,
@@ -322,10 +381,11 @@ const styles = StyleSheet.create({
   },
   billingCycleButton: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: 14, // パディングを増加
     paddingHorizontal: 16,
     backgroundColor: Colors.white,
     alignItems: "center",
+    minHeight: 48, // 最小高さを指定
   },
   billingCycleButtonActive: {
     backgroundColor: Colors.primary,

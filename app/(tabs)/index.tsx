@@ -1,9 +1,7 @@
-import { SwiperView } from "@/components/SwiperbleView";
 import { Colors } from "@/constants/Colors";
-import { supabase } from "@/lib/supabase";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 import type { Couple, Invoice, Payment, Payment as PaymentRow, User } from "@/types/Row";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
@@ -44,11 +42,13 @@ const HomeScreen: FC = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    // currentUserが設定されていない場合は処理を行わない
+    if (!currentUser?.user_id) {
+      return;
+    }
+
     (async () => {
-      const uid = (await supabase.auth.getSession())?.data.session?.user?.id;
-      if (!uid) {
-        return;
-      }
+      const uid = currentUser.user_id;
       setUserId(uid);
 
       const coupleId = await fetchCoupleIdByUserId(uid);
@@ -58,11 +58,9 @@ const HomeScreen: FC = () => {
       setCoupleId(coupleId);
 
       // パートナー情報を取得
-      if (currentUser?.user_id) {
-        const partnerData = await fetchPartner(coupleId, currentUser.user_id);
-        if (partnerData) {
-          setPartner(partnerData);
-        }
+      const partnerData = await fetchPartner(coupleId, uid);
+      if (partnerData) {
+        setPartner(partnerData);
       }
 
       const activeInvoiceData = await fetchActiveInvoiceByCoupleId(coupleId);
@@ -241,10 +239,23 @@ const PaymentItem: FC<PaymentItemProps> = ({
   const isOwner = payment.owner_id === userId;
 
   const handleDeletePayment = async () => {
-    await deletePayment(payment.id);
-    if (activeInvoce === null) return;
-    ToastAndroid.show("削除した", ToastAndroid.SHORT);
-    await fetchPaymentsAllByMonthlyInvoiceId(activeInvoce.id);
+    Alert.alert("削除確認", "この支払いを削除しますか？", [
+      { text: "キャンセル", style: "cancel" },
+      {
+        text: "削除",
+        style: "destructive",
+        onPress: async () => {
+          await deletePayment(payment.id);
+          if (activeInvoce === null) return;
+          ToastAndroid.show("削除しました", ToastAndroid.SHORT);
+          await fetchPaymentsAllByMonthlyInvoiceId(activeInvoce.id);
+        },
+      },
+    ]);
+  };
+
+  const handleEditPayment = () => {
+    routerPush({ pathname: "/payment-modal", params: { kind: "edit", id: payment.id } });
   };
 
   const CardContent = (
@@ -259,31 +270,34 @@ const PaymentItem: FC<PaymentItemProps> = ({
 
   return (
     <View style={styles.cardContainer}>
-      {isOwner ? (
-        <SwiperView
-          onSwipeLeft={() => handleDeletePayment()}
-          onPress={() => routerPush({ pathname: "/payment-modal", params: { kind: "edit", id: payment.id } })}
-          backView={
-            <View style={styles.backView}>
-              <Text style={styles.backViewText}>削除</Text>
-            </View>
-          }
-        >
-          <View style={styles.card}>
-            {CardContent}
-            <View style={styles.ownerIndicator}>
-              <Text style={styles.ownerText}>{currentUserName || "あなた"}</Text>
-            </View>
-          </View>
-        </SwiperView>
-      ) : (
-        <View style={styles.card}>
-          {CardContent}
-          <View style={styles.partnerIndicator}>
-            <Text style={styles.partnerText}>{partnerName || "パートナー"}</Text>
-          </View>
+      <View style={styles.card}>
+        {CardContent}
+        <View style={isOwner ? styles.ownerIndicator : styles.partnerIndicator}>
+          <Text style={isOwner ? styles.ownerText : styles.partnerText}>
+            {isOwner ? (currentUserName || "あなた") : (partnerName || "パートナー")}
+          </Text>
         </View>
-      )}
+        
+        {/* 自分の支払いの場合のみ編集・削除ボタンを表示 */}
+        {isOwner && (
+          <View style={styles.actionButtons}>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={handleEditPayment}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="create" size={18} color={Colors.primary} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={handleDeletePayment}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="trash" size={18} color={Colors.secondary} />
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -434,17 +448,42 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: defaultFontWeight,
   },
-  backView: {
-    flex: 1,
-    backgroundColor: Colors.secondary,
-    justifyContent: "center",
-    alignItems: "flex-end",
-    paddingRight: 16,
-    borderRadius: 12,
+  actionButtons: {
+    position: "absolute",
+    bottom: 12,
+    right: 12,
+    flexDirection: "row",
+    gap: 8,
   },
-  backViewText: {
-    color: Colors.white,
-    fontWeight: "bold",
+  editButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.primary,
+  },
+  deleteButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.secondary,
   },
   addButton: {
     borderRadius: 50,

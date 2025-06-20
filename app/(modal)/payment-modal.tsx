@@ -3,6 +3,7 @@ import { useUser } from "@/hooks/useUser";
 import { coupleIdAtom } from "@/state/couple.state";
 import { userAtom } from "@/state/user.state";
 import { defaultFontSize, defaultFontWeight } from "@/style/defaultStyle";
+import { pushNotificationClient } from "@/utils/pushNotificationClient";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
@@ -66,7 +67,13 @@ const PaymentModalScreen = () => {
         await addPayment();
       }
 
-      await sendPushNotification(partner.expo_push_token, user.name, item, amount, kind as string);
+      await pushNotificationClient.sendPaymentNotification(
+        partner.expo_push_token,
+        user.name,
+        item,
+        amount,
+        kind === "edit",
+      );
 
       if (activeInvoice) {
         await fetchPaymentsAllByMonthlyInvoiceId(activeInvoice.id);
@@ -74,32 +81,6 @@ const PaymentModalScreen = () => {
     } catch (error) {
       console.error("An error occurred while handling the payment:", error);
       alert("An error occurred while processing the payment. Please try again later.");
-    }
-  };
-
-  const sendPushNotification = async (
-    expoPushToken: string,
-    name: string,
-    item: string,
-    amount: number,
-    kind: string,
-  ) => {
-    const message = {
-      title: `${name}が${kind === "edit" ? "項目を更新しました" : "支払いました"}`,
-      body: `${item} ${amount}円`,
-      expo_push_token: expoPushToken,
-    };
-
-    try {
-      await fetch("https://expo-push-notification-api-rust.vercel.app/api/handler", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
-      });
-    } catch (error) {
-      console.error(error);
     }
   };
 

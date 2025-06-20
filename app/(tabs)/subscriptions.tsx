@@ -2,13 +2,15 @@ import { Colors } from "@/constants/Colors";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useUser } from "@/hooks/useUser";
 import { coupleIdAtom } from "@/state/couple.state";
-import type { Subscription, User } from "@/types/Row";
+import { userAtom } from "@/state/user.state";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
+import type { Subscription, User } from "@/types/Row";
+import { pushNotificationClient } from "@/utils/pushNotificationClient";
 import { Ionicons } from "@expo/vector-icons";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
 import type React from "react";
-import { type FC, memo, useCallback, useMemo, useEffect, useState } from "react";
+import { type FC, memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -19,7 +21,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { userAtom } from "@/state/user.state";
 
 const SubscriptionsScreen: FC = () => {
   const {
@@ -50,11 +51,38 @@ const SubscriptionsScreen: FC = () => {
     fetchPartnerInfo();
   }, [coupleId, currentUser?.user_id, fetchPartner]);
 
+  const handleDeleteWithNotification = useCallback(
+    async (subscriptionId: number) => {
+      try {
+        // 削除前にサブスクリプション情報を取得
+        const subscription = subscriptions.find((sub) => sub.id === subscriptionId);
+        if (!subscription) return;
+
+        // サブスクリプションを削除
+        await deleteSubscription(subscriptionId);
+
+        // パートナーに通知を送信
+        if (partner?.expo_push_token && currentUser?.name) {
+          await pushNotificationClient.sendSubscriptionNotification(
+            partner.expo_push_token,
+            currentUser.name,
+            subscription.service_name,
+            "削除",
+          );
+        }
+      } catch (error) {
+        console.error("Error deleting subscription:", error);
+        Alert.alert("エラー", "削除中にエラーが発生しました。");
+      }
+    },
+    [deleteSubscription, subscriptions, partner?.expo_push_token, currentUser?.name],
+  );
+
   const renderSubscription = useCallback(
     ({ item }: { item: Subscription }) => (
       <SubscriptionItem
         subscription={item}
-        onDelete={deleteSubscription}
+        onDelete={handleDeleteWithNotification}
         onEdit={() => {
           push(`/(modal)/subscription-modal?mode=edit&id=${item.id}` as Href);
         }}
@@ -63,7 +91,7 @@ const SubscriptionsScreen: FC = () => {
         partnerName={partner?.name}
       />
     ),
-    [deleteSubscription, push, currentUser?.user_id, currentUser?.name, partner?.name],
+    [handleDeleteWithNotification, push, currentUser?.user_id, currentUser?.name, partner?.name],
   );
 
   const keyExtractor = useCallback((item: Subscription) => item.id.toString(), []);
@@ -195,12 +223,12 @@ const SubscriptionItem: FC<SubscriptionItemProps> = memo(
           <View style={styles.actionButtons}>
             {isOwner && (
               <TouchableOpacity onPress={onEdit} style={styles.editButton}>
-                <Ionicons name="create" size={20} color={Colors.primary} />
+                <Ionicons name="create" size={18} color={Colors.primary} />
               </TouchableOpacity>
             )}
             {isOwner && (
               <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
-                <Ionicons name="trash" size={20} color={Colors.secondary} />
+                <Ionicons name="trash" size={18} color={Colors.secondary} />
               </TouchableOpacity>
             )}
           </View>
@@ -215,7 +243,7 @@ const SubscriptionItem: FC<SubscriptionItemProps> = memo(
           <View style={styles.metaInfoContainer}>
             <View style={styles.nextBillingContainer}>
               <Ionicons name="calendar" size={16} color={Colors.light.icon} />
-              <Text style={styles.nextBillingDate}>次回: {formatDate(subscription.next_billing_date)}</Text>
+              <Text style={styles.nextBillingDate}>次回更新日: {formatDate(subscription.next_billing_date)}</Text>
             </View>
 
             <View style={styles.creatorContainer}>
@@ -367,10 +395,34 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   editButton: {
-    padding: 4,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.primary,
   },
   deleteButton: {
-    padding: 4,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.secondary,
   },
   itemDetails: {
     gap: 8,

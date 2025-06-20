@@ -44,7 +44,7 @@ export default (): ExpoConfig => {
     version: version,
     splash: {
       image: "./assets/images/splash_cat.png",
-      resizeMode: "contain",
+      resizeMode: "cover",
       backgroundColor: "#336666",
     },
     ios: {
@@ -54,6 +54,11 @@ export default (): ExpoConfig => {
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/splash_cat.png",
+        backgroundColor: "#336666",
+      },
+      splash: {
+        image: "./assets/images/splash_cat.png",
+        resizeMode: "cover",
         backgroundColor: "#336666",
       },
       package: packageName,
@@ -67,6 +72,7 @@ export default (): ExpoConfig => {
     plugins: [
       "expo-router",
       "expo-font",
+      "expo-web-browser",
       [
         "expo-notifications",
         {
