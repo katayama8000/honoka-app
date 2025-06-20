@@ -2,14 +2,15 @@ import { Colors } from "@/constants/Colors";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useUser } from "@/hooks/useUser";
 import { coupleIdAtom } from "@/state/couple.state";
-import type { Subscription, User } from "@/types/Row";
+import { userAtom } from "@/state/user.state";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
+import type { Subscription, User } from "@/types/Row";
 import { pushNotificationClient } from "@/utils/pushNotificationClient";
 import { Ionicons } from "@expo/vector-icons";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
 import type React from "react";
-import { type FC, memo, useCallback, useMemo, useEffect, useState } from "react";
+import { type FC, memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -20,7 +21,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { userAtom } from "@/state/user.state";
 
 const SubscriptionsScreen: FC = () => {
   const {
@@ -55,7 +55,7 @@ const SubscriptionsScreen: FC = () => {
     async (subscriptionId: number) => {
       try {
         // 削除前にサブスクリプション情報を取得
-        const subscription = subscriptions.find(sub => sub.id === subscriptionId);
+        const subscription = subscriptions.find((sub) => sub.id === subscriptionId);
         if (!subscription) return;
 
         // サブスクリプションを削除
@@ -67,7 +67,7 @@ const SubscriptionsScreen: FC = () => {
             partner.expo_push_token,
             currentUser.name,
             subscription.service_name,
-            "削除"
+            "削除",
           );
         }
       } catch (error) {

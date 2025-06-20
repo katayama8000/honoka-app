@@ -1,14 +1,14 @@
 import { Colors } from "@/constants/Colors";
-import { useUser } from "@/hooks/useUser";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useUser } from "@/hooks/useUser";
 import { coupleIdAtom } from "@/state/couple.state";
 import { userAtom } from "@/state/user.state";
-import type { Subscription } from "@/types/Row";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
+import type { Subscription } from "@/types/Row";
 import { pushNotificationClient } from "@/utils/pushNotificationClient";
+import dayjs from "dayjs";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { useAtom } from "jotai";
-import dayjs from "dayjs";
 import type React from "react";
 import { type FC, useCallback, useEffect, useState } from "react";
 import {
@@ -139,7 +139,7 @@ const SubscriptionFormScreen: FC = () => {
           partner.expo_push_token,
           user.name,
           formData.serviceName,
-          "更新"
+          "更新",
         );
       } else {
         await addSubscriptionWithData({
@@ -153,7 +153,7 @@ const SubscriptionFormScreen: FC = () => {
           partner.expo_push_token,
           user.name,
           formData.serviceName,
-          "追加"
+          "追加",
         );
       }
       back();
@@ -161,7 +161,17 @@ const SubscriptionFormScreen: FC = () => {
       console.error("Error submitting form:", error);
       Alert.alert("エラー", "処理中にエラーが発生しました。もう一度お試しください。");
     }
-  }, [formData, mode, subscriptionId, updateSubscription, addSubscriptionWithData, back, couple_id, user, fetchPartner]);
+  }, [
+    formData,
+    mode,
+    subscriptionId,
+    updateSubscription,
+    addSubscriptionWithData,
+    back,
+    couple_id,
+    user,
+    fetchPartner,
+  ]);
 
   const handleCancel = useCallback(() => {
     back();
