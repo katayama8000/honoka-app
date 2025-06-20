@@ -44,11 +44,13 @@ const HomeScreen: FC = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    // currentUserが設定されていない場合は処理を行わない
+    if (!currentUser?.user_id) {
+      return;
+    }
+
     (async () => {
-      const uid = (await supabase.auth.getSession())?.data.session?.user?.id;
-      if (!uid) {
-        return;
-      }
+      const uid = currentUser.user_id;
       setUserId(uid);
 
       const coupleId = await fetchCoupleIdByUserId(uid);
@@ -58,11 +60,9 @@ const HomeScreen: FC = () => {
       setCoupleId(coupleId);
 
       // パートナー情報を取得
-      if (currentUser?.user_id) {
-        const partnerData = await fetchPartner(coupleId, currentUser.user_id);
-        if (partnerData) {
-          setPartner(partnerData);
-        }
+      const partnerData = await fetchPartner(coupleId, uid);
+      if (partnerData) {
+        setPartner(partnerData);
       }
 
       const activeInvoiceData = await fetchActiveInvoiceByCoupleId(coupleId);

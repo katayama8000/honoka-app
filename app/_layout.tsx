@@ -13,7 +13,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { fetchUser, updateExpoPushToken } = useUser();
+  const { fetchUser } = useUser();
   const [_, setUser] = useAtom(userAtom);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
@@ -53,6 +53,7 @@ export default function RootLayout() {
         setUser(user);
         setIsLoggedIn(true);
         setIsInitialized(true);
+        // 認証済みの場合は明示的に遷移しない（Stack.Protectedに任せる）
       } catch (error) {
         console.error("Authentication initialization error:", error);
         setIsLoggedIn(false);
@@ -70,7 +71,10 @@ export default function RootLayout() {
         case "SIGNED_IN":
           if (session?.user) {
             setIsLoggedIn(true);
-            router.replace("/(tabs)");
+            // 既にログイン済みの場合は遷移しない
+            if (!isLoggedIn) {
+              router.replace("/(tabs)");
+            }
           }
           break;
         case "SIGNED_OUT":
