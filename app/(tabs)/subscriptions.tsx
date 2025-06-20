@@ -215,7 +215,7 @@ const SubscriptionItem: FC<SubscriptionItemProps> = memo(
           <View style={styles.metaInfoContainer}>
             <View style={styles.nextBillingContainer}>
               <Ionicons name="calendar" size={16} color={Colors.light.icon} />
-              <Text style={styles.nextBillingDate}>次回: {formatDate(subscription.next_billing_date)}</Text>
+              <Text style={styles.nextBillingDate}>次回更新日: {formatDate(subscription.next_billing_date)}</Text>
             </View>
 
             <View style={styles.creatorContainer}>
