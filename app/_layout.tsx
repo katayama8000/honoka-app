@@ -1,10 +1,9 @@
 import { supabase } from "@/lib/supabase";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Redirect, Slot, Stack, useRouter } from "expo-router";
+import { Slot, Stack, useRouter } from "expo-router";
 import { hideAsync, preventAutoHideAsync } from "expo-splash-screen";
 import "react-native-reanimated";
-import { usePushNotification } from "@/hooks/usePushNotification";
 import { useUser } from "@/hooks/useUser";
 import { userAtom } from "@/state/user.state";
 import { useAtom } from "jotai";
@@ -16,64 +15,76 @@ preventAutoHideAsync();
 export default function RootLayout() {
   const { fetchUser, updateExpoPushToken } = useUser();
   const [_, setUser] = useAtom(userAtom);
-  const { registerForPushNotificationsAsync } = usePushNotification();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
+  const router = useRouter();
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-  const { push } = useRouter();
 
   useEffect(() => {
     if (loaded) hideAsync();
   }, [loaded]);
 
+  // 認証状態の初期化を統合
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 初期化時のみ実行したいため
   useEffect(() => {
-    (async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error || !data || !data.user) {
-        <Redirect href="/sign-in" />;
-        setIsLoggedIn(false);
-        return;
-      }
-      setIsLoggedIn(true);
+    const initializeAuth = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
 
-      supabase.auth.onAuthStateChange((event, _session) => {
-        switch (event) {
-          case "SIGNED_IN":
-            <Redirect href="/(tabs)" />;
-            break;
-          case "SIGNED_OUT":
-            <Redirect href="/sign-in" />;
-            break;
+        if (error || !data?.session?.user) {
+          setIsLoggedIn(false);
+          setIsInitialized(true);
+          return;
         }
-      });
-    })();
+
+        const uid = data.session.user.id;
+
+        // ユーザー情報を取得
+        const user = await fetchUser(uid);
+        if (!user) {
+          setIsLoggedIn(false);
+          setIsInitialized(true);
+          return;
+        }
+
+        setUser(user);
+        setIsLoggedIn(true);
+        setIsInitialized(true);
+      } catch (error) {
+        console.error("Authentication initialization error:", error);
+        setIsLoggedIn(false);
+        setIsInitialized(true);
+      }
+    };
+
+    initializeAuth();
+
+    // 認証状態の変更を監視
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      switch (event) {
+        case "SIGNED_IN":
+          if (session?.user) {
+            setIsLoggedIn(true);
+            router.replace("/(tabs)");
+          }
+          break;
+        case "SIGNED_OUT":
+          setIsLoggedIn(false);
+          router.replace("/(auth)/sign-in");
+          break;
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    (async () => {
-      const token = await registerForPushNotificationsAsync();
-
-      const uid = (await supabase.auth.getSession())?.data.session?.user?.id;
-      if (!uid) {
-        <Redirect href="/sign-in" />;
-        return;
-      }
-      const user = await fetchUser(uid);
-      if (!user) {
-        <Redirect href="/sign-in" />;
-        return;
-      }
-
-      setUser(user);
-
-      if (token) updateExpoPushToken(uid, token);
-    })();
-  }, []);
-
-  if (!loaded) return <Slot />;
+  // フォントがロードされていない、または認証状態が初期化されていない場合はスプラッシュスクリーンを表示
+  if (!loaded || !isInitialized) return <Slot />;
 
   return (
     <ThemeProvider value={DefaultTheme}>
