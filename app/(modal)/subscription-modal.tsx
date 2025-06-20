@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/Colors";
 import { useSubscription } from "@/hooks/useSubscription";
-import type { BillingCycle } from "@/types/Row";
+import type { Subscription } from "@/types/Row";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -37,10 +37,15 @@ const SubscriptionFormScreen: FC = () => {
   const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
 
   // フォーム専用のローカル状態
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    serviceName: Subscription["service_name"];
+    monthlyAmount: Subscription["monthly_amount"] | null;
+    billingCycle: Subscription["billing_cycle"];
+    nextBillingDate: Subscription["next_billing_date"];
+  }>({
     serviceName: "",
-    monthlyAmount: null as number | null,
-    billingCycle: "monthly" as BillingCycle,
+    monthlyAmount: null,
+    billingCycle: "monthly",
     nextBillingDate: "",
   });
 
@@ -49,9 +54,10 @@ const SubscriptionFormScreen: FC = () => {
     if (params.mode === "edit" && params.id) {
       setMode("edit");
       setSubscriptionId(Number(params.id));
+      setInitialDataLoaded(false); // 編集モードでリセット
 
       // 既存のサブスクリプションデータから初期値を設定
-      const subscription = subscriptions.find((sub) => sub.id === Number(params.id));
+      const subscription = subscriptions.find(({ id }) => id === Number(params.id));
       if (subscription) {
         setFormData({
           serviceName: subscription.service_name,
@@ -59,9 +65,11 @@ const SubscriptionFormScreen: FC = () => {
           billingCycle: subscription.billing_cycle,
           nextBillingDate: subscription.next_billing_date,
         });
+        setInitialDataLoaded(true);
       }
     } else {
       setMode("add");
+      setInitialDataLoaded(false); // 追加モードでリセット
       setFormData({
         serviceName: "",
         monthlyAmount: null,
@@ -69,22 +77,26 @@ const SubscriptionFormScreen: FC = () => {
         nextBillingDate: "",
       });
     }
-  }, [params.mode, params.id, subscriptions]); // subscriptionsを依存配列に追加
+  }, [params.mode, params.id, subscriptions]);
 
-  // サブスクリプションデータが読み込まれた後に編集データを設定
+  // 初期データ設定済みフラグ
+  const [initialDataLoaded, setInitialDataLoaded] = useState<boolean>(false);
+
+  // サブスクリプションデータが読み込まれた後に編集データを設定（初回のみ）
   useEffect(() => {
-    if (mode === "edit" && subscriptionId && subscriptions.length > 0) {
-      const subscription = subscriptions.find((sub) => sub.id === subscriptionId);
-      if (subscription && formData.serviceName === "") {
+    if (mode === "edit" && subscriptionId && subscriptions.length > 0 && !initialDataLoaded) {
+      const subscription = subscriptions.find(({ id }) => id === subscriptionId);
+      if (subscription) {
         setFormData({
           serviceName: subscription.service_name,
           monthlyAmount: subscription.monthly_amount,
           billingCycle: subscription.billing_cycle,
           nextBillingDate: subscription.next_billing_date,
         });
+        setInitialDataLoaded(true);
       }
     }
-  }, [subscriptions, mode, subscriptionId, formData.serviceName]);
+  }, [subscriptions, mode, subscriptionId, initialDataLoaded]);
 
   const handleSubmit = useCallback(async () => {
     if (!formData.serviceName || !formData.monthlyAmount || !formData.nextBillingDate) {
