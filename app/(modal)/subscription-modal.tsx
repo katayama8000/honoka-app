@@ -160,20 +160,6 @@ const SubscriptionFormScreen: FC = () => {
         automaticallyAdjustContentInsets={false}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleCancel} style={styles.cancelButton}>
-            <Ionicons name="close" size={24} color={Colors.light.text} />
-          </TouchableOpacity>
-          <Text style={styles.title}>{mode === "edit" ? "サブスク編集" : "サブスク追加"}</Text>
-          <TouchableOpacity
-            onPress={handleSubmit}
-            style={[styles.saveButton, !isFormValid && styles.saveButtonDisabled]}
-            disabled={!isFormValid || isLoading}
-          >
-            <Text style={[styles.saveButtonText, !isFormValid && styles.saveButtonTextDisabled]}>保存</Text>
-          </TouchableOpacity>
-        </View>
-
         <View style={styles.form}>
           <View style={styles.formGroup}>
             <Text style={styles.label}>
@@ -262,6 +248,17 @@ const SubscriptionFormScreen: FC = () => {
             />
             <Text style={styles.helpText}>形式: YYYY-MM-DD</Text>
           </View>
+
+          {/* 保存ボタン */}
+          <TouchableOpacity
+            onPress={handleSubmit}
+            style={[styles.saveButton, !isFormValid && styles.saveButtonDisabled]}
+            disabled={!isFormValid || isLoading}
+          >
+            <Text style={[styles.saveButtonText, !isFormValid && styles.saveButtonTextDisabled]}>
+              {isLoading ? "保存中..." : "保存"}
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -278,54 +275,40 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     flexGrow: 1,
-    paddingBottom: 100, // キーボード用の追加スペース
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray,
-    shadowColor: defaultShadowColor,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  cancelButton: {
-    padding: 4,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: defaultFontWeight,
-    color: Colors.light.text,
+    paddingBottom: 150, // キーボード用の追加スペースを増加
   },
   saveButton: {
     backgroundColor: Colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginTop: 40, // マージンを増加
+    marginBottom: 20, // 下部マージンを追加
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   saveButtonDisabled: {
     backgroundColor: Colors.light.icon,
   },
   saveButtonText: {
     color: Colors.white,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: defaultFontWeight,
+    textAlign: "center",
   },
   saveButtonTextDisabled: {
     color: Colors.white,
   },
   form: {
     padding: 20,
-    paddingBottom: 40, // キーボード用の余分なスペース
+    paddingTop: 10, // 上部パディングを削減
+    paddingBottom: 60, // キーボード用の余分なスペース増加
   },
   formGroup: {
-    marginBottom: 28, // 少し間隔を広げる
+    marginBottom: 32, // 間隔をさらに広げる
   },
   label: {
     fontSize: 16,
@@ -341,10 +324,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray,
     borderRadius: 8,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 14, // パディングを増加してタップしやすく
     fontSize: defaultFontSize,
     backgroundColor: Colors.white,
     color: Colors.light.text,
+    minHeight: 48, // 最小高さを指定してタップターゲットを大きく
   },
   helpText: {
     fontSize: 12,
@@ -360,10 +344,11 @@ const styles = StyleSheet.create({
   },
   billingCycleButton: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: 14, // パディングを増加
     paddingHorizontal: 16,
     backgroundColor: Colors.white,
     alignItems: "center",
+    minHeight: 48, // 最小高さを指定
   },
   billingCycleButtonActive: {
     backgroundColor: Colors.primary,
