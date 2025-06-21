@@ -86,16 +86,14 @@ export default (): ExpoConfig => {
       [
         "./modules/expo-native-configuration/app.plugin.js",
         {
-          apiKey: "custom_secret_api_key_from_honoka"
-        }
+          apiKey: "custom_secret_api_key_from_honoka",
+        },
       ],
     ],
     updates: {
       url: "https://u.expo.dev/018a6711-ac8c-41b8-830c-279089162afa",
     },
-    runtimeVersion: {
-      policy: "appVersion",
-    },
+    runtimeVersion: version,
     experiments: {
       typedRoutes: true,
     },
