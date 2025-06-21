@@ -28,6 +28,12 @@ npx expo config --type public
 eas build --platform android --profile development --non-interactive --no-wait
 ```
 
+## Local build
+- build the app locally
+```bash
+eas build --local --platform android --profile development --local
+```
+
 ### Check secret list
 https://docs.expo.dev/build-reference/variables/
 ```bash

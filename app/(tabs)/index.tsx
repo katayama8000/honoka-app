@@ -42,7 +42,6 @@ const HomeScreen: FC = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    // currentUserが設定されていない場合は処理を行わない
     if (!currentUser?.user_id) {
       return;
     }
@@ -99,6 +98,37 @@ const HomeScreen: FC = () => {
 
   return (
     <View style={styles.container}>
+      {process.env.EXPO_PUBLIC_APP_ENV === "development" && (
+        <TouchableOpacity
+          onPress={() => push("/dev/native-api-key")}
+          style={{
+            backgroundColor: Colors.primary,
+            padding: 8,
+            borderRadius: 8,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 16,
+            marginHorizontal: 20,
+            shadowColor: defaultShadowColor,
+            shadowOffset: { width: 0, height: 2 },
+          }}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="construct" size={24} color="white" />
+          <Text
+            style={{
+              color: "white",
+              fontSize: defaultFontSize,
+              paddingLeft: 8,
+              fontWeight: defaultFontWeight,
+            }}
+          >
+            デバッグ
+          </Text>
+        </TouchableOpacity>
+      )}
+
       {isLoading ? (
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={`${Colors.primary}`} />
@@ -119,7 +149,6 @@ const HomeScreen: FC = () => {
         />
       )}
 
-      {/* フローティング追加ボタン */}
       <TouchableOpacity
         style={styles.floatingButton}
         onPress={() => push({ pathname: "/payment-modal", params: { kind: "add" } })}
@@ -128,7 +157,6 @@ const HomeScreen: FC = () => {
         <AntDesign name="plus" size={24} color="white" />
       </TouchableOpacity>
 
-      {/* フローティング締めるボタン */}
       {showCloseMonthButton && (
         <TouchableOpacity
           style={styles.floatingCloseButton}
@@ -274,25 +302,17 @@ const PaymentItem: FC<PaymentItemProps> = ({
         {CardContent}
         <View style={isOwner ? styles.ownerIndicator : styles.partnerIndicator}>
           <Text style={isOwner ? styles.ownerText : styles.partnerText}>
-            {isOwner ? (currentUserName || "あなた") : (partnerName || "パートナー")}
+            {isOwner ? currentUserName || "あなた" : partnerName || "パートナー"}
           </Text>
         </View>
-        
+
         {/* 自分の支払いの場合のみ編集・削除ボタンを表示 */}
         {isOwner && (
           <View style={styles.actionButtons}>
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={handleEditPayment}
-              activeOpacity={0.7}
-            >
+            <TouchableOpacity style={styles.editButton} onPress={handleEditPayment} activeOpacity={0.7}>
               <Ionicons name="create" size={18} color={Colors.primary} />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={handleDeletePayment}
-              activeOpacity={0.7}
-            >
+            <TouchableOpacity style={styles.deleteButton} onPress={handleDeletePayment} activeOpacity={0.7}>
               <Ionicons name="trash" size={18} color={Colors.secondary} />
             </TouchableOpacity>
           </View>
