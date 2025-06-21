@@ -17,6 +17,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+// Import the native module
+import { getApiKey } from "../../modules/expo-native-configuration";
 import { useCouple } from "../../hooks/useCouple";
 import { useInvoice } from "../../hooks/useInvoice";
 import { usePayment } from "../../hooks/usePayment";
@@ -99,6 +101,13 @@ const HomeScreen: FC = () => {
 
   return (
     <View style={styles.container}>
+      {/* API Key Debug Display */}
+      <View style={{ padding: 10, backgroundColor: '#f0f0f0', margin: 10 }}>
+        <Text style={{ fontSize: 12, fontWeight: 'bold' }}>
+          Debug - API Key: {getApiKey()}
+        </Text>
+      </View>
+      
       {isLoading ? (
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={`${Colors.primary}`} />
