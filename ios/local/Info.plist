@@ -45,7 +45,7 @@
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>MY_CUSTOM_API_KEY</key>
-    <string>custom_secret_api_key_from_honoka</string>
+    <string>honoka_dev_api_key_local_2.4.3</string>
     <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSAllowsArbitraryLoads</key>
