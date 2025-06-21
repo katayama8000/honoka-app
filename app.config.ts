@@ -86,7 +86,7 @@ export default (): ExpoConfig => {
       [
         "./modules/expo-native-configuration/app.plugin.js",
         {
-          apiKey: "custom_secret_api_key_from_honoka",
+          apiKey: `honoka_dev_api_key_${appEnv}_${version}`,
         },
       ],
     ],
