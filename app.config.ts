@@ -93,9 +93,7 @@ export default (): ExpoConfig => {
     updates: {
       url: "https://u.expo.dev/018a6711-ac8c-41b8-830c-279089162afa",
     },
-    runtimeVersion: {
-      policy: "appVersion",
-    },
+    runtimeVersion: version,
     experiments: {
       typedRoutes: true,
     },
