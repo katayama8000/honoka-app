@@ -98,7 +98,7 @@ const HomeScreen: FC = () => {
 
   return (
     <View style={styles.container}>
-      {process.env.EXPO_PUBLIC_APP_ENV === "development" && (
+      {/* {process.env.EXPO_PUBLIC_APP_ENV === "development" && (
         <TouchableOpacity
           onPress={() => push("/dev/native-api-key")}
           style={{
@@ -127,7 +127,7 @@ const HomeScreen: FC = () => {
             デバッグ
           </Text>
         </TouchableOpacity>
-      )}
+      )} */}
 
       {isLoading ? (
         <View style={styles.centerContainer}>
