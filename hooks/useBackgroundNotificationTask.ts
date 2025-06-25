@@ -1,5 +1,6 @@
 import * as BackgroundTask from "expo-background-task";
 import * as TaskManager from "expo-task-manager";
+import * as Notifications from "expo-notifications";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { getDefaultStore } from "jotai";
@@ -15,8 +16,14 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
     const tomorrow = dayjs().add(1, "day").format("YYYY-MM-DD");
     for (const sub of subscriptions) {
       if (sub.next_billing_date === tomorrow) {
-        // ここでpush通知などを発火する処理を追加する（未実装）
-        console.log(`${sub.service_name}の更新日が明日です`);
+        console.log(`Sending notification for ${sub.service_name} renewal tomorrow`);
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: "サブスク更新日が近づいています",
+            body: `${sub.service_name}の更新日が明日です`,
+          },
+          trigger: null,
+        });
       }
     }
     return BackgroundTask.BackgroundTaskResult.Success;
@@ -29,7 +36,7 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
 export const useRegisterBackgroundNotificationTask = () => {
   useEffect(() => {
     BackgroundTask.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER, {
-      minimumInterval: 60 * 6, // 6時間ごとに実行
+      minimumInterval: 60 * 6, // execute every 6 minutes
     });
     return () => {
       BackgroundTask.unregisterTaskAsync(BACKGROUND_TASK_IDENTIFIER);
