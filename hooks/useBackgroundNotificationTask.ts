@@ -38,8 +38,5 @@ export const useRegisterBackgroundNotificationTask = () => {
     BackgroundTask.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER, {
       minimumInterval: 60 * 6, // execute every 6 minutes
     });
-    return () => {
-      BackgroundTask.unregisterTaskAsync(BACKGROUND_TASK_IDENTIFIER);
-    };
   }, []);
 };
