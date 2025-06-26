@@ -8,8 +8,8 @@ on:
         description: 'EAS profile to use for building'
         options:
           - production
+          - preview
           - development
-          - local
         default: development
       platform:
         required: true
