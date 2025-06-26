@@ -1,3 +1,4 @@
+import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { Colors } from "@/constants/Colors";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 import type { Couple, Invoice, Payment, Payment as PaymentRow, User } from "@/types/Row";
@@ -149,17 +150,17 @@ const HomeScreen: FC = () => {
         />
       )}
 
-      <TouchableOpacity
-        style={styles.floatingButton}
+      <FloatingActionButton
+        position="bottomRight"
+        iconName="plus"
         onPress={() => push({ pathname: "/payment-modal", params: { kind: "add" } })}
-        activeOpacity={0.8}
-      >
-        <AntDesign name="plus" size={24} color="white" />
-      </TouchableOpacity>
+      />
 
       {showCloseMonthButton && (
-        <TouchableOpacity
-          style={styles.floatingCloseButton}
+        <FloatingActionButton
+          position="bottomLeft"
+          iconName="checkcircleo"
+          color={Colors.secondary}
           onPress={async () => {
             if (!coupleId) {
               alert("coupleId is not found");
@@ -167,10 +168,7 @@ const HomeScreen: FC = () => {
             }
             handleCloseMonth(coupleId);
           }}
-          activeOpacity={0.8}
-        >
-          <AntDesign name="checkcircleo" size={24} color="white" />
-        </TouchableOpacity>
+        />
       )}
     </View>
   );
@@ -357,38 +355,6 @@ const styles = StyleSheet.create({
     color: Colors.light.icon,
     marginTop: 8,
     textAlign: "center",
-  },
-  floatingButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Colors.primary,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: defaultShadowColor,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  floatingCloseButton: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Colors.secondary,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: defaultShadowColor,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
   },
   linkContainer: {
     flexDirection: "row",
