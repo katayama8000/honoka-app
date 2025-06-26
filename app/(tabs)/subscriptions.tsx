@@ -1,3 +1,4 @@
+import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { Colors } from "@/constants/Colors";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useUser } from "@/hooks/useUser";
@@ -159,16 +160,14 @@ const SubscriptionsScreen: FC = () => {
         />
       )}
 
-      {/* フローティング追加ボタン */}
-      <TouchableOpacity
-        style={styles.floatingButton}
+      <FloatingActionButton
+        position="bottomRight"
+        iconName="add"
+        iconFamily="Ionicons"
         onPress={() => {
           push("/(modal)/subscription-modal?mode=add" as Href);
         }}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="add" size={24} color={Colors.white} />
-      </TouchableOpacity>
+      />
     </View>
   );
 };
@@ -461,22 +460,6 @@ const styles = StyleSheet.create({
   creatorText: {
     fontSize: 14,
     color: Colors.light.icon,
-  },
-  floatingButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Colors.primary,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: defaultShadowColor,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
   },
 });
 
