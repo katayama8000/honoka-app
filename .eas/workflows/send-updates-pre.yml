@@ -1,0 +1,8 @@
+name: Send updates for Preview
+
+jobs:
+  send_updates:
+    name: Send updates for Preview
+    type: update
+    params:
+      channel: preview

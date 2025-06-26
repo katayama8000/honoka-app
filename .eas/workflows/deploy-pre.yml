@@ -1,9 +1,9 @@
-name: Deploy to Development
+name: Deploy to Preview
 
 jobs:
   deploy:
     type: deploy
     name: Deploy
-    environment: development
+    environment: preview
     params:
       prod: false
