@@ -73,6 +73,7 @@ export default (): ExpoConfig => {
       "expo-router",
       "expo-font",
       "expo-web-browser",
+      "expo-background-task",
       [
         "expo-notifications",
         {
