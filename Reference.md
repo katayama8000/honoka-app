@@ -57,3 +57,9 @@ eas deploy --production
 eas workflow:run .eas/workflows/deploy-dev.yml
 eas workflow:run .eas/workflows/deploy-prd.yml
 ```
+
+## Regenerate Native Code
+- regenerate the Android and iOS native code
+```bash
+npx expo prebuild --clean
+```
