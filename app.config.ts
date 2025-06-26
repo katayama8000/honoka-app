@@ -1,7 +1,7 @@
 import type { ExpoConfig } from "expo/config";
 import { version } from "./package.json";
 
-const allAppEnvs = ["production", "development", "local"] as const;
+const allAppEnvs = ["production", "preview", "development"] as const;
 type AppEnv = (typeof allAppEnvs)[number];
 
 const envConfigs: Record<AppEnv, { bundleId: string; googleServicesJson: string; name: string; package: string }> = {
@@ -11,23 +11,23 @@ const envConfigs: Record<AppEnv, { bundleId: string; googleServicesJson: string;
     name: "もうふといくら",
     package: "com.katayama9000.householdaccountbook",
   },
+  preview: {
+    bundleId: "com.katayama9000.householdaccountbook.dev",
+    googleServicesJson: "./google-services-dev.json",
+    name: "(pre)もうふといくら",
+    package: "com.katayama9000.householdaccountbook.dev",
+  },
   development: {
     bundleId: "com.katayama9000.householdaccountbook.dev",
     googleServicesJson: "./google-services-dev.json",
     name: "(dev)もうふといくら",
     package: "com.katayama9000.householdaccountbook.dev",
   },
-  local: {
-    bundleId: "com.katayama9000.householdaccountbook.dev",
-    googleServicesJson: "./google-services-dev.json",
-    name: "(local)もうふといくら",
-    package: "com.katayama9000.householdaccountbook.dev",
-  },
 };
 
 const isAppEnv = (s: string): s is AppEnv => allAppEnvs.includes(s as AppEnv);
 
-const appEnv = (process.env.APP_ENV ?? "local") as AppEnv;
+const appEnv = (process.env.APP_ENV ?? "development") as AppEnv;
 
 if (!isAppEnv(appEnv)) throw new Error(`unsupported APP_ENV: ${appEnv}`);
 
