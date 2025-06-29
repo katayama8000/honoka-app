@@ -25,14 +25,13 @@ import { pushNotificationClient } from "@/utils/pushNotificationClient";
 
 type FormMode = "add" | "edit";
 
-// 1ヶ月先の日付を取得するヘルパー関数
 const getNextMonthDate = (): string => dayjs().add(1, "month").format("YYYY-MM-DD");
 
 const SubscriptionFormScreen: FC = () => {
   const { back } = useRouter();
   const params = useLocalSearchParams<{
-    mode?: FormMode;
-    id?: string;
+    mode: FormMode;
+    id: string;
     serviceName?: string;
     monthlyAmount?: string;
     billingCycle?: string;
@@ -46,10 +45,9 @@ const SubscriptionFormScreen: FC = () => {
 
   const [mode, setMode] = useState<FormMode>("add");
   const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
+  const [datePickerOpen, setDatePickerOpen] = useState<boolean>(false);
   const { setOptions } = useNavigation();
-  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
-  // フォーム専用のローカル状態
   const [formData, setFormData] = useState<{
     serviceName: Subscription["service_name"];
     monthlyAmount: Subscription["monthly_amount"] | null;
@@ -62,7 +60,6 @@ const SubscriptionFormScreen: FC = () => {
     nextBillingDate: getNextMonthDate(),
   });
 
-  // パラメータから初期値を設定（初回のみ）
   useEffect(() => {
     setOptions({
       headerTitle: mode === "edit" ? "サブスク編集" : "サブスク追加",
@@ -72,9 +69,8 @@ const SubscriptionFormScreen: FC = () => {
     if (params.mode === "edit" && params.id) {
       setMode("edit");
       setSubscriptionId(Number(params.id));
-      setInitialDataLoaded(false); // 編集モードでリセット
+      setInitialDataLoaded(false);
 
-      // 既存のサブスクリプションデータから初期値を設定
       const subscription = subscriptions.find(({ id }) => id === Number(params.id));
       if (subscription) {
         setFormData({
@@ -87,7 +83,7 @@ const SubscriptionFormScreen: FC = () => {
       }
     } else {
       setMode("add");
-      setInitialDataLoaded(false); // 追加モードでリセット
+      setInitialDataLoaded(false);
       setFormData({
         serviceName: "",
         monthlyAmount: null,
@@ -97,10 +93,8 @@ const SubscriptionFormScreen: FC = () => {
     }
   }, [params.mode, params.id, subscriptions, mode, setOptions]);
 
-  // 初期データ設定済みフラグ
   const [initialDataLoaded, setInitialDataLoaded] = useState<boolean>(false);
 
-  // サブスクリプションデータが読み込まれた後に編集データを設定（初回のみ）
   useEffect(() => {
     if (mode === "edit" && subscriptionId && subscriptions.length > 0 && !initialDataLoaded) {
       const subscription = subscriptions.find(({ id }) => id === subscriptionId);
