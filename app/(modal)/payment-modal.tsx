@@ -1,13 +1,13 @@
+import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useAtom } from "jotai";
+import { useEffect } from "react";
+import { Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { useUser } from "@/hooks/useUser";
 import { coupleIdAtom } from "@/state/couple.state";
 import { userAtom } from "@/state/user.state";
 import { defaultFontSize, defaultFontWeight } from "@/style/defaultStyle";
 import { pushNotificationClient } from "@/utils/pushNotificationClient";
-import { useLocalSearchParams, useNavigation } from "expo-router";
-import { useAtom } from "jotai";
-import { useEffect } from "react";
-import { Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { usePayment } from "../../hooks/usePayment";
 import { activeInvoiceAtom } from "../../state/invoice.state";
 

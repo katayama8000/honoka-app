@@ -1,14 +1,14 @@
-import { supabase } from "@/lib/supabase";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Slot, Stack, useRouter } from "expo-router";
 import { hideAsync, preventAutoHideAsync } from "expo-splash-screen";
+import { supabase } from "@/lib/supabase";
 import "react-native-reanimated";
-import { useUser } from "@/hooks/useUser";
-import { userAtom } from "@/state/user.state";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useUser } from "@/hooks/useUser";
+import { userAtom } from "@/state/user.state";
 
 preventAutoHideAsync();
 

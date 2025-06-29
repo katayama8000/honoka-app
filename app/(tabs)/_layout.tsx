@@ -1,7 +1,7 @@
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { Colors } from "@/constants/Colors";
 import { Tabs } from "expo-router";
 import { useAtom } from "jotai";
+import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import { Colors } from "@/constants/Colors";
 import { activeInvoiceAtom } from "../../state/invoice.state";
 
 export default function TabLayout() {

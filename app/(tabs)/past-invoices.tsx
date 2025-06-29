@@ -1,15 +1,15 @@
-import { Colors } from "@/constants/Colors";
-import { useInvoice } from "@/hooks/useInvoice";
-import { usePayment } from "@/hooks/usePayment";
-import { coupleIdAtom } from "@/state/couple.state";
-import type { InvoiceWithBalance } from "@/state/invoice.state";
-import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 import { MaterialIcons } from "@expo/vector-icons";
 import { type Href, useFocusEffect, useRouter } from "expo-router";
 import { useAtom } from "jotai";
 import type React from "react";
 import { type FC, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Colors } from "@/constants/Colors";
+import { useInvoice } from "@/hooks/useInvoice";
+import { usePayment } from "@/hooks/usePayment";
+import { coupleIdAtom } from "@/state/couple.state";
+import type { InvoiceWithBalance } from "@/state/invoice.state";
+import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 
 const PastInvoicesScreen: FC = () => {
   const { invoices, isRefreshing, fetchInvoicesWithBalancesByCoupleId } = useInvoice();

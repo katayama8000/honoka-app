@@ -1,12 +1,3 @@
-import { FloatingActionButton } from "@/components/FloatingActionButton";
-import { Colors } from "@/constants/Colors";
-import { useSubscription } from "@/hooks/useSubscription";
-import { useUser } from "@/hooks/useUser";
-import { coupleIdAtom } from "@/state/couple.state";
-import { userAtom } from "@/state/user.state";
-import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
-import type { Subscription, User } from "@/types/Row";
-import { pushNotificationClient } from "@/utils/pushNotificationClient";
 import { Ionicons } from "@expo/vector-icons";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
@@ -22,6 +13,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { FloatingActionButton } from "@/components/FloatingActionButton";
+import { Colors } from "@/constants/Colors";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useUser } from "@/hooks/useUser";
+import { coupleIdAtom } from "@/state/couple.state";
+import { userAtom } from "@/state/user.state";
+import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
+import type { Subscription, User } from "@/types/Row";
+import { pushNotificationClient } from "@/utils/pushNotificationClient";
 
 const SubscriptionsScreen: FC = () => {
   const {

@@ -1,8 +1,8 @@
-import { Colors } from "@/constants/Colors";
-import { defaultShadowColor } from "@/style/defaultStyle";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import type { ComponentProps, FC } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
+import { Colors } from "@/constants/Colors";
+import { defaultShadowColor } from "@/style/defaultStyle";
 
 type BaseProps = {
   onPress: () => void;

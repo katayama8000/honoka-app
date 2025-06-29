@@ -2,12 +2,12 @@ import Constants from "expo-constants";
 import { isDevice } from "expo-device";
 import {
   AndroidImportance,
-  type Notification,
-  type NotificationResponse,
   addNotificationReceivedListener,
   addNotificationResponseReceivedListener,
   getExpoPushTokenAsync,
   getPermissionsAsync,
+  type Notification,
+  type NotificationResponse,
   requestPermissionsAsync,
   setNotificationChannelAsync,
   setNotificationHandler,
@@ -35,6 +35,7 @@ setNotificationHandler({
 });
 
 export const usePushNotification = () => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const notificationListener = addNotificationReceivedListener((notification: Notification) => {
       console.log("通知を受信しました:", notification);

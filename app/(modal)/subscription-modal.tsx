@@ -1,11 +1,3 @@
-import { Colors } from "@/constants/Colors";
-import { useSubscription } from "@/hooks/useSubscription";
-import { useUser } from "@/hooks/useUser";
-import { coupleIdAtom } from "@/state/couple.state";
-import { userAtom } from "@/state/user.state";
-import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
-import type { Subscription } from "@/types/Row";
-import { pushNotificationClient } from "@/utils/pushNotificationClient";
 import dayjs from "dayjs";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { useAtom } from "jotai";
@@ -22,6 +14,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Colors } from "@/constants/Colors";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useUser } from "@/hooks/useUser";
+import { coupleIdAtom } from "@/state/couple.state";
+import { userAtom } from "@/state/user.state";
+import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
+import type { Subscription } from "@/types/Row";
+import { pushNotificationClient } from "@/utils/pushNotificationClient";
 
 type FormMode = "add" | "edit";
 

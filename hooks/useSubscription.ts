@@ -1,9 +1,9 @@
-import { couple_subscriptions_table } from "@/constants/Table";
-import { supabase } from "@/lib/supabase";
-import type { Subscription } from "@/types/Row";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 import { ToastAndroid } from "react-native";
+import { couple_subscriptions_table } from "@/constants/Table";
+import { supabase } from "@/lib/supabase";
+import type { Subscription } from "@/types/Row";
 import { coupleIdAtom } from "../state/couple.state";
 import { subscriptionsAtom } from "../state/subscription.state";
 import { userAtom } from "../state/user.state";
