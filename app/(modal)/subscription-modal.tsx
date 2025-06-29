@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import DatePicker from "react-native-date-picker";
 import { Colors } from "@/constants/Colors";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useUser } from "@/hooks/useUser";
@@ -47,6 +48,7 @@ const SubscriptionFormScreen: FC = () => {
   const [mode, setMode] = useState<FormMode>("add");
   const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
   const { setOptions } = useNavigation();
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   // フォーム専用のローカル状態
   const [formData, setFormData] = useState<{
@@ -177,8 +179,8 @@ const SubscriptionFormScreen: FC = () => {
     back();
   }, [back]);
 
-  const handleDateChange = useCallback((text: string) => {
-    setFormData((prev) => ({ ...prev, nextBillingDate: text }));
+  const handleDateChange = useCallback((date: Date) => {
+    setFormData((prev) => ({ ...prev, nextBillingDate: dayjs(date).format("YYYY-MM-DD") }));
   }, []);
 
   const isFormValid = formData.serviceName && formData.monthlyAmount && formData.nextBillingDate;
@@ -275,15 +277,25 @@ const SubscriptionFormScreen: FC = () => {
             <Text style={styles.label}>
               次回請求日 <Text style={styles.required}>*</Text>
             </Text>
-            <TextInput
-              style={styles.input}
-              value={formData.nextBillingDate}
-              onChangeText={handleDateChange}
-              placeholder="2025-01-15"
-              placeholderTextColor={Colors.light.icon}
-              maxLength={10}
-            />
+            <TouchableOpacity style={styles.input} onPress={() => setDatePickerOpen(true)} activeOpacity={0.7}>
+              <Text style={{ color: Colors.light.text }}>{formData.nextBillingDate}</Text>
+            </TouchableOpacity>
             <Text style={styles.helpText}>形式: YYYY-MM-DD</Text>
+            <DatePicker
+              modal
+              mode="date"
+              open={datePickerOpen}
+              date={formData.nextBillingDate ? dayjs(formData.nextBillingDate).toDate() : new Date()}
+              onConfirm={(date) => {
+                setDatePickerOpen(false);
+                handleDateChange(date);
+              }}
+              onCancel={() => setDatePickerOpen(false)}
+              locale="ja"
+              title="日付を選択"
+              confirmText="決定"
+              cancelText="キャンセル"
+            />
           </View>
 
           {/* 保存ボタン */}
