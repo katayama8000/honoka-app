@@ -1,8 +1,8 @@
-import { View, Button, Text } from "react-native";
-import { useRegisterBackgroundNotificationTask } from "@/hooks/useBackgroundNotificationTask";
-import { useState, useEffect } from "react";
 import * as BackgroundTask from "expo-background-task";
 import * as TaskManager from "expo-task-manager";
+import { useEffect, useState } from "react";
+import { Button, Text, View } from "react-native";
+import { useRegisterBackgroundNotificationTask } from "@/hooks/useBackgroundNotificationTask";
 
 export const DevBackgroundTaskScreen = () => {
   useRegisterBackgroundNotificationTask();

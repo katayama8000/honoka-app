@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { useAtom } from "jotai";
-import type React from "react";
 import { type FC, useCallback, useEffect, useState } from "react";
 import {
   Alert,
@@ -14,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import DatePicker from "react-native-date-picker";
 import { Colors } from "@/constants/Colors";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useUser } from "@/hooks/useUser";
@@ -25,14 +25,13 @@ import { pushNotificationClient } from "@/utils/pushNotificationClient";
 
 type FormMode = "add" | "edit";
 
-// 1ヶ月先の日付を取得するヘルパー関数
 const getNextMonthDate = (): string => dayjs().add(1, "month").format("YYYY-MM-DD");
 
 const SubscriptionFormScreen: FC = () => {
   const { back } = useRouter();
   const params = useLocalSearchParams<{
-    mode?: FormMode;
-    id?: string;
+    mode: FormMode;
+    id: string;
     serviceName?: string;
     monthlyAmount?: string;
     billingCycle?: string;
@@ -46,9 +45,9 @@ const SubscriptionFormScreen: FC = () => {
 
   const [mode, setMode] = useState<FormMode>("add");
   const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
+  const [datePickerOpen, setDatePickerOpen] = useState<boolean>(false);
   const { setOptions } = useNavigation();
 
-  // フォーム専用のローカル状態
   const [formData, setFormData] = useState<{
     serviceName: Subscription["service_name"];
     monthlyAmount: Subscription["monthly_amount"] | null;
@@ -61,7 +60,6 @@ const SubscriptionFormScreen: FC = () => {
     nextBillingDate: getNextMonthDate(),
   });
 
-  // パラメータから初期値を設定（初回のみ）
   useEffect(() => {
     setOptions({
       headerTitle: mode === "edit" ? "サブスク編集" : "サブスク追加",
@@ -71,9 +69,8 @@ const SubscriptionFormScreen: FC = () => {
     if (params.mode === "edit" && params.id) {
       setMode("edit");
       setSubscriptionId(Number(params.id));
-      setInitialDataLoaded(false); // 編集モードでリセット
+      setInitialDataLoaded(false);
 
-      // 既存のサブスクリプションデータから初期値を設定
       const subscription = subscriptions.find(({ id }) => id === Number(params.id));
       if (subscription) {
         setFormData({
@@ -86,7 +83,7 @@ const SubscriptionFormScreen: FC = () => {
       }
     } else {
       setMode("add");
-      setInitialDataLoaded(false); // 追加モードでリセット
+      setInitialDataLoaded(false);
       setFormData({
         serviceName: "",
         monthlyAmount: null,
@@ -96,10 +93,8 @@ const SubscriptionFormScreen: FC = () => {
     }
   }, [params.mode, params.id, subscriptions, mode, setOptions]);
 
-  // 初期データ設定済みフラグ
   const [initialDataLoaded, setInitialDataLoaded] = useState<boolean>(false);
 
-  // サブスクリプションデータが読み込まれた後に編集データを設定（初回のみ）
   useEffect(() => {
     if (mode === "edit" && subscriptionId && subscriptions.length > 0 && !initialDataLoaded) {
       const subscription = subscriptions.find(({ id }) => id === subscriptionId);
@@ -116,7 +111,7 @@ const SubscriptionFormScreen: FC = () => {
   }, [subscriptions, mode, subscriptionId, initialDataLoaded]);
 
   const handleSubmit = useCallback(async () => {
-    if (!formData.serviceName || !formData.monthlyAmount || !formData.nextBillingDate) {
+    if (!formData.serviceName || formData.monthlyAmount === null || formData.nextBillingDate === "") {
       Alert.alert("入力エラー", "すべての項目を入力してください");
       return;
     }
@@ -173,15 +168,11 @@ const SubscriptionFormScreen: FC = () => {
     fetchPartner,
   ]);
 
-  const handleCancel = useCallback(() => {
-    back();
-  }, [back]);
-
-  const handleDateChange = useCallback((text: string) => {
-    setFormData((prev) => ({ ...prev, nextBillingDate: text }));
+  const handleDateChange = useCallback((date: Date) => {
+    setFormData((prev) => ({ ...prev, nextBillingDate: dayjs(date).format("YYYY-MM-DD") }));
   }, []);
 
-  const isFormValid = formData.serviceName && formData.monthlyAmount && formData.nextBillingDate;
+  const isFormValid = formData.serviceName && formData.monthlyAmount !== null && formData.nextBillingDate;
 
   return (
     <KeyboardAvoidingView
@@ -275,15 +266,25 @@ const SubscriptionFormScreen: FC = () => {
             <Text style={styles.label}>
               次回請求日 <Text style={styles.required}>*</Text>
             </Text>
-            <TextInput
-              style={styles.input}
-              value={formData.nextBillingDate}
-              onChangeText={handleDateChange}
-              placeholder="2025-01-15"
-              placeholderTextColor={Colors.light.icon}
-              maxLength={10}
-            />
+            <TouchableOpacity style={styles.input} onPress={() => setDatePickerOpen(true)} activeOpacity={0.7}>
+              <Text style={{ color: Colors.light.text }}>{formData.nextBillingDate}</Text>
+            </TouchableOpacity>
             <Text style={styles.helpText}>形式: YYYY-MM-DD</Text>
+            <DatePicker
+              modal
+              mode="date"
+              open={datePickerOpen}
+              date={formData.nextBillingDate ? dayjs(formData.nextBillingDate).toDate() : new Date()}
+              onConfirm={(date) => {
+                setDatePickerOpen(false);
+                handleDateChange(date);
+              }}
+              onCancel={() => setDatePickerOpen(false)}
+              locale="ja"
+              title="日付を選択"
+              confirmText="決定"
+              cancelText="キャンセル"
+            />
           </View>
 
           {/* 保存ボタン */}
