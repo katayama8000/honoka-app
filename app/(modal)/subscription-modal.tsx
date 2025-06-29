@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { useAtom } from "jotai";
-import type React from "react";
 import { type FC, useCallback, useEffect, useState } from "react";
 import {
   Alert,
@@ -174,10 +173,6 @@ const SubscriptionFormScreen: FC = () => {
     user,
     fetchPartner,
   ]);
-
-  const handleCancel = useCallback(() => {
-    back();
-  }, [back]);
 
   const handleDateChange = useCallback((date: Date) => {
     setFormData((prev) => ({ ...prev, nextBillingDate: dayjs(date).format("YYYY-MM-DD") }));
