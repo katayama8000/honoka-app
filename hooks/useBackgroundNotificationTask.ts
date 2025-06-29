@@ -1,9 +1,9 @@
-import * as BackgroundTask from "expo-background-task";
-import * as TaskManager from "expo-task-manager";
-import * as Notifications from "expo-notifications";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import * as BackgroundTask from "expo-background-task";
+import * as Notifications from "expo-notifications";
+import * as TaskManager from "expo-task-manager";
 import { getDefaultStore } from "jotai";
+import { useEffect } from "react";
 import { subscriptionsAtom } from "@/state/subscription.state";
 import type { Subscription } from "@/types/Row";
 
