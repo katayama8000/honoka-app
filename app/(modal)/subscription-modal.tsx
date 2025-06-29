@@ -117,7 +117,7 @@ const SubscriptionFormScreen: FC = () => {
   }, [subscriptions, mode, subscriptionId, initialDataLoaded]);
 
   const handleSubmit = useCallback(async () => {
-    if (!formData.serviceName || !formData.monthlyAmount || !formData.nextBillingDate) {
+    if (!formData.serviceName || formData.monthlyAmount === null || formData.nextBillingDate === "") {
       Alert.alert("入力エラー", "すべての項目を入力してください");
       return;
     }
@@ -178,7 +178,7 @@ const SubscriptionFormScreen: FC = () => {
     setFormData((prev) => ({ ...prev, nextBillingDate: dayjs(date).format("YYYY-MM-DD") }));
   }, []);
 
-  const isFormValid = formData.serviceName && formData.monthlyAmount && formData.nextBillingDate;
+  const isFormValid = formData.serviceName && formData.monthlyAmount !== null && formData.nextBillingDate;
 
   return (
     <KeyboardAvoidingView
