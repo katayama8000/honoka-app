@@ -1,9 +1,9 @@
+import { useAtom } from "jotai";
+import { useCallback, useState } from "react";
 import { monthly_invoices_table } from "@/constants/Table";
 import { supabase } from "@/lib/supabase";
 import type { Invoice } from "@/types/Row";
-import { useAtom } from "jotai";
-import { useCallback, useState } from "react";
-import { type InvoiceWithBalance, activeInvoiceAtom, invoicesAtom } from "../state/invoice.state";
+import { activeInvoiceAtom, type InvoiceWithBalance, invoicesAtom } from "../state/invoice.state";
 
 export const useInvoice = () => {
   const [invoices, setInvoices] = useAtom(invoicesAtom);
@@ -70,18 +70,6 @@ export const useInvoice = () => {
         if (error) throw error;
         if (!data) return null;
 
-        type InvoiceForDev = {
-          id: number;
-          month: number;
-          year: number;
-          is_paid: boolean;
-          created_at: string;
-          updated_at: string;
-          active: boolean;
-          couple_id: number;
-          dev_payments: { amount: number; owner_id: string }[];
-        };
-
         type InvoiceForProd = {
           id: number;
           month: number;
@@ -103,17 +91,7 @@ export const useInvoice = () => {
 
           if (hasPayments) {
             // Production environment
-            const invoice_prod = invoice as {
-              payments: { amount: number; owner_id: string }[];
-              id: number;
-              month: number;
-              year: number;
-              is_paid: boolean;
-              created_at: string;
-              updated_at: string;
-              active: boolean;
-              couple_id: number;
-            };
+            const invoice_prod = invoice as InvoiceForProd;
             const { payments, ...rest } = invoice_prod;
             const balance = calculateBalance(payments);
             return { ...rest, balance };

@@ -1,12 +1,12 @@
-import { RecurringPayments } from "@/constants/RecurringPayments";
-import { payments_table } from "@/constants/Table";
-import { supabase } from "@/lib/supabase";
-import type { Couple, Payment } from "@/types/Row";
 import dayjs from "dayjs";
 import { useRouter } from "expo-router";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 import { ToastAndroid } from "react-native";
+import { RecurringPayments } from "@/constants/RecurringPayments";
+import { payments_table } from "@/constants/Table";
+import { supabase } from "@/lib/supabase";
+import type { Couple, Payment } from "@/types/Row";
 import { coupleIdAtom } from "../state/couple.state";
 import { activeInvoiceAtom } from "../state/invoice.state";
 import { paymentsAtom } from "../state/payment.state";
@@ -24,6 +24,7 @@ export const usePayment = () => {
   const { back } = useRouter();
   const [activeInvoice] = useAtom(activeInvoiceAtom);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     (async () => {
       if (activeInvoice === null) {

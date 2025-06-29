@@ -1,7 +1,3 @@
-import { FloatingActionButton } from "@/components/FloatingActionButton";
-import { Colors } from "@/constants/Colors";
-import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
-import type { Couple, Invoice, Payment, Payment as PaymentRow, User } from "@/types/Row";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import { type Href, useRouter } from "expo-router";
@@ -18,6 +14,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { FloatingActionButton } from "@/components/FloatingActionButton";
+import { Colors } from "@/constants/Colors";
+import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
+import type { Couple, Invoice, Payment, Payment as PaymentRow, User } from "@/types/Row";
 import { useCouple } from "../../hooks/useCouple";
 import { useInvoice } from "../../hooks/useInvoice";
 import { usePayment } from "../../hooks/usePayment";

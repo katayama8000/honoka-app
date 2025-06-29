@@ -1,5 +1,5 @@
 import { type FC, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { getApiKey } from "../../modules/expo-native-configuration";
 
 const DebugScreen: FC = () => {

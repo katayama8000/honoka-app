@@ -1,5 +1,4 @@
-import { users_table } from "@/constants/Table";
-import { couples_table } from "@/constants/Table";
+import { couples_table, users_table } from "@/constants/Table";
 import { supabase } from "@/lib/supabase";
 import type { Couple, User as TUser } from "@/types/Row";
 

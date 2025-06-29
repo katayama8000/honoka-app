@@ -1,8 +1,7 @@
-import React from "react";
 import type { FC, ReactNode } from "react";
 import { Alert, Dimensions, StyleSheet, type ViewStyle } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming, runOnJS } from "react-native-reanimated";
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 interface Props {
   children: ReactNode;
