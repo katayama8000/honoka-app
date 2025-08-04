@@ -90,6 +90,7 @@ export default (): ExpoConfig => {
           apiKey: `honoka_dev_api_key_${appEnv}_${version}`,
         },
       ],
+      "expo-quick-actions",
     ],
     updates: {
       url: "https://u.expo.dev/018a6711-ac8c-41b8-830c-279089162afa",
