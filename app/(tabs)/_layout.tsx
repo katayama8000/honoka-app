@@ -48,12 +48,23 @@ export default function TabLayout() {
       <Tabs.Screen
         name="subscriptions"
         options={{
-          title: "サブスクリプション(beta)",
+          title: "サブスク(b)",
           headerTitleStyle: {
             fontSize: 22,
             color: Colors.white,
           },
           tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "card" : "card-outline"} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="compare-prices"
+        options={{
+          title: "価格比較",
+          headerTitleStyle: {
+            fontSize: 22,
+            color: Colors.white,
+          },
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "calculator" : "calculator-outline"} color={color} />,
         }}
       />
     </Tabs>
