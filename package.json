@@ -36,7 +36,7 @@
     "expo-system-ui": "~5.0.10",
     "expo-updates": "~0.28.17",
     "expo-web-browser": "~14.2.0",
-    "jotai": "^2.12.5",
+    "jotai": "^2.13.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
