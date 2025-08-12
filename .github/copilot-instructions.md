@@ -2,6 +2,13 @@
 
 This document outlines the coding standards and best practices for the Honoka App project.
 
+## Platform Support
+
+- **This app supports Android only**
+  - iOS implementations are not required
+  - Focus on Android-specific features and optimizations
+  - When implementing platform-specific code, prioritize Android
+
 ## JavaScript/TypeScript Guidelines
 
 ### Type System

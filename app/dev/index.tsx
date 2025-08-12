@@ -10,6 +10,10 @@ const debugPages = [
     name: "ネイティブAPIキー検証",
     path: "/dev/native-api-key",
   },
+  {
+    name: "Quick Actions検証",
+    path: "/dev/quick-actions",
+  },
 ] as const;
 
 const DevIndexScreen = () => {
