@@ -10,6 +10,10 @@ const debugPages = [
     name: "ネイティブAPIキー検証",
     path: "/dev/native-api-key",
   },
+  {
+    name: "Hello World rpc",
+    path: "/dev/hello-world-rpc",
+  },
 ] as const;
 
 const DevIndexScreen = () => {
