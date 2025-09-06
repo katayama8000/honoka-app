@@ -43,6 +43,7 @@ eas secret:list
 ### Over the air update
 - update the app without building
 https://docs.expo.dev/deploy/send-over-the-air-updates/
+change EXPO_PUBLIC_APP_ENV=development in .env to EXPO_PUBLIC_APP_ENV=production
 ```bash
 eas update --channel production
 ```
