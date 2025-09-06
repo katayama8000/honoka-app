@@ -21,7 +21,7 @@ export const DevBackgroundTaskScreen = () => {
     try {
       await BackgroundTask.triggerTaskWorkerForTestingAsync();
       setResult("バックグラウンドタスクを即時実行しました (devモードのみ)");
-    } catch (e) {
+    } catch (_) {
       setResult("タスク実行に失敗しました");
     }
   };

@@ -9,7 +9,8 @@ export const GET = async (_: Request) => {
       environment,
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch (e) {
+    console.error(e);
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 };
