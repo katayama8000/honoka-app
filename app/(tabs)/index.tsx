@@ -57,7 +57,6 @@ const HomeScreen: FC = () => {
       }
       setCoupleId(coupleId);
 
-      // パートナー情報を取得
       const partnerData = await fetchPartner(coupleId, uid);
       if (partnerData) {
         setPartner(partnerData);
