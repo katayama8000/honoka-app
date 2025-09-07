@@ -1,4 +1,5 @@
 import type { ExpoConfig } from "expo/config";
+import { primaryColor } from "./constants/Colors";
 import { version } from "./package.json";
 
 const allAppEnvs = ["production", "preview", "development"] as const;
@@ -54,12 +55,12 @@ export default (): ExpoConfig => {
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/splash_cat.png",
-        backgroundColor: "#336666",
+        backgroundColor: primaryColor,
       },
       splash: {
         image: "./assets/images/splash_cat.png",
         resizeMode: "cover",
-        backgroundColor: "#336666",
+        backgroundColor: primaryColor,
       },
       package: packageName,
       googleServicesFile: googleServicesJson,
@@ -78,7 +79,7 @@ export default (): ExpoConfig => {
         "expo-notifications",
         {
           icon: "./assets/images/ikura.jpg",
-          color: "#336666",
+          color: primaryColor,
           defaultChannel: "default",
           sounds: ["./assets/sounds/cat.wav"],
           enableBackgroundRemoteNotifications: false,
