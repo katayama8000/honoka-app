@@ -1,9 +1,9 @@
 import type { ExpoConfig } from "expo/config";
-import { primaryColor } from "./constants/Colors";
 import { version } from "./package.json";
 
 const allAppEnvs = ["production", "preview", "development"] as const;
 type AppEnv = (typeof allAppEnvs)[number];
+const primaryColor = "#ac76f1ff";
 
 const envConfigs: Record<AppEnv, { bundleId: string; googleServicesJson: string; name: string; package: string }> = {
   production: {
