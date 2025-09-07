@@ -126,10 +126,6 @@ const InputTable: React.FC<{
 const ResultDisplay: React.FC<{ result: ComparisonResult }> = ({ result }) => {
   const { unitPriceA, unitPriceB, cheaperProduct } = result;
 
-  if (cheaperProduct === null) {
-    return <Text style={styles.placeholderText}>数値を入力して比較してください。</Text>;
-  }
-
   const getSummaryText = () => {
     switch (cheaperProduct) {
       case "A":
@@ -252,13 +248,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray,
     borderRadius: 4,
     textAlign: "center",
-  },
-  placeholderText: {
-    textAlign: "center",
-    color: Colors.light.text,
-    fontStyle: "italic",
-    paddingVertical: 30,
-    fontSize: 16,
   },
   resultContainer: {
     marginTop: 16,
