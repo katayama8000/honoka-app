@@ -3198,7 +3198,7 @@ expo-device@~7.1.4:
   dependencies:
     ua-parser-js "^0.7.33"
 
-expo-eas-client@~0.14.4:
+expo-eas-client@~0.14.3, expo-eas-client@~0.14.4:
   version "0.14.4"
   resolved "https://registry.yarnpkg.com/expo-eas-client/-/expo-eas-client-0.14.4.tgz#33a111d565a58bb425565616086f9abb686f903e"
   integrity sha512-TSL1BbBFIuXchJmPgbPnB7cGpOOuSGJcQ/L7gij/+zPjExwvKm5ckA5dlSulwoFhH8zQt4vb7bfISPSAWQVWBw==
@@ -3214,6 +3214,13 @@ expo-font@~13.3.2:
   integrity sha512-wUlMdpqURmQ/CNKK/+BIHkDA5nGjMqNlYmW0pJFXY/KE/OG80Qcavdu2sHsL4efAIiNGvYdBS10WztuQYU4X0A==
   dependencies:
     fontfaceobserver "^2.1.0"
+
+expo-insights@~0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/expo-insights/-/expo-insights-0.9.3.tgz#992613ebd51008bfaac995b7ec759a9216793edc"
+  integrity sha512-ictylDUdERHPXUM4suEYLJGGvlSOB7btDSA0FtlZeVWWOcyTWQlSF5t1Wj3lCCljzjMm/pIj8k9hp8CXCl0gsg==
+  dependencies:
+    expo-eas-client "~0.14.3"
 
 expo-json-utils@~0.15.0:
   version "0.15.0"
