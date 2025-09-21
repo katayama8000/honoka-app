@@ -1,7 +1,8 @@
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
-import { Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import { useUser } from "@/hooks/useUser";
 import { coupleIdAtom } from "@/state/couple.state";
@@ -23,6 +24,8 @@ const PaymentModalScreen = () => {
     item,
     amount,
     memo,
+    isHalfPrice,
+    setIsHalfPrice,
   } = usePayment();
   const { fetchPartner } = useUser();
   const { kind, id } = useLocalSearchParams();
@@ -61,17 +64,18 @@ const PaymentModalScreen = () => {
       const partner = await fetchPartner(couple_id, user.user_id);
       if (partner === undefined) return;
 
-      if (kind === "edit" && id) {
-        await updatePayment(Number(id), { item, amount, memo });
-      } else {
-        await addPayment();
-      }
+      const finalAmount = isHalfPrice ? Math.round(amount / 2) : amount;
+      const finalMemo = isHalfPrice ? `【半額】${memo ?? ""}` : memo;
+
+      kind === "edit" && id
+        ? await updatePayment(Number(id), { item, amount: finalAmount, memo: finalMemo })
+        : await addPayment({ item, amount: finalAmount, memo: finalMemo });
 
       await pushNotificationClient.sendPaymentNotification(
         partner.expo_push_token,
         user.name,
         item,
-        amount,
+        finalAmount,
         kind === "edit",
       );
 
@@ -103,6 +107,10 @@ const PaymentModalScreen = () => {
           keyboardType={Platform.select({ android: "numeric" })}
         />
       </View>
+      <View style={styles.halfPriceWrapper}>
+        <Text style={styles.inputLabel}>半額</Text>
+        <Switch value={isHalfPrice} onValueChange={setIsHalfPrice} />
+      </View>
       <View style={styles.formWrapper}>
         <Text style={styles.inputLabel}>メモ</Text>
         <TextInput
@@ -133,6 +141,13 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     width: "100%",
   },
+  halfPriceWrapper: {
+    marginVertical: 12,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   inputLabel: {
     fontSize: defaultFontSize,
     fontWeight: defaultFontWeight,
@@ -162,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submitButtonText: {
-    color: "#fff",
+    color: Colors.textOnPrimary,
     fontSize: defaultFontSize,
     fontWeight: defaultFontWeight,
   },

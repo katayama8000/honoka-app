@@ -3,31 +3,35 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-const tintColorLight = "#ac76f1ff";
-const tintColorDark = "#fff";
-export const primaryColor = "#ac76f1ff";
+const tintColorLight = "#D2691E"; // Chocolate
+const tintColorDark = "#FFD700"; // Gold
+export const primaryColor = "#D2691E"; // Chocolate
 
 export const Colors = {
   light: {
-    text: "#11181C",
-    background: "#fff",
+    text: "#5D4037", // Dark Brown
+    background: "#FFF8E1", // Light Beige
+    card: "#FFFDF3", // Off-white for cards
     tint: tintColorLight,
-    icon: "#ac76f1ff",
-    tabIconDefault: "#ac76f1ff",
+    icon: "#D2691E",
+    tabIconDefault: "#D2691E",
     tabIconSelected: tintColorLight,
   },
   dark: {
-    text: "#ECEDEE",
-    background: "#151718",
+    text: "#FFF8E1", // Light Beige
+    background: "#3E2723", // Darkest Brown
+    card: "#4E342E", // Darker Brown for cards
     tint: tintColorDark,
-    icon: "#ac76f1ff",
-    tabIconDefault: "#ac76f1ff",
+    icon: "#FFD700",
+    tabIconDefault: "#FFD700",
     tabIconSelected: tintColorDark,
   },
   primary: primaryColor,
-  secondary: "#f44336",
+  secondary: "#E65100", // Deep Orange
   white: "#fff",
   black: "#000",
-  gray: "#f0f0f0",
-  required: "#f44336",
+  gray: "#D7CCC8", // Light Brownish Gray
+  required: "#E65100", // Deep Orange
+  gold: "#FFD700",
+  textOnPrimary: "#FFF8E1",
 } as const;

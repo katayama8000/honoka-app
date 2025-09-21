@@ -1,4 +1,3 @@
-import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import {
   Keyboard,
@@ -208,7 +207,7 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
   card: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.light.card,
     borderRadius: 8,
     padding: 12,
     marginBottom: 16,
@@ -251,7 +250,7 @@ const styles = StyleSheet.create({
   },
   resultContainer: {
     marginTop: 16,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.light.card,
     borderRadius: 8,
     padding: 16,
   },
@@ -277,19 +276,19 @@ const styles = StyleSheet.create({
   resultProductTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: Colors.white,
+    color: Colors.textOnPrimary,
   },
   unitPriceText: {
     fontSize: 18,
     fontWeight: "bold",
-    color: Colors.white,
+    color: Colors.textOnPrimary,
     marginTop: 4,
   },
   cheaper: {
     backgroundColor: Colors.primary,
   },
   expensive: {
-    backgroundColor: "#a9a9a9",
+    backgroundColor: Colors.gray,
   },
   summaryText: {
     fontSize: 18,
