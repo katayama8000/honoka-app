@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { Colors } from "@/constants/Colors";
+import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 
 interface Product {
   id: "A" | "B";
@@ -27,11 +28,6 @@ interface ComparisonResult {
   cheaperProduct: CheaperStatus;
 }
 
-// --- カスタムフック (Hooks) ---
-
-/**
- * キーボードの表示状態を管理するフック
- */
 const useKeyboardVisibility = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -99,6 +95,7 @@ const InputTable: React.FC<{
             onChangeText={(text) => onProductChange(p.id, "price", text.replace(/[^0-9.]/g, ""))}
             keyboardType="numeric"
             placeholder="例: 300"
+            placeholderTextColor={Colors.light.icon}
           />
         </View>
       ))}
@@ -115,6 +112,7 @@ const InputTable: React.FC<{
             onChangeText={(text) => onProductChange(p.id, "volume", text.replace(/[^0-9.]/g, ""))}
             keyboardType="numeric"
             placeholder="例: 500"
+            placeholderTextColor={Colors.light.icon}
           />
         </View>
       ))}
@@ -134,7 +132,7 @@ const ResultDisplay: React.FC<{ result: ComparisonResult }> = ({ result }) => {
       case "SAME":
         return "両方とも同じ価格です。";
       default:
-        return null;
+        return "";
     }
   };
 
@@ -142,16 +140,16 @@ const ResultDisplay: React.FC<{ result: ComparisonResult }> = ({ result }) => {
   const resultStyleB = cheaperProduct === "B" || cheaperProduct === "SAME" ? styles.cheaper : styles.expensive;
 
   return (
-    <View style={styles.resultContainer}>
+    <View style={styles.card}>
       <Text style={styles.resultTitle}>比較結果</Text>
       <View style={styles.resultDetails}>
         <View style={[styles.resultCard, resultStyleA]}>
           <Text style={styles.resultProductTitle}>商品A</Text>
-          <Text style={styles.unitPriceText}>{unitPriceA?.toFixed(2)} 円/単位</Text>
+          <Text style={styles.unitPriceText}>{unitPriceA ? `${unitPriceA.toFixed(2)} 円/単位` : "-"}</Text>
         </View>
         <View style={[styles.resultCard, resultStyleB]}>
           <Text style={styles.resultProductTitle}>商品B</Text>
-          <Text style={styles.unitPriceText}>{unitPriceB?.toFixed(2)} 円/単位</Text>
+          <Text style={styles.unitPriceText}>{unitPriceB ? `${unitPriceB.toFixed(2)} 円/単位` : "-"}</Text>
         </View>
       </View>
       <Text style={styles.summaryText}>{getSummaryText()}</Text>
@@ -176,13 +174,12 @@ export default function ComparePrices() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.keyboardAvoidingView}
+      style={{ flex: 1 }}
       keyboardVerticalOffset={80}
     >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View>
-            <Text style={styles.title}>価格比較ツール ⚖️</Text>
+          <View style={{ flex: 1 }}>
             <InputTable products={products} onProductChange={handleProductChange} />
             {!isKeyboardVisible && <ResultDisplay result={comparisonResult} />}
           </View>
@@ -193,29 +190,21 @@ export default function ComparePrices() {
 }
 
 const styles = StyleSheet.create({
-  keyboardAvoidingView: { flex: 1 },
   container: {
-    padding: 16,
-    backgroundColor: Colors.gray,
     flexGrow: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-    textAlign: "center",
-    color: Colors.primary,
+    backgroundColor: Colors.light.background,
+    padding: 20,
   },
   card: {
+    borderRadius: 12,
+    padding: 16,
     backgroundColor: Colors.light.card,
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
-    shadowColor: "#000",
+    shadowColor: defaultShadowColor,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 2,
+    marginBottom: 16,
   },
   productTitle: {
     fontSize: 16,
@@ -229,37 +218,34 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   labelColumn: {
-    flex: 0.8, // ラベル列の幅を調整
+    flex: 0.8,
   },
   inputColumn: {
     flex: 1,
     paddingHorizontal: 4,
   },
   label: {
-    fontSize: 14,
+    fontSize: defaultFontSize,
     color: Colors.light.text,
-    fontWeight: "bold",
+    fontWeight: defaultFontWeight,
   },
   input: {
-    height: 40,
-    paddingHorizontal: 8,
+    height: 44,
+    paddingHorizontal: 12,
     fontSize: 16,
-    backgroundColor: Colors.gray,
-    borderRadius: 4,
-    textAlign: "center",
-  },
-  resultContainer: {
-    marginTop: 16,
-    backgroundColor: Colors.light.card,
+    backgroundColor: Colors.light.background,
     borderRadius: 8,
-    padding: 16,
+    textAlign: "center",
+    borderWidth: 1,
+    borderColor: Colors.light.icon,
+    color: Colors.light.text,
   },
   resultTitle: {
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 12,
-    color: Colors.primary,
+    color: Colors.light.text,
   },
   resultDetails: {
     flexDirection: "row",
@@ -288,7 +274,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   expensive: {
-    backgroundColor: Colors.gray,
+    backgroundColor: Colors.light.icon,
   },
   summaryText: {
     fontSize: 18,
