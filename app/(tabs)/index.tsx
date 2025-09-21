@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
   linkContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    paddingVertical: 20,
+    paddingVertical: 4,
   },
   link: {
     color: Colors.primary,
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 4,
+    marginBottom: 2,
   },
   value: {
     fontSize: 16,
