@@ -1,7 +1,8 @@
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
-import { Platform, SafeAreaView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import { useUser } from "@/hooks/useUser";
 import { coupleIdAtom } from "@/state/couple.state";
@@ -66,11 +67,9 @@ const PaymentModalScreen = () => {
       const finalAmount = isHalfPrice ? Math.round(amount / 2) : amount;
       const finalMemo = isHalfPrice ? `【半額】${memo ?? ""}` : memo;
 
-      if (kind === "edit" && id) {
-        await updatePayment(Number(id), { item, amount: finalAmount, memo: finalMemo });
-      } else {
-        await addPayment({ item, amount: finalAmount, memo: finalMemo });
-      }
+      kind === "edit" && id
+        ? await updatePayment(Number(id), { item, amount: finalAmount, memo: finalMemo })
+        : await addPayment({ item, amount: finalAmount, memo: finalMemo });
 
       await pushNotificationClient.sendPaymentNotification(
         partner.expo_push_token,
