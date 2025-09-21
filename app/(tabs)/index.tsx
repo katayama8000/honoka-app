@@ -158,7 +158,7 @@ const HomeScreen: FC = () => {
       {showCloseMonthButton && (
         <FloatingActionButton
           position="bottomLeft"
-          iconName="checkcircleo"
+          iconName="check-circle"
           color={Colors.secondary}
           onPress={async () => {
             if (!coupleId) {
