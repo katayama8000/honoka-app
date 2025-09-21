@@ -19,6 +19,7 @@ export const usePayment = () => {
   const [item, setItem] = useState<string | null>(null);
   const [amount, setAmount] = useState<number | null>(null);
   const [memo, setMemo] = useState<string | null>(null);
+  const [isHalfPrice, setIsHalfPrice] = useState<boolean>(false);
   const { fetchMonthlyInvoiceIdByCoupleId } = useInvoice();
   const [coupleId] = useAtom(coupleIdAtom);
   const { back } = useRouter();
@@ -40,59 +41,63 @@ export const usePayment = () => {
     setItem(null);
     setAmount(null);
     setMemo(null);
+    setIsHalfPrice(false);
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  const addPayment = useCallback(async (): Promise<void> => {
-    if (!item || !amount) {
-      alert("Please enter both name and amount.");
-      return;
-    }
-
-    if (!coupleId) {
-      alert("coupleId is not found");
-      return;
-    }
-    const monthly_invoice_id = await fetchMonthlyInvoiceIdByCoupleId(coupleId);
-
-    if (monthly_invoice_id === undefined) {
-      alert("monthly_invoice_id is not found");
-      return;
-    }
-
-    const uid = (await supabase.auth.getSession())?.data.session?.user.id;
-    if (uid === undefined) {
-      alert("uid is not found");
-      return;
-    }
-    try {
-      const { error } = await supabase.from(payments_table).insert([
-        {
-          amount,
-          monthly_invoice_id,
-          item,
-          memo,
-          updated_at: dayjs().toISOString(),
-          created_at: dayjs().toISOString(),
-          owner_id: uid,
-          deleted_at: null,
-        },
-      ]);
-
-      if (error) {
-        console.error(error);
-        alert("An error occurred. Please try again.");
+  const addPayment = useCallback(
+    async (payment: Pick<Payment, "item" | "amount" | "memo">): Promise<void> => {
+      if (!payment.item || !payment.amount) {
+        alert("Please enter both name and amount.");
         return;
       }
 
-      ToastAndroid.show("投稿した", ToastAndroid.SHORT);
-      resetForm();
-      back();
-    } catch (error) {
-      console.error(error);
-      alert("An error occurred. Please try again.");
-    }
-  }, [item, amount, memo, back, fetchMonthlyInvoiceIdByCoupleId, coupleId]);
+      if (!coupleId) {
+        alert("coupleId is not found");
+        return;
+      }
+      const monthly_invoice_id = await fetchMonthlyInvoiceIdByCoupleId(coupleId);
+
+      if (monthly_invoice_id === undefined) {
+        alert("monthly_invoice_id is not found");
+        return;
+      }
+
+      const uid = (await supabase.auth.getSession())?.data.session?.user.id;
+      if (uid === undefined) {
+        alert("uid is not found");
+        return;
+      }
+      try {
+        const { error } = await supabase.from(payments_table).insert([
+          {
+            amount: payment.amount,
+            monthly_invoice_id,
+            item: payment.item,
+            memo: payment.memo,
+            updated_at: dayjs().toISOString(),
+            created_at: dayjs().toISOString(),
+            owner_id: uid,
+            deleted_at: null,
+          },
+        ]);
+
+        if (error) {
+          console.error(error);
+          alert("An error occurred. Please try again.");
+          return;
+        }
+
+        ToastAndroid.show("投稿した", ToastAndroid.SHORT);
+        resetForm();
+        back();
+      } catch (error) {
+        console.error(error);
+        alert("An error occurred. Please try again.");
+      }
+    },
+    [back, fetchMonthlyInvoiceIdByCoupleId, coupleId],
+  );
 
   const fetchPaymentsAllByMonthlyInvoiceId = useCallback(
     async (monthlyInvoiceId: Payment["monthly_invoice_id"]) => {
@@ -197,7 +202,7 @@ export const usePayment = () => {
 
       const startOfNextMonth = dayjs().add(1, "month").startOf("month").add(9, "hours");
 
-      const paymentsData = RecurringPayments(startOfNextMonth).map((item) => ({
+      const paymentsData = RecurringPayments().map((item) => ({
         ...item,
         monthly_invoice_id: monthlyInvoiceId,
         owner_id: uid,
@@ -237,5 +242,7 @@ export const usePayment = () => {
     setMemo,
     setupRecurringPayments,
     updatePayment,
+    isHalfPrice,
+    setIsHalfPrice,
   };
 };

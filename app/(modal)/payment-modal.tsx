@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
-import { Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Platform, SafeAreaView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { useUser } from "@/hooks/useUser";
 import { coupleIdAtom } from "@/state/couple.state";
@@ -23,6 +23,8 @@ const PaymentModalScreen = () => {
     item,
     amount,
     memo,
+    isHalfPrice,
+    setIsHalfPrice,
   } = usePayment();
   const { fetchPartner } = useUser();
   const { kind, id } = useLocalSearchParams();
@@ -61,17 +63,20 @@ const PaymentModalScreen = () => {
       const partner = await fetchPartner(couple_id, user.user_id);
       if (partner === undefined) return;
 
+      const finalAmount = isHalfPrice ? Math.round(amount / 2) : amount;
+      const finalMemo = isHalfPrice ? `【半額】${memo ?? ""}` : memo;
+
       if (kind === "edit" && id) {
-        await updatePayment(Number(id), { item, amount, memo });
+        await updatePayment(Number(id), { item, amount: finalAmount, memo: finalMemo });
       } else {
-        await addPayment();
+        await addPayment({ item, amount: finalAmount, memo: finalMemo });
       }
 
       await pushNotificationClient.sendPaymentNotification(
         partner.expo_push_token,
         user.name,
         item,
-        amount,
+        finalAmount,
         kind === "edit",
       );
 
@@ -103,6 +108,10 @@ const PaymentModalScreen = () => {
           keyboardType={Platform.select({ android: "numeric" })}
         />
       </View>
+      <View style={styles.halfPriceWrapper}>
+        <Text style={styles.inputLabel}>半額</Text>
+        <Switch value={isHalfPrice} onValueChange={setIsHalfPrice} />
+      </View>
       <View style={styles.formWrapper}>
         <Text style={styles.inputLabel}>メモ</Text>
         <TextInput
@@ -132,6 +141,13 @@ const styles = StyleSheet.create({
   formWrapper: {
     marginVertical: 12,
     width: "100%",
+  },
+  halfPriceWrapper: {
+    marginVertical: 12,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   inputLabel: {
     fontSize: defaultFontSize,
