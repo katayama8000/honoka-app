@@ -1,4 +1,4 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { type Href, useFocusEffect, useRouter } from "expo-router";
 import { useAtom } from "jotai";
 import { type FC, memo, useCallback, useEffect, useMemo, useState } from "react";
@@ -51,9 +51,9 @@ const PastInvoicesScreen: FC = () => {
         data={sortedInvoices}
         renderItem={renderInvoice}
         keyExtractor={keyExtractor}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
         ListEmptyComponent={EmptyListMessage}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={styles.listContainer}
         onRefresh={handleRefresh}
         refreshing={isRefreshing}
       />
@@ -98,20 +98,22 @@ const MonthlyInvoice: FC<MonthlyInvoiceProps> = memo(({ invoiceWithBalance, rout
   }, [invoiceWithBalance.id, invoiceWithBalance.year, invoiceWithBalance.month, routerPush]);
 
   return (
-    <TouchableOpacity style={styles.card} onPress={handlePress}>
-      <View style={styles.cardContainer}>
-        <View>
-          <View style={styles.dateContainer}>
-            <Text style={styles.date}>{`${invoiceWithBalance.year}年 ${invoiceWithBalance.month}月`}</Text>
-            {invoiceWithBalance.active && <Text style={styles.thisMonth}>今月</Text>}
+    <TouchableOpacity onPress={handlePress}>
+      <View style={styles.card}>
+        <View style={styles.cardContainer}>
+          <View>
+            <View style={styles.dateContainer}>
+              <Text style={styles.date}>{`${invoiceWithBalance.year}年 ${invoiceWithBalance.month}月`}</Text>
+              {invoiceWithBalance.active && <Text style={styles.thisMonth}>今月</Text>}
+            </View>
+            <AmountDisplay
+              active={invoiceWithBalance.active}
+              totalAmount={totalAmount}
+              balance={invoiceWithBalance.balance ?? null}
+            />
           </View>
-          <AmountDisplay
-            active={invoiceWithBalance.active}
-            totalAmount={totalAmount}
-            balance={invoiceWithBalance.balance ?? null}
-          />
+          <MaterialIcons name="arrow-forward-ios" size={24} color={Colors.light.icon} />
         </View>
-        <MaterialIcons name="arrow-forward-ios" size={24} />
       </View>
     </TouchableOpacity>
   );
@@ -144,32 +146,31 @@ const AmountDisplay: FC<{ active: boolean; totalAmount: number | null; balance: 
 };
 
 const EmptyListMessage: FC = () => (
-  <View style={styles.emptyListMessage}>
-    <Text>過去の請求がありません</Text>
+  <View style={styles.emptyContainer}>
+    <AntDesign name="inbox" size={64} color={Colors.light.icon} />
+    <Text style={styles.emptyText}>過去の請求がありません</Text>
   </View>
 );
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 16,
-    paddingHorizontal: 16,
+    flex: 1,
+    backgroundColor: Colors.light.background,
   },
-  separator: {
-    height: 4,
-  },
-  listContent: {
-    paddingBottom: 100,
+  listContainer: {
+    padding: 20,
+    paddingBottom: 100, // フローティングボタンの領域を確保
   },
   card: {
+    borderRadius: 12,
     padding: 16,
-    borderRadius: 8,
-    marginVertical: 8,
-    shadowColor: defaultShadowColor,
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 4,
-    elevation: 4,
     backgroundColor: Colors.light.card,
+    shadowColor: defaultShadowColor,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    position: "relative",
   },
   cardContainer: {
     flexDirection: "row",
@@ -181,10 +182,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
   },
-  emptyListMessage: {
-    flex: 1,
-    justifyContent: "center",
+  emptyContainer: {
     alignItems: "center",
+    paddingVertical: 40,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: defaultFontWeight,
+    color: Colors.light.text,
+    marginTop: 16,
   },
   thisMonth: {
     padding: 4,
