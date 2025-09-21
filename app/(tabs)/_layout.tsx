@@ -64,7 +64,9 @@ export default function TabLayout() {
             fontSize: 22,
             color: Colors.white,
           },
-          tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "calculator" : "calculator-outline"} color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? "calculator" : "calculator-outline"} color={color} />
+          ),
         }}
       />
     </Tabs>

@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
-import type React from "react";
 import { type FC, memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
