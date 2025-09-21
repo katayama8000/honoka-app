@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submitButtonText: {
-    color: "#fff",
+    color: Colors.textOnPrimary,
     fontSize: defaultFontSize,
     fontWeight: defaultFontWeight,
   },

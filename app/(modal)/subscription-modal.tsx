@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14, // パディングを増加してタップしやすく
     fontSize: defaultFontSize,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.light.card,
     color: Colors.light.text,
     minHeight: 48, // 最小高さを指定してタップターゲットを大きく
   },
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 14, // パディングを増加
     paddingHorizontal: 16,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.light.card,
     alignItems: "center",
     minHeight: 48, // 最小高さを指定
   },

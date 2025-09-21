@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 4,
     elevation: 4,
-    backgroundColor: "white",
+    backgroundColor: Colors.light.card,
   },
   cardContainer: {
     flexDirection: "row",
@@ -189,9 +189,9 @@ const styles = StyleSheet.create({
   thisMonth: {
     padding: 4,
     paddingHorizontal: 8,
-    backgroundColor: "#FFD700",
+    backgroundColor: Colors.gold,
     borderRadius: 16,
-    color: "#fff",
+    color: Colors.light.text,
     fontSize: 12,
     fontWeight: "light",
   },
