@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 12,
     padding: 16,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.light.card,
     shadowColor: defaultShadowColor,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   ownerText: {
-    color: Colors.white,
+    color: Colors.textOnPrimary,
     fontSize: 12,
     fontWeight: defaultFontWeight,
   },
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   partnerText: {
-    color: Colors.white,
+    color: Colors.textOnPrimary,
     fontSize: 12,
     fontWeight: defaultFontWeight,
   },
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.light.card,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: defaultShadowColor,
@@ -459,7 +459,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.light.card,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: defaultShadowColor,
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   addButtonText: {
-    color: "white",
+    color: Colors.textOnPrimary,
     fontSize: defaultFontSize,
     paddingLeft: 8,
     fontWeight: defaultFontWeight,

@@ -3,7 +3,7 @@ import { version } from "./package.json";
 
 const allAppEnvs = ["production", "preview", "development"] as const;
 type AppEnv = (typeof allAppEnvs)[number];
-const primaryColor = "#ac76f1ff";
+const primaryColor = "#D2691E";
 
 const envConfigs: Record<AppEnv, { bundleId: string; googleServicesJson: string; name: string; package: string }> = {
   production: {
@@ -46,7 +46,7 @@ export default (): ExpoConfig => {
     splash: {
       image: "./assets/images/splash_cat.png",
       resizeMode: "cover",
-      backgroundColor: "#336666",
+      backgroundColor: primaryColor,
     },
     ios: {
       supportsTablet: true,

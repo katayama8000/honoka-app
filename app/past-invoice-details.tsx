@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   noData: {
     fontSize: defaultFontSize,
-    color: "#999",
+    color: Colors.light.text,
     textAlign: "center",
     marginTop: 32,
   },
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   card: {
-    backgroundColor: "white",
+    backgroundColor: Colors.light.card,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 12,
@@ -110,10 +110,10 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: defaultFontSize,
     fontWeight: defaultFontWeight,
-    color: "#444",
+    color: Colors.light.text,
   },
   memoText: {
-    color: "#666",
+    color: Colors.light.icon,
     marginTop: 4,
     fontFamily: "sans-serif",
     fontSize: 12,

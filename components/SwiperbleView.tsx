@@ -2,6 +2,7 @@ import type { FC, ReactNode } from "react";
 import { Alert, Dimensions, StyleSheet, type ViewStyle } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { Colors } from "@/constants/Colors";
 
 interface Props {
   children: ReactNode;
@@ -77,6 +78,6 @@ const styles = StyleSheet.create({
   },
   content: {
     width: "100%",
-    backgroundColor: "white",
+    backgroundColor: Colors.light.card,
   },
 });

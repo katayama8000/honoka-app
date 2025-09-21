@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
-import type React from "react";
 import { type FC, memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -274,7 +273,7 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
   },
   summaryContainer: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.light.card,
     marginHorizontal: 20,
     marginTop: 12,
     padding: 12,
@@ -367,7 +366,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   itemContainer: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.light.card,
     borderRadius: 8,
     padding: 16,
     marginBottom: 12,
@@ -397,7 +396,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.light.card,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: defaultShadowColor,
@@ -412,7 +411,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.light.card,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: defaultShadowColor,
