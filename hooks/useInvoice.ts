@@ -65,7 +65,17 @@ export const useInvoice = () => {
             owner_id
           )`;
 
-        const { data, error } = await supabase.from(monthly_invoices_table).select(query).eq("couple_id", id);
+        const { data, error } = isProduction
+          ? await supabase
+              .from(monthly_invoices_table)
+              .select(query)
+              .eq("couple_id", id)
+              .is("payments.deleted_at", null)
+          : await supabase
+              .from(monthly_invoices_table)
+              .select(query)
+              .eq("couple_id", id)
+              .is("dev_payments.deleted_at", null);
 
         if (error) throw error;
         if (!data) return null;
