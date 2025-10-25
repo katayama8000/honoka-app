@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   thisMonth: {
     padding: 4,
     paddingHorizontal: 8,
-    backgroundColor: Colors.gold,
+    backgroundColor: Colors.primary,
     borderRadius: 16,
     color: Colors.light.text,
     fontSize: 12,
