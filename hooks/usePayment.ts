@@ -193,10 +193,17 @@ export const usePayment = () => {
         return;
       }
 
+      const uidHusband = "0f0ba5d1-9c4e-4d97-96f1-8e6645cb5497";
+      const uidWife = "9b776e5e-0c4c-432b-beaa-b77f12e0e5f8";
+
       // user id should be a wife's id
       const uid = (await supabase.auth.getSession())?.data.session?.user.id;
-      if (!uid) {
+      if (uid === undefined) {
         alert("uid is not found");
+        return;
+      }
+      if (uid !== uidWife && uid !== uidHusband) {
+        alert("uid is invalid");
         return;
       }
 
@@ -205,7 +212,7 @@ export const usePayment = () => {
       const paymentsData = RecurringPayments().map((item) => ({
         ...item,
         monthly_invoice_id: monthlyInvoiceId,
-        owner_id: uid,
+        owner_id: item.item === "家賃" ? uidHusband : uidWife,
         updated_at: startOfNextMonth.toISOString(),
         created_at: startOfNextMonth.toISOString(),
         deleted_at: null,
