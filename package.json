@@ -23,7 +23,6 @@
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.0.3",
-    "@react-native-async-storage/async-storage": "2.2.0",
     "@supabase/supabase-js": "^2.76.1",
     "dayjs": "^1.11.13",
     "expo": "54.0.21",
@@ -37,6 +36,7 @@
     "expo-notifications": "~0.32.12",
     "expo-router": "~6.0.14",
     "expo-splash-screen": "~31.0.10",
+    "expo-sqlite": "~16.0.8",
     "expo-status-bar": "~3.0.8",
     "expo-system-ui": "~6.0.8",
     "expo-updates": "~29.0.12",
