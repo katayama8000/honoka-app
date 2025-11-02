@@ -98,6 +98,7 @@ export default (): ExpoConfig => {
     runtimeVersion: version,
     experiments: {
       typedRoutes: true,
+      buildCacheProvider: "eas",
     },
     extra: {
       router: {
