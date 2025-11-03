@@ -73,20 +73,21 @@ const PaymentModalScreen = () => {
       return;
     }
     if (couple_id === null || user === null) return;
+    if (calculatedAmount === null || calculatedMemo === null) return;
 
     try {
       const partner = await fetchPartner(couple_id, user.user_id);
       if (partner === undefined) return;
 
       isEditMode && id
-        ? await updatePayment(Number(id), { item, amount: calculatedAmount!, memo: calculatedMemo! })
-        : await addPayment({ item, amount: calculatedAmount!, memo: calculatedMemo! });
+        ? await updatePayment(Number(id), { item, amount: calculatedAmount, memo: calculatedMemo })
+        : await addPayment({ item, amount: calculatedAmount, memo: calculatedMemo });
 
       await pushNotificationClient.sendPaymentNotification(
         partner.expo_push_token,
         user.name,
         item,
-        calculatedAmount!,
+        calculatedAmount,
         isEditMode,
       );
 
@@ -199,12 +200,12 @@ const styles = StyleSheet.create({
     paddingBottom: 60,
   },
   formGroup: {
-    marginBottom: 24,
+    marginBottom: 20,
   },
   priceRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 20,
   },
   priceInputWrapper: {
     flex: 1,
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray,
     borderRadius: 8,
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 12,
     fontSize: defaultFontSize,
     backgroundColor: Colors.light.card,
     color: Colors.light.text,
