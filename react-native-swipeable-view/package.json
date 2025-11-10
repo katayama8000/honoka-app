@@ -1,0 +1,61 @@
+{
+  "name": "react-native-swipeable-view",
+  "version": "1.0.0",
+  "description": "A React Native component for swipeable views with gesture support",
+  "type": "module",
+  "main": "lib/index.js",
+  "module": "lib/index.esm.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "prepare": "yarn build",
+    "format": "biome format --write .",
+    "lint": "biome check --write .",
+    "type-check": "tsc --noEmit"
+  },
+  "files": [
+    "lib",
+    "README.md"
+  ],
+  "keywords": [
+    "react-native",
+    "swipe",
+    "gesture",
+    "swipeable",
+    "react",
+    "native",
+    "component",
+    "animation"
+  ],
+  "author": "katayama8000",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/katayama8000/react-native-swipeable-view"
+  },
+  "homepage": "https://github.com/katayama8000/react-native-swipeable-view#readme",
+  "bugs": {
+    "url": "https://github.com/katayama8000/react-native-swipeable-view/issues"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.70.0",
+    "react-native-gesture-handler": ">=2.0.0",
+    "react-native-reanimated": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.1",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@types/react": "^19.1.10",
+    "@types/react-native": "^0.73.0",
+    "react": "^19.1.0",
+    "react-native": "^0.81.5",
+    "react-native-gesture-handler": "^2.28.0",
+    "react-native-reanimated": "^4.1.3",
+    "rollup": "^4.27.4",
+    "rollup-plugin-dts": "^6.1.1",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "yarn@1.22.22"
+}
