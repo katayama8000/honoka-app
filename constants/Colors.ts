@@ -4,7 +4,7 @@
  */
 
 type Theme = "purple" | "autumn";
-const CURRENT_THEME: Theme = "autumn";
+const CURRENT_THEME: Theme = "purple";
 
 const themes = {
   purple: {

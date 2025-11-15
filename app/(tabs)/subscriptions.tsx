@@ -275,9 +275,10 @@ const styles = StyleSheet.create({
   summaryContainer: {
     backgroundColor: Colors.light.card,
     marginHorizontal: 20,
-    marginTop: 12,
-    padding: 12,
-    borderRadius: 8,
+    marginTop: 16,
+    marginBottom: 8,
+    padding: 16,
+    borderRadius: 12,
     shadowColor: defaultShadowColor,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -285,9 +286,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   summaryMainLabel: {
-    fontSize: 14,
-    color: Colors.light.icon,
-    marginBottom: 8,
+    fontSize: 16,
+    fontWeight: defaultFontWeight,
+    color: Colors.light.text,
+    marginBottom: 12,
     textAlign: "center",
   },
   summaryLabel: {
@@ -301,28 +303,28 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
   breakdownContainer: {
-    gap: 6,
+    gap: 8,
   },
   breakdownRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 2,
+    paddingVertical: 4,
   },
   breakdownLabel: {
-    fontSize: 14,
+    fontSize: defaultFontSize,
     color: Colors.light.text,
   },
   breakdownAmount: {
-    fontSize: 14,
+    fontSize: defaultFontSize,
     fontWeight: defaultFontWeight,
     color: Colors.light.text,
   },
   totalRow: {
     borderTopWidth: 1,
     borderTopColor: Colors.gray,
-    paddingTop: 6,
-    marginTop: 6,
+    paddingTop: 8,
+    marginTop: 8,
   },
   totalLabel: {
     fontSize: 16,
@@ -330,13 +332,13 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
   },
   totalAmount: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: defaultFontWeight,
     color: Colors.primary,
   },
   listContainer: {
     padding: 20,
-    paddingTop: 12,
+    paddingTop: 8,
     paddingBottom: 100, // フローティングボタンの領域を確保
   },
   emptyContainer: {
@@ -367,9 +369,9 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     backgroundColor: Colors.light.card,
-    borderRadius: 8,
+    borderRadius: 12,
     padding: 16,
-    marginBottom: 12,
+    marginBottom: 8,
     shadowColor: defaultShadowColor,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,

@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
+import { PaymentCard } from "@/components/PaymentCard";
 import { Colors } from "@/constants/Colors";
 import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
 import type { Couple, Invoice, Payment, Payment as PaymentRow, User } from "@/types/Row";
@@ -286,39 +287,26 @@ const PaymentItem: FC<PaymentItemProps> = ({
     routerPush({ pathname: "/payment-modal", params: { kind: "edit", id: payment.id } });
   };
 
-  const CardContent = (
-    <View style={styles.cardContent}>
-      <Text style={styles.itemTitle}>{payment.item}</Text>
-      <View style={styles.row}>
-        <Text style={styles.value}>{payment.amount.toLocaleString()}円</Text>
-      </View>
-      {payment.memo && <Text style={styles.memo}>{payment.memo}</Text>}
-    </View>
-  );
+  const actionButtons = isOwner ? (
+    <>
+      <TouchableOpacity style={styles.editButton} onPress={handleEditPayment} activeOpacity={0.7}>
+        <Ionicons name="create" size={18} color={Colors.primary} />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.deleteButton} onPress={handleDeletePayment} activeOpacity={0.7}>
+        <Ionicons name="trash" size={18} color={Colors.secondary} />
+      </TouchableOpacity>
+    </>
+  ) : undefined;
 
   return (
-    <View style={styles.cardContainer}>
-      <View style={styles.card}>
-        {CardContent}
-        <View style={isOwner ? styles.ownerIndicator : styles.partnerIndicator}>
-          <Text style={isOwner ? styles.ownerText : styles.partnerText}>
-            {isOwner ? currentUserName || "あなた" : partnerName || "パートナー"}
-          </Text>
-        </View>
-
-        {/* 自分の支払いの場合のみ編集・削除ボタンを表示 */}
-        {isOwner && (
-          <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.editButton} onPress={handleEditPayment} activeOpacity={0.7}>
-              <Ionicons name="create" size={18} color={Colors.primary} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={handleDeletePayment} activeOpacity={0.7}>
-              <Ionicons name="trash" size={18} color={Colors.secondary} />
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-    </View>
+    <PaymentCard
+      payment={payment}
+      isOwner={isOwner}
+      ownerLabel={currentUserName || "あなた"}
+      partnerLabel={partnerName || "パートナー"}
+      showDate={false}
+      actionButtons={actionButtons}
+    />
   );
 };
 
@@ -369,79 +357,6 @@ const styles = StyleSheet.create({
   version: {
     color: Colors.black,
     paddingLeft: 8,
-  },
-  cardContainer: {
-    marginBottom: 8,
-  },
-  card: {
-    borderRadius: 12,
-    padding: 16,
-    backgroundColor: Colors.light.card,
-    shadowColor: defaultShadowColor,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-    position: "relative",
-  },
-  cardContent: {
-    flex: 1,
-  },
-  itemTitle: {
-    fontSize: 18,
-    fontWeight: defaultFontWeight,
-    marginBottom: 8,
-    color: Colors.light.text,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 2,
-  },
-  value: {
-    fontSize: 16,
-    fontWeight: defaultFontWeight,
-    color: Colors.primary,
-  },
-  memo: {
-    fontSize: 14,
-    color: Colors.light.icon,
-    marginTop: 4,
-  },
-  ownerIndicator: {
-    position: "absolute",
-    top: 12,
-    right: 12,
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 12,
-  },
-  ownerText: {
-    color: Colors.textOnPrimary,
-    fontSize: 12,
-    fontWeight: defaultFontWeight,
-  },
-  partnerIndicator: {
-    position: "absolute",
-    top: 12,
-    right: 12,
-    backgroundColor: Colors.light.icon,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 12,
-  },
-  partnerText: {
-    color: Colors.textOnPrimary,
-    fontSize: 12,
-    fontWeight: defaultFontWeight,
-  },
-  actionButtons: {
-    position: "absolute",
-    bottom: 12,
-    right: 12,
-    flexDirection: "row",
-    gap: 8,
   },
   editButton: {
     width: 32,

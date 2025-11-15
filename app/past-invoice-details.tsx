@@ -1,10 +1,10 @@
-import dayjs from "dayjs";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from "react-native";
+import { PaymentCard } from "@/components/PaymentCard";
 import { Colors } from "@/constants/Colors";
 import { supabase } from "@/lib/supabase";
-import { defaultFontSize, defaultFontWeight, defaultShadowColor } from "@/style/defaultStyle";
+import { defaultFontWeight } from "@/style/defaultStyle";
 import type { Payment } from "@/types/Row";
 import { usePayment } from "../hooks/usePayment";
 
@@ -29,7 +29,7 @@ export default function PastInvoiceDetailsScreen() {
     }
   }, [date, setOptions]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: id changes trigger payment fetch
   useEffect(() => {
     (async () => {
       if (typeof id === "string") {
@@ -39,21 +39,12 @@ export default function PastInvoiceDetailsScreen() {
     })();
   }, [id]);
 
-  const renderItem = ({ item }: { item: Payment }) => (
-    <View
-      style={[
-        styles.card,
-        {
-          borderLeftColor: item.owner_id === userId ? Colors.primary : Colors.gray,
-        },
-      ]}
-    >
-      <Text style={styles.cardText}>入力日：{dayjs(item.updated_at).format("YYYY年MM月DD日")}</Text>
-      <Text style={styles.cardText}>項目：{item.item}</Text>
-      <Text style={styles.cardText}>金額：{item.amount.toLocaleString()}円</Text>
-      {item.memo && <Text style={styles.memoText}>{item.memo}</Text>}
-    </View>
-  );
+  const renderItem = ({ item }: { item: Payment }) => {
+    const isOwner = item.owner_id === userId;
+    return (
+      <PaymentCard payment={item} isOwner={isOwner} ownerLabel="あなた" partnerLabel="パートナー" showDate={true} />
+    );
+  };
   if (isRefreshing) {
     return (
       <View style={styles.container}>
@@ -71,6 +62,7 @@ export default function PastInvoiceDetailsScreen() {
           data={monthlyPayments}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
+          ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
           contentContainerStyle={styles.listContent}
         />
       )}
@@ -81,41 +73,17 @@ export default function PastInvoiceDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    backgroundColor: Colors.light.background,
   },
   noData: {
-    fontSize: defaultFontSize,
-    color: Colors.light.text,
-    textAlign: "center",
-    marginTop: 32,
-  },
-  listContent: {
-    paddingBottom: 16,
-  },
-  card: {
-    backgroundColor: Colors.light.card,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    marginVertical: 10,
-    shadowColor: defaultShadowColor,
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 4,
-    elevation: 4,
-    borderLeftWidth: 6,
-    borderLeftColor: Colors.primary,
-    gap: 4,
-  },
-  cardText: {
-    fontSize: defaultFontSize,
+    fontSize: 18,
     fontWeight: defaultFontWeight,
     color: Colors.light.text,
+    textAlign: "center",
+    marginTop: 40,
   },
-  memoText: {
-    color: Colors.light.icon,
-    marginTop: 4,
-    fontFamily: "sans-serif",
-    fontSize: 12,
+  listContent: {
+    padding: 20,
+    paddingBottom: 20,
   },
 });

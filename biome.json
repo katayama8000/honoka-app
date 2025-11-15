@@ -1,16 +1,16 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.1/schema.json",
   "files": {
     "includes": [
       "**",
-      "!.expo/**",
-      "!dist/**",
-      "!node_modules/**",
-      "!build/**",
-      "!android/build/**",
-      "!ios/build/**",
-      "!ios/Pods/**",
-      "!modules/**",
+      "!.expo",
+      "!dist",
+      "!node_modules",
+      "!build",
+      "!android/build",
+      "!ios/build",
+      "!ios/Pods",
+      "!modules",
       "!types/supabase.ts"
     ]
   },
