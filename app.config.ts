@@ -3,7 +3,20 @@ import { version } from "./package.json";
 
 const allAppEnvs = ["production", "preview", "development"] as const;
 type AppEnv = (typeof allAppEnvs)[number];
-const primaryColor = "#D2691E";
+
+type Theme = "purple" | "autumn";
+const CURRENT_THEME: Theme = "purple";
+
+const themeColors = {
+  purple: {
+    primaryColor: "#9575CD",
+  },
+  autumn: {
+    primaryColor: "#D2691E",
+  },
+} as const;
+
+const primaryColor = themeColors[CURRENT_THEME].primaryColor;
 
 const envConfigs: Record<AppEnv, { bundleId: string; googleServicesJson: string; name: string; package: string }> = {
   production: {
