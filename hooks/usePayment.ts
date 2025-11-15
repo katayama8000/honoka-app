@@ -20,20 +20,30 @@ export const usePayment = () => {
   const [amount, setAmount] = useState<number | null>(null);
   const [memo, setMemo] = useState<string | null>(null);
   const [isHalfPrice, setIsHalfPrice] = useState<boolean>(false);
+  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
   const { fetchMonthlyInvoiceIdByCoupleId } = useInvoice();
   const [coupleId] = useAtom(coupleIdAtom);
   const { back } = useRouter();
   const [activeInvoice] = useAtom(activeInvoiceAtom);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: activeInvoice changes trigger payment fetch
   useEffect(() => {
     (async () => {
       if (activeInvoice === null) {
+        setIsLoading(false);
+        setIsInitialLoad(false);
         return;
       }
-      setIsLoading(true);
+
+      // 初回ロードの場合のみローディング表示
+      if (isInitialLoad) {
+        setIsLoading(true);
+      }
+
       await fetchPaymentsAllByMonthlyInvoiceId(activeInvoice.id);
+
       setIsLoading(false);
+      setIsInitialLoad(false);
     })();
   }, [activeInvoice]);
 
@@ -44,7 +54,7 @@ export const usePayment = () => {
     setIsHalfPrice(false);
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: dependencies are intentionally limited
   const addPayment = useCallback(
     async (payment: Pick<Payment, "item" | "amount" | "memo">): Promise<void> => {
       if (!payment.item || !payment.amount) {
@@ -127,7 +137,7 @@ export const usePayment = () => {
     [setPayments],
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: dependencies are intentionally limited
   const updatePayment = useCallback(
     async (id: Payment["id"], payment: Pick<Payment, "item" | "amount" | "memo">): Promise<void> => {
       try {

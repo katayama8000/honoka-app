@@ -41,7 +41,7 @@ const HomeScreen: FC = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [partner, setPartner] = useState<User | null>(null);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: initialization effect should only run on user_id change
   useEffect(() => {
     if (!currentUser?.user_id) {
       return;
@@ -57,12 +57,15 @@ const HomeScreen: FC = () => {
       }
       setCoupleId(coupleId);
 
-      const partnerData = await fetchPartner(coupleId, uid);
+      // パートナー情報とアクティブな請求書を並列で取得
+      const [partnerData, activeInvoiceData] = await Promise.all([
+        fetchPartner(coupleId, uid),
+        fetchActiveInvoiceByCoupleId(coupleId),
+      ]);
+
       if (partnerData) {
         setPartner(partnerData);
       }
-
-      const activeInvoiceData = await fetchActiveInvoiceByCoupleId(coupleId);
       setActiveInvoice(activeInvoiceData ?? null);
     })();
   }, [currentUser?.user_id]);

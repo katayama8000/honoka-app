@@ -98,24 +98,26 @@ const MonthlyInvoice: FC<MonthlyInvoiceProps> = memo(({ invoiceWithBalance, rout
   }, [invoiceWithBalance.id, invoiceWithBalance.year, invoiceWithBalance.month, routerPush]);
 
   return (
-    <TouchableOpacity onPress={handlePress}>
-      <View style={styles.card}>
-        <View style={styles.cardContainer}>
-          <View>
-            <View style={styles.dateContainer}>
-              <Text style={styles.date}>{`${invoiceWithBalance.year}年 ${invoiceWithBalance.month}月`}</Text>
-              {invoiceWithBalance.active && <Text style={styles.thisMonth}>今月</Text>}
+    <View style={styles.cardContainer}>
+      <TouchableOpacity onPress={handlePress} style={{ flex: 1 }}>
+        <View style={styles.card}>
+          <View style={styles.cardContent}>
+            <View>
+              <View style={styles.dateContainer}>
+                <Text style={styles.date}>{`${invoiceWithBalance.year}年 ${invoiceWithBalance.month}月`}</Text>
+                {invoiceWithBalance.active && <Text style={styles.thisMonth}>今月</Text>}
+              </View>
+              <AmountDisplay
+                active={invoiceWithBalance.active}
+                totalAmount={totalAmount}
+                balance={invoiceWithBalance.balance ?? null}
+              />
             </View>
-            <AmountDisplay
-              active={invoiceWithBalance.active}
-              totalAmount={totalAmount}
-              balance={invoiceWithBalance.balance ?? null}
-            />
+            <MaterialIcons name="arrow-forward-ios" size={24} color={Colors.light.icon} />
           </View>
-          <MaterialIcons name="arrow-forward-ios" size={24} color={Colors.light.icon} />
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 });
 
@@ -161,6 +163,9 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 100, // フローティングボタンの領域を確保
   },
+  cardContainer: {
+    marginBottom: 8,
+  },
   card: {
     borderRadius: 12,
     padding: 16,
@@ -172,7 +177,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     position: "relative",
   },
-  cardContainer: {
+  cardContent: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
