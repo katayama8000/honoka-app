@@ -46,7 +46,7 @@ const PaymentModalScreen = () => {
   const isEditMode = kind === "edit";
 
   const calculatedAmount = !isEditMode && amount !== null && isHalfPrice ? Math.round(amount / 2) : amount;
-  const calculatedMemo = !isEditMode && isHalfPrice ? `【半額】${memo ?? ""}` : memo;
+  const calculatedMemo = !isEditMode && isHalfPrice ? `【半額】${memo ?? ""}` : (memo ?? null);
 
   useEffect(() => {
     setOptions({
@@ -73,7 +73,7 @@ const PaymentModalScreen = () => {
       return;
     }
     if (couple_id === null || user === null) return;
-    if (calculatedAmount === null || calculatedMemo === null) return;
+    if (calculatedAmount === null) return;
 
     try {
       const partner = await fetchPartner(couple_id, user.user_id);
