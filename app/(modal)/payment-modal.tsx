@@ -113,6 +113,31 @@ const PaymentModalScreen = () => {
         contentContainerStyle={styles.scrollViewContent}
         keyboardShouldPersistTaps="handled"
       >
+        <View style={styles.priceRow}>
+          <View style={styles.priceInputWrapper}>
+            <Text style={styles.label}>
+              値段 <Text style={styles.required}>*</Text>
+            </Text>
+            <TextInput
+              style={styles.input}
+              value={calculatedAmount !== null ? calculatedAmount.toString() : ""}
+              onChangeText={(text) => {
+                const newAmount = Number(text.replace(/[^0-9]/g, ""));
+                setAmount(!isEditMode && isHalfPrice ? newAmount * 2 : newAmount);
+              }}
+              keyboardType="numeric"
+              placeholder="1000"
+              placeholderTextColor={Colors.light.icon}
+            />
+          </View>
+          {!isEditMode && (
+            <View style={styles.halfPriceContentWrapper}>
+              <Text style={styles.label}>半額</Text>
+              <Switch value={isHalfPrice} onValueChange={setIsHalfPrice} />
+            </View>
+          )}
+        </View>
+
         <View style={styles.form}>
           <View style={styles.formGroup}>
             <Text style={styles.label}>
@@ -125,31 +150,6 @@ const PaymentModalScreen = () => {
               placeholder="食費、日用品など"
               placeholderTextColor={Colors.light.icon}
             />
-          </View>
-
-          <View style={styles.priceRow}>
-            <View style={styles.priceInputWrapper}>
-              <Text style={styles.label}>
-                値段 <Text style={styles.required}>*</Text>
-              </Text>
-              <TextInput
-                style={styles.input}
-                value={calculatedAmount !== null ? calculatedAmount.toString() : ""}
-                onChangeText={(text) => {
-                  const newAmount = Number(text.replace(/[^0-9]/g, ""));
-                  setAmount(!isEditMode && isHalfPrice ? newAmount * 2 : newAmount);
-                }}
-                keyboardType="numeric"
-                placeholder="1000"
-                placeholderTextColor={Colors.light.icon}
-              />
-            </View>
-            {!isEditMode && (
-              <View style={styles.halfPriceContentWrapper}>
-                <Text style={styles.label}>半額</Text>
-                <Switch value={isHalfPrice} onValueChange={setIsHalfPrice} />
-              </View>
-            )}
           </View>
 
           <View style={styles.formGroup}>

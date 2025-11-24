@@ -58,7 +58,6 @@ const HomeScreen: FC = () => {
       }
       setCoupleId(coupleId);
 
-      // パートナー情報とアクティブな請求書を並列で取得
       const [partnerData, activeInvoiceData] = await Promise.all([
         fetchPartner(coupleId, uid),
         fetchActiveInvoiceByCoupleId(coupleId),
