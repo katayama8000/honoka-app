@@ -986,7 +986,7 @@
     slugify "^1.3.4"
     sucrase "3.35.0"
 
-"@expo/config@~12.0.8", "@expo/config@~12.0.9":
+"@expo/config@~12.0.9":
   version "12.0.9"
   resolved "https://registry.yarnpkg.com/@expo/config/-/config-12.0.9.tgz#07e1ddb3c9227031e9e9322e41797ad36197a1c3"
   integrity sha512-HiDVVaXYKY57+L1MxSF3TaYjX6zZlGBnuWnOKZG+7mtsLD+aNTtW4bZM0pZqZfoRumyOU0SfTCwT10BWtUUiJQ==
@@ -2926,34 +2926,34 @@ expo-constants@~18.0.10, expo-constants@~18.0.8, expo-constants@~18.0.9:
     "@expo/config" "~12.0.10"
     "@expo/env" "~2.0.7"
 
-expo-dev-client@~6.0.17:
-  version "6.0.17"
-  resolved "https://registry.yarnpkg.com/expo-dev-client/-/expo-dev-client-6.0.17.tgz#f1157bb2c2389c8f59f673d259aaa01cf25ec99d"
-  integrity sha512-zVilIum3sqXFbhYhPT6TuxR3ddH/IfHL82FiOTqJUiYaTQqun1I6ogSvU1djhY1eXUYhfYIBieQNWMVjXPxMvw==
+expo-dev-client@~6.0.18:
+  version "6.0.18"
+  resolved "https://registry.yarnpkg.com/expo-dev-client/-/expo-dev-client-6.0.18.tgz#c296ca76691f7651fee14707bb8c1863f3744dd4"
+  integrity sha512-8QKWvhsoZpMkecAMlmWoRHnaTNiPS3aO7E42spZOMjyiaNRJMHZsnB8W2b63dt3Yg3oLyskLAoI8IOmnqVX8vA==
   dependencies:
-    expo-dev-launcher "6.0.17"
-    expo-dev-menu "7.0.16"
+    expo-dev-launcher "6.0.18"
+    expo-dev-menu "7.0.17"
     expo-dev-menu-interface "2.0.0"
-    expo-manifests "~1.0.8"
+    expo-manifests "~1.0.9"
     expo-updates-interface "~2.0.0"
 
-expo-dev-launcher@6.0.17:
-  version "6.0.17"
-  resolved "https://registry.yarnpkg.com/expo-dev-launcher/-/expo-dev-launcher-6.0.17.tgz#d7f39a4fd4738e171c4422c1ddc256844699c2a0"
-  integrity sha512-riLxFXaw6Nvgb27TiQtUvoHkW/zTz0aO7M+qxDBBaEbJMJSFl51KSwOJJBTItVQIE9f9jB8x5L1CfLw81/McZw==
+expo-dev-launcher@6.0.18:
+  version "6.0.18"
+  resolved "https://registry.yarnpkg.com/expo-dev-launcher/-/expo-dev-launcher-6.0.18.tgz#04e1c5271df76192a3c57cc476145720e96c665e"
+  integrity sha512-JTtcIfNvHO9PTdRJLmHs+7HJILXXZjF95jxgzu6hsJrgsTg/AZDtEsIt/qa6ctEYQTqrLdsLDgDhiXVel3AoQA==
   dependencies:
-    expo-dev-menu "7.0.16"
-    expo-manifests "~1.0.8"
+    expo-dev-menu "7.0.17"
+    expo-manifests "~1.0.9"
 
 expo-dev-menu-interface@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/expo-dev-menu-interface/-/expo-dev-menu-interface-2.0.0.tgz#c0d6db65eb4abc44a2701bc2303744619ad05ca6"
   integrity sha512-BvAMPt6x+vyXpThsyjjOYyjwfjREV4OOpQkZ0tNl+nGpsPfcY9mc6DRACoWnH9KpLzyIt3BOgh3cuy/h/OxQjw==
 
-expo-dev-menu@7.0.16:
-  version "7.0.16"
-  resolved "https://registry.yarnpkg.com/expo-dev-menu/-/expo-dev-menu-7.0.16.tgz#1c2f91caca14c22341525e7ac72cf4b33dcf727d"
-  integrity sha512-/kjTjk5tcZV0ixYnV3JyzPXKlMimpBNYaDo4XxBbRFIkTf/vmb/9e1BTR2nALnoa/D3MRwtR43gZYT+W/wfKXw==
+expo-dev-menu@7.0.17:
+  version "7.0.17"
+  resolved "https://registry.yarnpkg.com/expo-dev-menu/-/expo-dev-menu-7.0.17.tgz#4b04f860cd154386308bb31c5c9f29aeaa7a60a9"
+  integrity sha512-NIu7TdaZf+A8+DROa6BB6lDfxjXxwaD+Q8QbNSVa0E0x6yl3P0ZJ80QbD2cCQeBzlx3Ufd3hNhczQWk4+A29HQ==
   dependencies:
     expo-dev-menu-interface "2.0.0"
 
@@ -3006,12 +3006,12 @@ expo-linking@~8.0.8:
     expo-constants "~18.0.8"
     invariant "^2.2.4"
 
-expo-manifests@~1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/expo-manifests/-/expo-manifests-1.0.8.tgz#2ee1b33f974481d8cc5fc76352e0c78de5ff74d6"
-  integrity sha512-nA5PwU2uiUd+2nkDWf9e71AuFAtbrb330g/ecvuu52bmaXtN8J8oiilc9BDvAX0gg2fbtOaZdEdjBYopt1jdlQ==
+expo-manifests@~1.0.8, expo-manifests@~1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/expo-manifests/-/expo-manifests-1.0.9.tgz#7c612d80e552a3f1e479a9a18763c5bdcd43ca6e"
+  integrity sha512-5uVgvIo0o+xBcEJiYn4uVh72QSIqyHePbYTWXYa4QamXd+AmGY/yWmtHaNqCqjsPLCwXyn4OxPr7jXJCeTWLow==
   dependencies:
-    "@expo/config" "~12.0.8"
+    "@expo/config" "~12.0.10"
     expo-json-utils "~0.15.0"
 
 expo-modules-autolinking@3.0.21:
