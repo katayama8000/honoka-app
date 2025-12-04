@@ -397,10 +397,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      "hello-world": {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      "hello-world": { Args: never; Returns: string }
     }
     Enums: {
       billing_cycle_type: "monthly" | "yearly"

@@ -8,6 +8,12 @@
 ### schema
 - https://supabase-schema.vercel.app/
 
+## Login
+- login to supabase
+```bash
+npx supabase login
+```
+
 ## Expo
 
 ## Login
