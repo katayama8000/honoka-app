@@ -22,6 +22,7 @@ import type { Couple, Invoice, Payment, Payment as PaymentRow, User } from "@/ty
 import { useCouple } from "../../hooks/useCouple";
 import { useInvoice } from "../../hooks/useInvoice";
 import { usePayment } from "../../hooks/usePayment";
+import { useSendEmail } from "../../hooks/useSendEmail";
 import { useUser } from "../../hooks/useUser";
 import { version } from "../../package.json";
 import { coupleIdAtom } from "../../state/couple.state";
@@ -34,6 +35,7 @@ const HomeScreen: FC = () => {
   const { fetchCoupleIdByUserId } = useCouple();
   const { fetchPaymentsAllByMonthlyInvoiceId, setupRecurringPayments } = usePayment();
   const { fetchPartner } = useUser();
+  const { sendMonthlyClosingEmail } = useSendEmail();
   const [coupleId, setCoupleId] = useAtom(coupleIdAtom);
   const [activeInvoce, setActiveInvoice] = useAtom(activeInvoiceAtom);
   const [currentUser] = useAtom(userAtom);
@@ -85,15 +87,30 @@ const HomeScreen: FC = () => {
       {
         text: "はい",
         onPress: async () => {
-          await unActiveInvoicesAll(coupleId);
-          if (activeInvoce?.id) {
-            await turnInvoicePaid(activeInvoce.id);
+          try {
+            // Calculate balance before closing month
+            const balance = payments.reduce((acc, payment) => {
+              return payment.owner_id === userId ? acc + payment.amount : acc - payment.amount;
+            }, 0);
+
+            await unActiveInvoicesAll(coupleId);
+            if (activeInvoce?.id) {
+              await turnInvoicePaid(activeInvoce.id);
+            }
+            await initInvoice(coupleId);
+            await setupRecurringPayments(coupleId);
+            const activeInvoice = await fetchActiveInvoiceByCoupleId(coupleId);
+            setActiveInvoice(activeInvoice ?? null);
+
+            // Send email notification
+            const month = dayjs().format("YYYY年MM月");
+            await sendMonthlyClosingEmail(balance, month, partner?.name);
+
+            Alert.alert("精算が完了しました", "今月もパートナーを大事にね！");
+          } catch (error) {
+            console.error("Error during month close:", error);
+            Alert.alert("エラー", "精算処理中にエラーが発生しました");
           }
-          await initInvoice(coupleId);
-          await setupRecurringPayments(coupleId);
-          const activeInvoice = await fetchActiveInvoiceByCoupleId(coupleId);
-          setActiveInvoice(activeInvoice ?? null);
-          Alert.alert("精算が完了しました", "今月もパートナーを大事にね！");
         },
       },
     ]);
