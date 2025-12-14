@@ -22,7 +22,7 @@
     "@expo/vector-icons": "^15.0.3",
     "@supabase/supabase-js": "^2.76.1",
     "dayjs": "^1.11.13",
-    "expo": "~54.0.26",
+    "expo": "~54.0.29",
     "expo-background-task": "~1.0.9",
     "expo-constants": "~18.0.10",
     "expo-dev-client": "~6.0.19",
