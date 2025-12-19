@@ -1,4 +1,5 @@
 import type { ExpoConfig } from "expo/config";
+import type { WithAndroidWidgetsParams } from "react-native-android-widget";
 import { version } from "./package.json";
 
 const allAppEnvs = ["production", "preview", "development"] as const;
@@ -44,6 +45,21 @@ const isAppEnv = (s: string): s is AppEnv => allAppEnvs.includes(s as AppEnv);
 const appEnv = (process.env.APP_ENV ?? "development") as AppEnv;
 
 if (!isAppEnv(appEnv)) throw new Error(`unsupported APP_ENV: ${appEnv}`);
+
+const widgetConfig: WithAndroidWidgetsParams = {
+  widgets: [
+    {
+      name: "Hello",
+      label: "Hello Widget",
+      minWidth: "320dp",
+      minHeight: "120dp",
+      targetCellWidth: 5,
+      targetCellHeight: 2,
+      description: "A simple Hello widget for Honoka App",
+      updatePeriodMillis: 0,
+    },
+  ],
+};
 
 export default (): ExpoConfig => {
   const { bundleId, googleServicesJson, package: packageName, name: appName } = envConfigs[appEnv];
@@ -105,6 +121,7 @@ export default (): ExpoConfig => {
           apiKey: `honoka_dev_api_key_${appEnv}_${version}`,
         },
       ],
+      ["react-native-android-widget", widgetConfig],
     ],
     updates: {
       url: "https://u.expo.dev/018a6711-ac8c-41b8-830c-279089162afa",
