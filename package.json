@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
-    "@biomejs/biome": "2.3.1",
+    "@biomejs/biome": "2.3.8",
     "@types/react": "~19.1.10",
     "@types/react-test-renderer": "^19.1.0",
     "react-test-renderer": "19.1.0",
