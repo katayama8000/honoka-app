@@ -1,5 +1,6 @@
 import React from "react";
 import type { WidgetTaskHandlerProps } from "react-native-android-widget";
+import { registerWidgetTaskHandler } from "react-native-android-widget";
 import { HelloWidget } from "./HelloWidget";
 
 const nameToWidget = {
@@ -38,3 +39,6 @@ export const widgetTaskHandler = async (props: WidgetTaskHandlerProps) => {
       break;
   }
 };
+
+// Register widget task handler
+registerWidgetTaskHandler(widgetTaskHandler);

@@ -6,14 +6,9 @@ import { supabase } from "@/lib/supabase";
 import "react-native-reanimated";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { registerWidgetTaskHandler } from "react-native-android-widget";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useUser } from "@/hooks/useUser";
 import { userAtom } from "@/state/user.state";
-import { widgetTaskHandler } from "@/widget/widget-task-handler";
-
-// Register widget task handler
-registerWidgetTaskHandler(widgetTaskHandler);
 
 preventAutoHideAsync();
 

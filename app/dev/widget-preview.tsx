@@ -4,7 +4,7 @@ import { WidgetPreview } from "react-native-android-widget";
 
 import { HelloWidget } from "../../widget/HelloWidget";
 
-export const WidgetPreviewScreen: FC = () => {
+const WidgetPreviewScreen: FC = () => {
   return (
     <View style={styles.container}>
       <WidgetPreview renderWidget={() => <HelloWidget />} width={320} height={200} />
@@ -20,3 +20,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0f0f0",
   },
 });
+
+export default WidgetPreviewScreen;
