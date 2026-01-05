@@ -4641,10 +4641,10 @@ react-is@^19.1.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.3.tgz#eec2feb69c7fb31f77d0b5c08c10ae1c88886b29"
   integrity sha512-qJNJfu81ByyabuG7hPFEbXqNcWSU3+eVus+KJs+0ncpGfMyYdvSmxiJxbWR65lYi1I+/0HBcliO029gc4F+PnA==
 
-react-native-android-widget@^0.17.2:
-  version "0.17.2"
-  resolved "https://registry.yarnpkg.com/react-native-android-widget/-/react-native-android-widget-0.17.2.tgz#53b2439fbf6127d3b6f137b6fb9bc98ba5824bc9"
-  integrity sha512-GsSkpy3oTfekyX2gExxnVPB+qMy2M27vljWJoRkJfVz9XixZ0SDlo+C5mvyeNmtkE3KjMjucqDTbgheVmEmQnw==
+react-native-android-widget@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/react-native-android-widget/-/react-native-android-widget-0.18.0.tgz#96507f15feebb157941522aae667ff208f47d5e0"
+  integrity sha512-Q/2HMl27kNy7loRC6g7VhNqnRZDEyeNChyEx0jFB8DcpYwXdw2E+pZKd8196EhFYxAZlMs7BJ+CDKrvw+Q7jGA==
 
 react-native-date-picker@^5.0.13:
   version "5.0.13"
