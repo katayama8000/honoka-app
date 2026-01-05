@@ -1,3 +1,5 @@
+import Constants from "expo-constants";
+
 type PushNotificationMessage = {
   title: string;
   body: string;
@@ -10,7 +12,8 @@ type PushNotificationOptions = {
   expoPushToken: string;
 };
 
-const PUSH_NOTIFICATION_API_URL = "https://expo-push-notification-api-rust.vercel.app/api/handler";
+const PUSH_NOTIFICATION_API_URL = "https://wvtp17g5xe.execute-api.ap-northeast-1.amazonaws.com/";
+const PUSH_NOTIFICATION_API_KEY = Constants.expoConfig?.extra?.PUSH_NOTIFICATION_API_KEY as string;
 
 export const pushNotificationClient = {
   /**
@@ -29,6 +32,7 @@ export const pushNotificationClient = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-api-key": PUSH_NOTIFICATION_API_KEY,
         },
         body: JSON.stringify(message),
       });

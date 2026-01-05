@@ -138,6 +138,7 @@ export default (): ExpoConfig => {
       eas: {
         projectId: "018a6711-ac8c-41b8-830c-279089162afa",
       },
+      PUSH_NOTIFICATION_API_KEY: process.env.PUSH_NOTIFICATION_API_KEY,
     },
     owner: "katayama9000",
   };
