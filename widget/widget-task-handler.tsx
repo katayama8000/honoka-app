@@ -1,4 +1,3 @@
-import React from "react";
 import type { WidgetTaskHandlerProps } from "react-native-android-widget";
 import { registerWidgetTaskHandler } from "react-native-android-widget";
 import { HelloWidget } from "./HelloWidget";
