@@ -1,0 +1,30 @@
+[tools]
+node = "24"
+yarn = "4"
+
+[env]
+_.file = ".env"
+
+[tasks.dev]
+run = "yarn dev"
+
+[tasks.ios]
+run = "yarn ios"
+
+[tasks.android]
+run = "yarn android"
+
+[tasks.web]
+run = "yarn web"
+
+[tasks.format]
+run = "yarn format"
+
+[tasks.lint]
+run = "yarn lint"
+
+[tasks.type-check]
+run = "yarn type-check"
+
+[tasks.doctor]
+run = "yarn doctor"
