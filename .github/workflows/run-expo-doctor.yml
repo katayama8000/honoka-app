@@ -31,8 +31,6 @@ jobs:
         working-directory: ./
         env:
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install expo-doctor
-        run: yarn global add expo-doctor
       - name: expo doctor
-        run: expo-doctor
+        run: yarn dlx expo-doctor
         working-directory: ./
