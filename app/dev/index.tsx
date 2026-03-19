@@ -14,6 +14,10 @@ const debugPages = [
     name: "ウィジェットプレビュー",
     path: "/dev/widget-preview",
   },
+  {
+    name: "音声読み上げ (expo-speech)",
+    path: "/dev/speech",
+  },
 ] as const;
 
 const DevIndexScreen = () => {
