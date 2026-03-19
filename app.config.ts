@@ -122,6 +122,7 @@ export default (): ExpoConfig => {
         },
       ],
       ["react-native-android-widget", widgetConfig],
+      "expo-speech-recognition",
     ],
     updates: {
       url: "https://u.expo.dev/018a6711-ac8c-41b8-830c-279089162afa",
