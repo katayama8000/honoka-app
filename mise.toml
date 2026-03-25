@@ -1,6 +1,6 @@
 [tools]
 node = "24"
-yarn = "4"
+yarn = "1"
 
 [env]
 _.file = ".env"
