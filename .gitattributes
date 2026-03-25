@@ -8,4 +8,6 @@
 *.yml linguist-language=yaml
 *.json linguist-detectable=true
 *.json linguist-language=json
+*.toml linguist-detectable=true
+*.toml linguist-language=toml
 

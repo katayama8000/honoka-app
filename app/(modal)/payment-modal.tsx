@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { Colors } from "@/constants/Colors";
+import { useSpeechPaymentInput } from "@/hooks/useSpeechPaymentInput";
 import { useUser } from "@/hooks/useUser";
 import { coupleIdAtom } from "@/state/couple.state";
 import { userAtom } from "@/state/user.state";
@@ -100,6 +101,12 @@ const PaymentModalScreen = () => {
     }
   };
 
+  const { isListening, startVoiceInput } = useSpeechPaymentInput({
+    isHalfPrice,
+    onAmount: setAmount,
+    onItem: setItem,
+  });
+
   const isFormValid = item && amount !== null;
 
   return (
@@ -165,6 +172,13 @@ const PaymentModalScreen = () => {
               placeholderTextColor={Colors.light.icon}
             />
           </View>
+
+          <TouchableOpacity
+            onPress={startVoiceInput}
+            style={[styles.voiceButton, isListening && styles.voiceButtonActive]}
+          >
+            <Text style={styles.voiceButtonText}>{isListening ? "⏹ 録音を停止" : "🎙 音声で項目を入力"}</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity
             onPress={handlePayment}
@@ -233,12 +247,30 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     minHeight: 48,
   },
+  voiceButton: {
+    borderWidth: 1.5,
+    borderColor: Colors.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 32,
+    alignItems: "center",
+  },
+  voiceButtonActive: {
+    backgroundColor: "#fdecea",
+    borderColor: "#e74c3c",
+  },
+  voiceButtonText: {
+    color: Colors.primary,
+    fontSize: 16,
+    fontWeight: defaultFontWeight,
+  },
   saveButton: {
     backgroundColor: Colors.primary,
     paddingHorizontal: 24,
     paddingVertical: 16,
     borderRadius: 12,
-    marginTop: 32,
+    marginTop: 12,
     shadowColor: defaultShadowColor,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
