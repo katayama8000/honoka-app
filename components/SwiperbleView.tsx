@@ -1,7 +1,8 @@
 import type { FC, ReactNode } from "react";
 import { Alert, Dimensions, StyleSheet, type ViewStyle } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, {  useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { scheduleOnRN } from 'react-native-worklets';
 import { Colors } from "@/constants/Colors";
 
 interface Props {
@@ -47,7 +48,7 @@ export const SwiperView: FC<Props> = ({ children, backView, onPress, onSwipeLeft
       const shouldBeDismissed = translateX.value < SWIPE_THRESHOLD;
       if (shouldBeDismissed) {
         translateX.value = withTiming(-SCREEN_WIDTH);
-        runOnJS(handleSwipeLeft)();
+        scheduleOnRN(handleSwipeLeft);
       } else {
         translateX.value = withTiming(0);
       }
