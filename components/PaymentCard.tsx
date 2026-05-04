@@ -28,10 +28,12 @@ export const PaymentCard: FC<PaymentCardProps> = ({
           <Text style={styles.itemTitle}>{payment.item}</Text>
           {showDate && (
             <Text style={styles.dateText}>
-              {new Date(payment.updated_at).toLocaleDateString("ja-JP", {
+              {new Date(payment.updated_at).toLocaleString("ja-JP", {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
               })}
             </Text>
           )}

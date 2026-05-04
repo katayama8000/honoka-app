@@ -303,7 +303,7 @@ const PaymentItem: FC<PaymentItemProps> = ({
       isOwner={isOwner}
       ownerLabel={currentUserName || "あなた"}
       partnerLabel={partnerName || "パートナー"}
-      showDate={false}
+      showDate={true}
       actionButtons={actionButtons}
     />
   );
