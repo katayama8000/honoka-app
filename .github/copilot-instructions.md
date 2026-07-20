@@ -157,16 +157,16 @@ This document outlines the coding standards and best practices for the Honoka Ap
 
 ## Project Setup
 
-- **Use yarn for package manager**
+- **Use pnpm for package manager**
   ```bash
   # Installing dependencies
-  yarn install
+  pnpm install
   
   # Adding a new package
-  yarn add package-name
+  pnpm add package-name
   
   # Adding a dev dependency
-  yarn add -D package-name
+  pnpm add -D package-name
   ```
 
 ## 2025/06/20
