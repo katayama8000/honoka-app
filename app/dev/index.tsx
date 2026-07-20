@@ -10,14 +10,6 @@ const debugPages = [
     name: "ネイティブAPIキー検証",
     path: "/dev/native-api-key",
   },
-  {
-    name: "音声読み上げ (expo-speech)",
-    path: "/dev/speech",
-  },
-  {
-    name: "音声入力 (expo-speech-recognition)",
-    path: "/dev/speech-recognition",
-  },
 ] as const;
 
 const DevIndexScreen = () => {
