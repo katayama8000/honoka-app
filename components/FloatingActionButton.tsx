@@ -1,4 +1,5 @@
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import AntDesign from "@react-native-vector-icons/ant-design";
+import Ionicons from "@react-native-vector-icons/ionicons";
 import type { ComponentProps, FC } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Colors } from "@/constants/Colors";
