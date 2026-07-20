@@ -86,6 +86,7 @@ export default (): ExpoConfig => {
       ],
       "expo-web-browser",
       "expo-sqlite",
+      "expo-status-bar",
       "expo-background-task",
       [
         "expo-notifications",

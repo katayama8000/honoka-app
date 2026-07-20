@@ -51,8 +51,9 @@ jobs:
       working-directory: ${{ github.workspace }}
 
     - name: 🏗 Setup Expo and EAS
-      uses: expo/expo-github-action@v8
+      uses: expo/expo-github-action@v9
       with:
+        packager: pnpm
         eas-version: latest
         token: ${{ secrets.EXPO_TOKEN }}
 
