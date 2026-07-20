@@ -1,4 +1,5 @@
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import AntDesign from "@react-native-vector-icons/ant-design";
+import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { type Href, useFocusEffect, useRouter } from "expo-router";
 import { useAtom } from "jotai";
 import { type FC, memo, useCallback, useEffect, useMemo, useState } from "react";

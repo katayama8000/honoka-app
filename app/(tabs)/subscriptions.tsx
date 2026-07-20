@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
 import { type FC, memo, useCallback, useEffect, useMemo, useState } from "react";

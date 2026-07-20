@@ -1,4 +1,5 @@
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import AntDesign from "@react-native-vector-icons/ant-design";
+import Ionicons from "@react-native-vector-icons/ionicons";
 import { Button as ExpoButton, Host } from "@expo/ui";
 import dayjs from "dayjs";
 import { type Href, useRouter } from "expo-router";
