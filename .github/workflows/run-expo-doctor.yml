@@ -28,5 +28,5 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: expo doctor
-        run: pnpm exec expo-doctor
+        run: pnpm run doctor
         working-directory: ./
