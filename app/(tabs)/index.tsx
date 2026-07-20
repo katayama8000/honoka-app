@@ -1,4 +1,5 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { Button as ExpoButton, Host } from "@expo/ui";
 import dayjs from "dayjs";
 import { type Href, useRouter } from "expo-router";
 import { useAtom } from "jotai";
@@ -8,6 +9,7 @@ import {
   Alert,
   FlatList,
   Linking,
+  Platform,
   StyleSheet,
   Text,
   ToastAndroid,
@@ -237,9 +239,19 @@ const PaymentList: FC<PaymentListProps> = ({
 const GithubIssueLink: FC = () => {
   return (
     <View style={styles.linkContainer}>
-      <TouchableOpacity onPress={() => Linking.openURL("https://github.com/katayama8000/honoka-app/issues")}>
-        <Text style={styles.link}>バグ修正や改善要望はこちらから</Text>
-      </TouchableOpacity>
+      {Platform.OS === "android" ? (
+        <Host style={styles.androidLinkHost}>
+          <ExpoButton
+            label="バグ修正や改善要望はこちらから"
+            variant="outlined"
+            onPress={() => Linking.openURL("https://github.com/katayama8000/honoka-app/issues")}
+          />
+        </Host>
+      ) : (
+        <TouchableOpacity onPress={() => Linking.openURL("https://github.com/katayama8000/honoka-app/issues")}>
+          <Text style={styles.link}>バグ修正や改善要望はこちらから</Text>
+        </TouchableOpacity>
+      )}
       <Text style={styles.version}>v{version}</Text>
     </View>
   );
@@ -352,6 +364,10 @@ const styles = StyleSheet.create({
   },
   link: {
     color: Colors.primary,
+  },
+  androidLinkHost: {
+    flex: 1,
+    maxWidth: 280,
   },
   version: {
     color: Colors.black,

@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~57.0.6",
+    "@expo/ui": "~57.0.7",
     "@expo/vector-icons": "^15.0.2",
     "@supabase/supabase-js": "^2.89.0",
     "dayjs": "^1.11.13",
