@@ -72,11 +72,6 @@ export default (): ExpoConfig => {
     scheme: "myapp",
     userInterfaceStyle: "automatic",
     version: version,
-    splash: {
-      image: "./assets/images/splash_cat.png",
-      resizeMode: "cover",
-      backgroundColor: primaryColor,
-    },
     ios: {
       supportsTablet: true,
       bundleIdentifier: bundleId,
@@ -84,11 +79,6 @@ export default (): ExpoConfig => {
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/splash_cat.png",
-        backgroundColor: primaryColor,
-      },
-      splash: {
-        image: "./assets/images/splash_cat.png",
-        resizeMode: "cover",
         backgroundColor: primaryColor,
       },
       package: packageName,
@@ -102,6 +92,14 @@ export default (): ExpoConfig => {
     plugins: [
       "expo-router",
       "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          image: "./assets/images/splash_cat.png",
+          resizeMode: "cover",
+          backgroundColor: primaryColor,
+        },
+      ],
       "expo-web-browser",
       "expo-sqlite",
       "expo-background-task",
