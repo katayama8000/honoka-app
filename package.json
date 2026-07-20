@@ -1,7 +1,7 @@
 {
   "name": "household-account-book",
   "main": "expo-router/entry",
-  "version": "2.8.1",
+  "version": "2.8.2",
   "scripts": {
     "dev": "APP_ENV=development expo start",
     "android": "expo run:android",
@@ -33,7 +33,6 @@
     "expo-linking": "~57.0.3",
     "expo-notifications": "~57.0.6",
     "expo-router": "~57.0.7",
-    "expo-speech": "~57.0.1",
     "expo-speech-recognition": "^3.1.3",
     "expo-splash-screen": "~57.0.4",
     "expo-sqlite": "~57.0.1",
