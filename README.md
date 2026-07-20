@@ -25,6 +25,6 @@ cp .env.example .env
 ```
 Then, run the following command to start the app.
 ```bash
-yarn i
-yarn dev
+pnpm install
+pnpm dev
 ```

@@ -35,11 +35,14 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 24
-        cache: 'yarn'
-        cache-dependency-path: ${{ github.workspace }}/yarn.lock
+        cache: 'pnpm'
+        cache-dependency-path: ${{ github.workspace }}/pnpm-lock.yaml
+
+    - name: 🏗 Enable Corepack
+      run: corepack enable
 
     - name: 🏗 Install dependencies
-      run: yarn install --frozen-lockfile
+      run: pnpm install --frozen-lockfile
       working-directory: ${{ github.workspace }}
 
     - name: 🏗 Setup Expo and EAS
