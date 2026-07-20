@@ -7,10 +7,10 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "format": "yarn biome format --write .",
-    "format:check": "yarn biome format .",
-    "lint": "yarn biome check --write .",
-    "lint:check": "yarn biome check .",
+    "format": "pnpm biome format --write .",
+    "format:check": "pnpm biome format .",
+    "lint": "pnpm biome check --write .",
+    "lint:check": "pnpm biome check .",
     "type-check": "tsc --noEmit",
     "doctor": "npx expo-doctor"
   },
@@ -61,9 +61,6 @@
     "react-test-renderer": "19.1.0",
     "typescript": "~6.0.3"
   },
-  "resolutions": {
-    "expo-constants": "~56.0.21",
-    "react-native-screens": "4.25.2"
-  },
+  "packageManager": "pnpm@11.5.2",
   "private": true
 }
