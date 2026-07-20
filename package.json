@@ -38,6 +38,7 @@
     "expo-sqlite": "~57.0.1",
     "expo-status-bar": "~57.0.1",
     "expo-system-ui": "~57.0.1",
+    "expo-task-manager": "~57.0.5",
     "expo-updates": "~57.0.8",
     "expo-web-browser": "~57.0.1",
     "jotai": "^2.15.0",
