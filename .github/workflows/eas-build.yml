@@ -53,8 +53,7 @@ jobs:
     - name: 🏗 Setup Expo and EAS
       uses: expo/expo-github-action@v9
       with:
-        node-version: 24
-        cache: pnpm
+        packager: pnpm
         eas-version: latest
         token: ${{ secrets.EXPO_TOKEN }}
 
